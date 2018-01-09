@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="https://sunichi.github.io">
   <title>rctf2015 welpwn writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+  <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
 <meta name="keywords" content="ctf,pwn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rctf2015 welpwn writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/01/09/rctf15-welpwn/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+<meta property="og:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-09T00:58:01.657Z">
+<meta property="og:updated_time" content="2018-01-09T01:00:01.779Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rctf2015 welpwn writeup">
-<meta name="twitter:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s1   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+<meta name="twitter:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -185,7 +185,7 @@
 <tbody>
 <tr>
 <td>0x10</td>
-<td>s1</td>
+<td>s2</td>
 </tr>
 <tr>
 <td>0x08</td>
