@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-12T12:16:23.690Z">
+<meta property="og:updated_time" content="2018-04-12T13:45:28.168Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hitctf18 pwn250 DragonBall writeup">
 <meta name="twitter:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
@@ -176,6 +176,7 @@
       
         <p>此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !money )</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"You don't have enough money."</span>);</span><br><span class="line">money -= <span class="number">5</span>;</span><br><span class="line">++dragon_ball_num;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>只要金钱不为0，就可以一直购买，因此先购买1个龙珠、卖出1个龙珠，然后再连续购买7个龙珠即可。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">buy()</span><br><span class="line">sell()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">7</span>):</span><br><span class="line">    buy()</span><br></pre></td></tr></table></figure>
 <p>保护措施如下：</p>
