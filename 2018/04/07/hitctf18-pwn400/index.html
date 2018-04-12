@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="此题的利用思路为UAF。逆向程序，当添加note时，程序首先会在堆上申请一个大小为0xC的空间，用于存储note的条目，格式如下： 123********************************************** content_size * content_ptr * function_ptr ******************************************">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-07T02:38:32.295Z">
+<meta property="og:updated_time" content="2018-04-12T07:06:53.035Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hitctf18 pwn400 babynote writeup">
 <meta name="twitter:description" content="此题的利用思路为UAF。逆向程序，当添加note时，程序首先会在堆上申请一个大小为0xC的空间，用于存储note的条目，格式如下： 123********************************************** content_size * content_ptr * function_ptr ******************************************">
@@ -302,6 +302,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/04/12/hitctf18-pwn100&pwn200/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          hitctf18 pwn100&amp;pwn200 writeup
+        
+      </div>
+    </a>
   
   
     <a href="/2018/02/02/cyberearth-xctf-pwn-stack/" id="article-nav-older" class="article-nav-link-wrap">
