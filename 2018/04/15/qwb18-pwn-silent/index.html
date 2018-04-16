@@ -7,20 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>qwb18 pwn silent writeup | Sunichi&#39;s Blog</title>
+  <title>强网杯18 pwn silent writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="保护措施： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取">
+  <meta name="description" content="保护措施：12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取s">
 <meta name="keywords" content="ctf,pwn">
 <meta property="og:type" content="article">
-<meta property="og:title" content="qwb18 pwn silent writeup">
+<meta property="og:title" content="强网杯18 pwn silent writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/04/15/qwb18-pwn-silent/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="保护措施： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取">
+<meta property="og:description" content="保护措施：12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取s">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-15T09:15:56.172Z">
+<meta property="og:updated_time" content="2018-04-16T02:42:49.802Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="qwb18 pwn silent writeup">
-<meta name="twitter:description" content="保护措施： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取">
+<meta name="twitter:title" content="强网杯18 pwn silent writeup">
+<meta name="twitter:description" content="保护措施：12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    Canary foundNX:       NX enabledPIE:      No PIE (0x400000) 使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取s">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -161,7 +161,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      qwb18 pwn silent writeup
+      强网杯18 pwn silent writeup
     </h1>
   
 
@@ -174,8 +174,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>保护措施：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure>
+        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
 <p>使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取shell。<br><a id="more"></a></p>
 <p>该题一开始会执行下列指令：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system(<span class="string">"cat banner.txt"</span>);</span><br></pre></td></tr></table></figure>
@@ -297,6 +296,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/04/16/qwb18-pwn-silent2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          强网杯18 pwn silent2 writeup
+        
+      </div>
+    </a>
   
   
     <a href="/2018/04/12/hitctf18-pwn250/" id="article-nav-older" class="article-nav-link-wrap">
