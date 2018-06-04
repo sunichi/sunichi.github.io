@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Tag: ctf | Sunichi&#39;s Blog</title>
+  <title>ptmalloc malloc_consolidate分析 | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/tags/ctf/index.html">
+  <meta name="description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
+<meta name="keywords" content="libc,ptmalloc,heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ptmalloc malloc_consolidate分析">
+<meta property="og:url" content="https://sunichi.github.io/2018/06/04/ptmalloc-malloc_consolidate/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-06-04T13:01:52.764Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="ptmalloc malloc_consolidate分析">
+<meta name="twitter:description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,442 +154,192 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-ptmalloc-malloc_consolidate" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ptmalloc malloc_consolidate分析
+    </h1>
+  
+
+        
+        <a href="/2018/06/04/ptmalloc-malloc_consolidate/" class="archive-article-date">
+  	<time datetime="2018-06-04T12:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-04</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对<code>malloc_consolidate</code>的源代码进行了学习。</p>
+<p>以下分析基于glibc-2.23进行。</p>
+<a id="more"></a>
+<p>在<code>free</code>中，当达到某些条件的时候，会调用<code>malloc_consolidate</code>进行fastbin的chunk的合并。</p>
+<p>首先，函数检查prev_chunk是否处于使用中，如果空闲，进行合并。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!prev_inuse(p)) &#123;</span><br><span class="line">    prevsize = p-&gt;prev_size;</span><br><span class="line">    size += prevsize;</span><br><span class="line">    p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsize);</span><br><span class="line">    unlink(av, p, bck, fwd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果下一个chunk不是<code>top_chunk</code>，进行如下操作：</p>
+<ul>
+<li>如果next_chunk空闲，合并next_chunk</li>
+<li>如果next_chunk使用中，将next_chunk的prev_inuse位置为0</li>
+</ul>
+<p>接着将本chunk放入unsorted bin中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first_unsorted = unsorted_bin-&gt;fd;</span><br><span class="line">unsorted_bin-&gt;fd = p;</span><br><span class="line">first_unsorted-&gt;bk = p;</span><br></pre></td></tr></table></figure>
+<p>如果本chunk不在small bin范围内，清空fd_nextsize和bk_nextsize。接着设置本chunk的属性：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set_head(p, size | PREV_INUSE);</span><br><span class="line">p-&gt;bk = unsorted_bin;</span><br><span class="line">p-&gt;fd = first_unsorted;</span><br><span class="line">set_foot(p, size);</span><br></pre></td></tr></table></figure>
+<p>如果下一个chunk是<code>top_chunk</code>，进行合并：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">size += nextsize;</span><br><span class="line">set_head(p, size | PREV_INUSE);</span><br><span class="line">av-&gt;top = p;</span><br></pre></td></tr></table></figure>
+<p>所以，当fastbin中有两个不同大小的chunk时，能使top chunk的bk和fd指向<code>main_arena</code>。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/16/qwb18-pwn-silent2/" class="archive-article-date">
-  	<time datetime="2018-04-16T03:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/16/qwb18-pwn-silent2/">强网杯18 pwn silent2 writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">libc</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ptmalloc</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/06/04/ptmalloc-malloc_consolidate/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/15/qwb18-pwn-silent/" class="archive-article-date">
-  	<time datetime="2018-04-15T09:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-15</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/16/qwb18-pwn-silent2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">强网杯18 pwn silent2 writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/15/qwb18-pwn-silent/">强网杯18 pwn silent writeup</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/12/hitctf18-pwn250/" class="archive-article-date">
-  	<time datetime="2018-04-12T12:15:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/12/hitctf18-pwn250/">hitctf18 pwn250 DragonBall writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/12/hitctf18-pwn100&pwn200/" class="archive-article-date">
-  	<time datetime="2018-04-12T07:23:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/12/hitctf18-pwn100&pwn200/">hitctf18 pwn100&amp;pwn200 writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/07/hitctf18-pwn400/" class="archive-article-date">
-  	<time datetime="2018-04-07T01:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/07/hitctf18-pwn400/">hitctf18 pwn400 babynote writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/02/cyberearth-xctf-pwn-stack/" class="archive-article-date">
-  	<time datetime="2018-02-02T06:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/02/cyberearth-xctf-pwn-stack/">cyberearth xctf pwn stack writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/09/rctf15-welpwn/" class="archive-article-date">
-  	<time datetime="2018-01-09T00:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/09/rctf15-welpwn/">rctf2015 welpwn writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/lctf16-pwn100/" class="archive-article-date">
-  	<time datetime="2018-01-07T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/lctf16-pwn100/">lctf15 pwn100 writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/06/xdctf15-pwn200/" class="archive-article-date">
-  	<time datetime="2018-01-06T09:13:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/06/xdctf15-pwn200/">xdctf15 pwn200 writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/05/pwnable-tw-start/" class="archive-article-date">
-  	<time datetime="2018-01-05T10:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/05/pwnable-tw-start/">Pwnable.tw start writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -607,9 +362,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
