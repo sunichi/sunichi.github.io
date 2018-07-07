@@ -9,18 +9,18 @@
   <link rel="dns-prefetch" href="https://sunichi.github.io">
   <title>hitctf18 pwn100&amp;pwn200 writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="[TOC] 0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
+  <meta name="description" content="0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
 <meta name="keywords" content="ctf,pwn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hitctf18 pwn100&amp;pwn200 writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/04/12/hitctf18-pwn100&pwn200/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="[TOC] 0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
+<meta property="og:description" content="0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-26T13:28:54.817Z">
+<meta property="og:updated_time" content="2018-07-07T08:54:42.213Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hitctf18 pwn100&amp;pwn200 writeup">
-<meta name="twitter:description" content="[TOC] 0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
+<meta name="twitter:description" content="0x00 pwn100保护措施： 12345Arch:     i386-32-littleRELRO:    Partial RELROStack:    No canary foundNX:       NX enabledPIE:      No PIE (0x8048000) pwn100为简单的栈溢出：">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -174,8 +174,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>[TOC]</p>
-<h4 id="0x00-pwn100"><a href="#0x00-pwn100" class="headerlink" title="0x00 pwn100"></a>0x00 pwn100</h4><p>保护措施：</p>
+        <h4 id="0x00-pwn100"><a href="#0x00-pwn100" class="headerlink" title="0x00 pwn100"></a>0x00 pwn100</h4><p>保护措施：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
 <p>pwn100为简单的栈溢出：<br><a id="more"></a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">vuln</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [esp+0h] [ebp-28h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Welcome to pwn world!\nLeave your name:"</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">64u</span>);                           <span class="comment">// StackOverflow Here 64 -&gt; 40</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"bye~"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
