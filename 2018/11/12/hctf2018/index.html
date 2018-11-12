@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="the_end程序自身的功能很简单：  提供libc地址（2.23） 关闭stdout和stderr 5次对所给地址修改1字节的机会">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-12T08:46:51.780Z">
+<meta property="og:updated_time" content="2018-11-12T08:48:35.263Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hctf2018 pwn writeup">
 <meta name="twitter:description" content="the_end程序自身的功能很简单：  提供libc地址（2.23） 关闭stdout和stderr 5次对所给地址修改1字节的机会">
@@ -178,9 +178,10 @@
 <ul>
 <li>提供libc地址（2.23）</li>
 <li>关闭<code>stdout</code>和<code>stderr</code></li>
-<li>5次对所给地址修改1字节的机会<a id="more"></a>
-在进行5次修改后，程序调用了<code>exit()</code>函数。一开始的思路是对libc中的FILE结构体进行修改，从而将程序劫持到one_gadget处，但是比赛时想到的方法大概需要10字节左右的修改，放弃。</li>
+<li>5次对所给地址修改1字节的机会</li>
 </ul>
+<a id="more"></a>
+<p>在进行5次修改后，程序调用了<code>exit()</code>函数。一开始的思路是对libc中的FILE结构体进行修改，从而将程序劫持到one_gadget处，但是比赛时想到的方法大概需要10字节左右的修改，放弃。</p>
 <p>接着就开始对<code>exit()</code>函数进行研究，在gdb里对<code>exit()</code>函数一步一步地进行跟踪，发现两个能利用的点：</p>
 <ul>
 <li><a href="https://github.com/SPRITZ-Research-Group/ctf-writeups/blob/master/0x00ctf-2017/pwn/left-250/README.md" target="_blank" rel="noopener">0x00 CTF 2017 left</a> 的解题思路，但是无法获得随机数，放弃。</li>
@@ -449,19 +450,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">libc</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ptmalloc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
               </li>
             
             <div class="clearfix"></div>
