@@ -7,11 +7,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Sunichi&#39;s Blog</title>
+  <title>Tag: hctf | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/page/2/index.html">
+<meta property="og:url" content="https://sunichi.github.io/tags/hctf/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -151,38 +151,34 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-suctf18-pwn-noend" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2018" class="archive-year">2018</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/11/12/hctf2018/" class="archive-article-date">
+  	<time datetime="2018-11-12T07:40:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-12</time>
+</a>
+        </div>
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/suctf18-pwn-noend/">suCTF pwn noend writeup</a>
+      <a class="archive-article-title" href="/2018/11/12/hctf2018/">hctf2018 pwn writeup</a>
     </h1>
   
 
-        
-        <a href="/2018/06/15/suctf18-pwn-noend/" class="archive-article-date">
-  	<time datetime="2018-06-15T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
-<p>使用IDA查看程序，发现此题所存在的漏洞。<br>
-        
-          <a class="article-more-a" href="/2018/06/15/suctf18-pwn-noend/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -194,377 +190,27 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/15/suctf18-pwn-noend/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ptmalloc-malloc_consolidate" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/04/ptmalloc-malloc_consolidate/">ptmalloc malloc_consolidate分析</a>
-    </h1>
-  
-
-        
-        <a href="/2018/06/04/ptmalloc-malloc_consolidate/" class="archive-article-date">
-  	<time datetime="2018-06-04T12:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对<code>malloc_consolidate</code>的源代码进行了学习。</p>
-<p>以下分析基于glibc-2.23进行。</p>
-        
-          <a class="article-more-a" href="/2018/06/04/ptmalloc-malloc_consolidate/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
-        		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">libc</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ptmalloc</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hctf</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/04/ptmalloc-malloc_consolidate/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-qwb18-pwn-silent2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/16/qwb18-pwn-silent2/">强网杯18 pwn silent2 writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/16/qwb18-pwn-silent2/" class="archive-article-date">
-  	<time datetime="2018-04-16T03:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
-<p>此题与silent几乎完全一致，仅是在malloc的时候做了大小限制：<br>
-        
-          <a class="article-more-a" href="/2018/04/16/qwb18-pwn-silent2/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/16/qwb18-pwn-silent2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-qwb18-pwn-silent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/15/qwb18-pwn-silent/">强网杯18 pwn silent writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/15/qwb18-pwn-silent/" class="archive-article-date">
-  	<time datetime="2018-04-15T09:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
-<p>使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取shell。<br>
-        
-          <a class="article-more-a" href="/2018/04/15/qwb18-pwn-silent/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/15/qwb18-pwn-silent/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hitctf18-pwn250" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/12/hitctf18-pwn250/">hitctf18 pwn250 DragonBall writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/12/hitctf18-pwn250/" class="archive-article-date">
-  	<time datetime="2018-04-12T12:15:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !money )</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"You don't have enough money."</span>);</span><br><span class="line">money -= <span class="number">5</span>;</span><br><span class="line">++dragon_ball_num;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
-  
 
 
           </div>
@@ -586,10 +232,10 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

