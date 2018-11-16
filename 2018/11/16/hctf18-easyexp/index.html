@@ -7,19 +7,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>hctf18 easyexp | Sunichi&#39;s Blog</title>
+  <title>CVE–2018-1000001 &amp; hctf18 easyexp | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
 <meta name="keywords" content="ctf,pwn,hctf,2018,libc,cve">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hctf18 easyexp">
+<meta property="og:title" content="CVE–2018-1000001 &amp; hctf18 easyexp">
 <meta property="og:url" content="https://sunichi.github.io/2018/11/16/hctf18-easyexp/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-16T15:14:52.078Z">
+<meta property="og:updated_time" content="2018-11-16T15:18:41.105Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hctf18 easyexp">
+<meta name="twitter:title" content="CVE–2018-1000001 &amp; hctf18 easyexp">
 <meta name="twitter:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
@@ -161,7 +161,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      hctf18 easyexp
+      CVE–2018-1000001 &amp; hctf18 easyexp
     </h1>
   
 
@@ -472,6 +472,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">libc</a>
               </li>
              
@@ -492,11 +500,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">stack</a>
+                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,15 +512,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">qwb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -525,6 +521,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2015</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
               </li>
             
             <div class="clearfix"></div>
