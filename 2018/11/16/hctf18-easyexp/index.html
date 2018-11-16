@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-16T15:21:30.887Z">
+<meta property="og:updated_time" content="2018-11-16T15:25:40.076Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CVE–2018-1000001 &amp; hctf 2018 easyexp">
 <meta name="twitter:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
@@ -186,7 +186,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FILE_CACHE</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *content;</span><br><span class="line">    <span class="keyword">int</span> content_length;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">84</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在bss上存在一个<code>FILE_CACHE[3]</code>数组用于保存相关信息。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( filename )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strstr</span>(filename, <span class="string">".."</span>) || *filename == <span class="string">'/'</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"you can't go out of tmpfs"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">2</span>; ++i )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(filename, (<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * i + <span class="number">0x60318C</span>)) )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"write something:"</span>);</span><br><span class="line">        InputString((__int64)FILE_CACHE[<span class="number">12</span> * i], (<span class="keyword">unsigned</span> <span class="keyword">int</span>)FILE_CACHE[<span class="number">12</span> * i + <span class="number">1</span>]);</span><br><span class="line">        g_idx = (i + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v8;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( FILE_CACHE[<span class="number">12</span> * g_idx] )</span><br><span class="line">    &#123;</span><br><span class="line">      s = fopen((<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), <span class="string">"w"</span>);</span><br><span class="line">      fwrite(FILE_CACHE[<span class="number">12</span> * g_idx], <span class="number">1u</span>LL, LODWORD(FILE_CACHE[<span class="number">12</span> * g_idx + <span class="number">1</span>]), s);</span><br><span class="line">      fclose(s);</span><br><span class="line">      <span class="built_in">free</span>((<span class="keyword">void</span> *)FILE_CACHE[<span class="number">12</span> * g_idx]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>((<span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), filename);</span><br><span class="line">    fd = open(filename, <span class="number">131521</span>, <span class="number">420L</span>L);</span><br><span class="line">    <span class="keyword">if</span> ( fd &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">"mkfile:create failed."</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"write something:"</span>);</span><br><span class="line">    InputString((__int64)&amp;buf, <span class="number">0x1000</span>u);</span><br><span class="line">    write(fd, &amp;buf, <span class="number">0x1000</span>uLL);</span><br><span class="line">    v2 = g_idx;</span><br><span class="line">    FILE_CACHE[<span class="number">12</span> * v2] = strdup(&amp;buf);</span><br><span class="line">    v3 = g_idx;</span><br><span class="line">    LODWORD(FILE_CACHE[<span class="number">12</span> * v3 + <span class="number">1</span>]) = <span class="built_in">strlen</span>(&amp;buf);</span><br><span class="line">    close(fd);</span><br><span class="line">    g_idx = (g_idx + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上程序位于创建文件的函数中，当用户创建文件时，会现在“缓存”中查找，如果文件名相同或“缓存”未满，则会在缓存上保存一份数据，如已满则重置一个“缓存”。这里的结构可以在<code>unlink</code>中进行利用。</p>
+<p>以上程序位于创建文件的函数中，当用户创建文件时，会现在“缓存”中查找，如果文件名相同或“缓存”未满，则会在“缓存”上保存一份数据，如已满则重置一个“缓存”。这里的结构可以在<code>unlink</code>中进行利用。</p>
 <h4 id="程序创建文件夹的过程"><a href="#程序创建文件夹的过程" class="headerlink" title="程序创建文件夹的过程"></a>程序创建文件夹的过程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; ; i = *(_DWORD *)v3 + <span class="number">1</span> )</span><br><span class="line">&#123;</span><br><span class="line">  *(_QWORD *)&amp;v3[<span class="number">4</span>] = <span class="built_in">strchr</span>(&amp;a1[i], <span class="string">'/'</span>);</span><br><span class="line">  <span class="keyword">if</span> ( *(_QWORD *)&amp;v3[<span class="number">4</span>] )</span><br><span class="line">    *(_DWORD *)v3 = *(_DWORD *)&amp;v3[<span class="number">4</span>] - (_DWORD)a1;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    *(_QWORD *)v3 = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(a1);</span><br><span class="line">  <span class="built_in">snprintf</span>(&amp;path, <span class="number">0x1000</span>uLL, <span class="string">"%s/%.*s"</span>, cur_work_dir, *(<span class="keyword">unsigned</span> <span class="keyword">int</span> *)v3, a1);</span><br><span class="line">  mkdir(&amp;path, <span class="number">0x1ED</span>u);</span><br><span class="line">  <span class="keyword">if</span> ( !a1[*(<span class="keyword">signed</span> <span class="keyword">int</span> *)v3] )</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">ptr = canonicalize_file_name(a1);</span><br><span class="line"><span class="keyword">if</span> ( !ptr )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"mkdir:create failed."</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">free</span>(ptr);</span><br></pre></td></tr></table></figure>
 <p>当程序调用<code>mkdir()</code>函数后，会将用户输入的路径传入<code>canonicalize_file_name()</code>进行验证是否创建成功，此处即为触发漏洞的位置。</p>
 <h4 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h4><p>当“缓存”满后，将会重用最后使用的“缓存”的下一个“缓存”。首先将三个“缓存”都填满，第二个缓存内容均为’/‘，利用CVE漏洞改写第三个“缓存”指向的内容的chunk的<code>size</code>域，将<code>size</code>改小（防止和top chunk合并）并布置合适的fake chunk。</p>
@@ -464,19 +464,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hitcon</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">heap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2016</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">house</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,7 +476,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lctf</a>
+                <a href="javascript:void(0)" class="js-tag color2">hitcon</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">house</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -504,15 +500,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ptmalloc</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rctf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,10 +525,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">suctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">rctf</a>
               </li>
             
             <div class="clearfix"></div>
