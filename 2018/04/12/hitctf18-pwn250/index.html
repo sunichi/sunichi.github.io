@@ -10,14 +10,14 @@
   <title>hitctf18 pwn250 DragonBall writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
-<meta name="keywords" content="ctf,pwn">
+<meta name="keywords" content="ctf,pwn,2018">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hitctf18 pwn250 DragonBall writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/04/12/hitctf18-pwn250/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-12T13:49:08.000Z">
+<meta property="og:updated_time" content="2018-11-16T15:11:28.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hitctf18 pwn250 DragonBall writeup">
 <meta name="twitter:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
@@ -229,6 +229,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
         		</li>
       		
 		</ul>
@@ -443,19 +447,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">heap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">0ctf17</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hctf</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2018</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">heap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">0ctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2017</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -467,11 +475,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hitcon</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">house</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ptmalloc</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2015</a>
               </li>
             
             <div class="clearfix"></div>

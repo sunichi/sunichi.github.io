@@ -10,14 +10,14 @@
   <title>rctf2015 welpwn writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
-<meta name="keywords" content="ctf,pwn">
+<meta name="keywords" content="ctf,pwn,rctf,2015">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rctf2015 welpwn writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/01/09/rctf15-welpwn/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-09T01:02:04.000Z">
+<meta property="og:updated_time" content="2018-11-16T15:13:42.008Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rctf2015 welpwn writeup">
 <meta name="twitter:description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
@@ -251,6 +251,14 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rctf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2015</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -330,7 +338,7 @@
   
   
     <a href="/2018/01/07/lctf16-pwn100/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">lctf15 pwn100 writeup</div>
+      <div class="article-nav-title">lctf16 pwn100 writeup</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -464,19 +472,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">heap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">0ctf17</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hctf</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2018</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">heap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">0ctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2017</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,11 +500,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hitcon</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">house</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ptmalloc</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2015</a>
               </li>
             
             <div class="clearfix"></div>

