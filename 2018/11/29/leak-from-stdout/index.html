@@ -7,20 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>ptmalloc malloc_consolidate分析 | Sunichi&#39;s Blog</title>
+  <title>Leak From Stdout | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
-<meta name="keywords" content="heap,libc,ptmalloc">
+  <meta name="description" content="在最近的一些题目中，多次运用到了修改stdout的FILE结构体中的缓冲区指针进行信息泄漏，参考了大佬们阅读源代码的博客，记录一下。">
+<meta name="keywords" content="ctf,pwn,file">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ptmalloc malloc_consolidate分析">
-<meta property="og:url" content="https://sunichi.github.io/2018/06/04/ptmalloc-malloc_consolidate/index.html">
+<meta property="og:title" content="Leak From Stdout">
+<meta property="og:url" content="https://sunichi.github.io/2018/11/29/leak-from-stdout/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
+<meta property="og:description" content="在最近的一些题目中，多次运用到了修改stdout的FILE结构体中的缓冲区指针进行信息泄漏，参考了大佬们阅读源代码的博客，记录一下。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-04T13:15:02.000Z">
+<meta property="og:updated_time" content="2018-11-29T14:30:49.842Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ptmalloc malloc_consolidate分析">
-<meta name="twitter:description" content="尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对malloc_consolidate的源代码进行了学习。 以下分析基于glibc-2.23进行。">
+<meta name="twitter:title" content="Leak From Stdout">
+<meta name="twitter:description" content="在最近的一些题目中，多次运用到了修改stdout的FILE结构体中的缓冲区指针进行信息泄漏，参考了大佬们阅读源代码的博客，记录一下。">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -154,44 +154,67 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-ptmalloc-malloc_consolidate" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-leak-from-stdout" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      ptmalloc malloc_consolidate分析
+      Leak From Stdout
     </h1>
   
 
         
-        <a href="/2018/06/04/ptmalloc-malloc_consolidate/" class="archive-article-date">
-  	<time datetime="2018-06-04T12:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-04</time>
+        <a href="/2018/11/29/leak-from-stdout/" class="archive-article-date">
+  	<time datetime="2018-11-29T11:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>尝试做了下suCTF2018的noend，用到的泄漏的libc地址的方法之前未遇到过，顺带对<code>malloc_consolidate</code>的源代码进行了学习。</p>
-<p>以下分析基于glibc-2.23进行。</p>
+        <p>在最近的一些题目中，多次运用到了修改<code>stdout</code>的<code>FILE</code>结构体中的缓冲区指针进行信息泄漏，参考了大佬们阅读源代码的博客，记录一下。</p>
 <a id="more"></a>
-<p>在<code>free</code>中，当达到某些条件的时候，会调用<code>malloc_consolidate</code>进行fastbin的chunk的合并。</p>
-<p>首先，函数检查prev_chunk是否处于使用中，如果空闲，进行合并。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!prev_inuse(p)) &#123;</span><br><span class="line">    prevsize = p-&gt;prev_size;</span><br><span class="line">    size += prevsize;</span><br><span class="line">    p = chunk_at_offset(p, -(<span class="keyword">long</span>)prevsize);</span><br><span class="line">    unlink(av, p, bck, fwd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果下一个chunk不是<code>top_chunk</code>，进行如下操作：</p>
+<p>以下是三个涉及<code>FILE</code>的主要结构体：</p>
 <ul>
-<li>如果next_chunk空闲，合并next_chunk</li>
-<li>如果next_chunk使用中，将next_chunk的prev_inuse位置为0</li>
+<li><code>_IO_FILE_plus</code>结构体：</li>
 </ul>
-<p>接着将本chunk放入unsorted bin中：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first_unsorted = unsorted_bin-&gt;fd;</span><br><span class="line">unsorted_bin-&gt;fd = p;</span><br><span class="line">first_unsorted-&gt;bk = p;</span><br></pre></td></tr></table></figure>
-<p>如果本chunk不在small bin范围内，清空fd_nextsize和bk_nextsize。接着设置本chunk的属性：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set_head(p, size | PREV_INUSE);</span><br><span class="line">p-&gt;bk = unsorted_bin;</span><br><span class="line">p-&gt;fd = first_unsorted;</span><br><span class="line">set_foot(p, size);</span><br></pre></td></tr></table></figure>
-<p>如果下一个chunk是<code>top_chunk</code>，进行合并：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">size += nextsize;</span><br><span class="line">set_head(p, size | PREV_INUSE);</span><br><span class="line">av-&gt;top = p;</span><br></pre></td></tr></table></figure>
-<p>所以，当fastbin中有两个不同大小的chunk时，能使top chunk的bk和fd指向<code>main_arena</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from libioP.h in glibc</span></span><br><span class="line"><span class="comment">/* We always allocate an extra word following an _IO_FILE.</span></span><br><span class="line"><span class="comment">   This contains a pointer to the function jump table used.</span></span><br><span class="line"><span class="comment">   This is for compatibility with C++ streambuf; the word can</span></span><br><span class="line"><span class="comment">   be used to smash to a pointer to a virtual function table. */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE_plus</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  _IO_FILE file;</span><br><span class="line">  <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span> *<span class="title">vtable</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>_IO_FILE</code>结构体：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from /usr/include/libio.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></span><br><span class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></span><br><span class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></span><br><span class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></span><br><span class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></span><br><span class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></span><br><span class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_marker</span> *_<span class="title">markers</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> *_<span class="title">chain</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> _fileno;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></span><br><span class="line">  <span class="keyword">int</span> _blksize;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">  <span class="keyword">int</span> _flags2;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></span><br><span class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</span><br><span class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></span><br><span class="line"></span><br><span class="line">  _IO_lock_t *_lock;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>_IO_jump_t</code>结构体：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_jump_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    JUMP_FIELD(<span class="keyword">size_t</span>, __dummy);</span><br><span class="line">    JUMP_FIELD(<span class="keyword">size_t</span>, __dummy2);</span><br><span class="line">    JUMP_FIELD(_IO_finish_t, __finish);</span><br><span class="line">    JUMP_FIELD(_IO_overflow_t, __overflow);</span><br><span class="line">    JUMP_FIELD(_IO_underflow_t, __underflow);</span><br><span class="line">    JUMP_FIELD(_IO_underflow_t, __uflow);</span><br><span class="line">    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);</span><br><span class="line">    <span class="comment">/* showmany */</span></span><br><span class="line">    JUMP_FIELD(_IO_xsputn_t, __xsputn);</span><br><span class="line">    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);</span><br><span class="line">    JUMP_FIELD(_IO_seekoff_t, __seekoff);</span><br><span class="line">    JUMP_FIELD(_IO_seekpos_t, __seekpos);</span><br><span class="line">    JUMP_FIELD(_IO_setbuf_t, __setbuf);</span><br><span class="line">    JUMP_FIELD(_IO_sync_t, __sync);</span><br><span class="line">    JUMP_FIELD(_IO_doallocate_t, __doallocate);</span><br><span class="line">    JUMP_FIELD(_IO_read_t, __read);</span><br><span class="line">    JUMP_FIELD(_IO_write_t, __write);</span><br><span class="line">    JUMP_FIELD(_IO_seek_t, __seek);</span><br><span class="line">    JUMP_FIELD(_IO_close_t, __close);</span><br><span class="line">    JUMP_FIELD(_IO_stat_t, __stat);</span><br><span class="line">    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);</span><br><span class="line">    JUMP_FIELD(_IO_imbue_t, __imbue);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></span><br><span class="line">    get_column;</span><br><span class="line">    set_column;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以下是<code>FILE</code>结构体进行输出时的相关代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from fileops.c in glibc</span></span><br><span class="line"><span class="keyword">int</span> _IO_new_file_overflow (_IO_FILE *f, <span class="keyword">int</span> ch)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (f-&gt;_flags &amp; _IO_NO_WRITES) <span class="comment">/* SET ERROR */</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      <span class="keyword">return</span> EOF;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">if</span> ((f-&gt;_flags &amp; _IO_CURRENTLY_PUTTING) == <span class="number">0</span> || f-&gt;_IO_write_base == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">		<span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">if</span> (ch == EOF) <span class="comment">// 攻击者想到执行到的代码位置</span></span><br><span class="line">    <span class="keyword">return</span> _IO_do_write (f, f-&gt;_IO_write_base,</span><br><span class="line">			 f-&gt;_IO_write_ptr - f-&gt;_IO_write_base);</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_ver (_IO_new_file_overflow, _IO_file_overflow)</span><br></pre></td></tr></table></figure>
+<p>从代码中可以看出，如果想要执行<code>return _IO_do_write (f, f-&gt;_IO_write_base, f-&gt;_IO_write_ptr - f-&gt;_IO_write_base);</code>并尽可能减少其他不必要的代码执行，就需要满足下列三个条件：</p>
+<ul>
+<li><code>f-&gt;_flags &amp; _IO_NO_WRITES == 0</code></li>
+<li><code>(f-&gt;_flags &amp; _IO_CURRENTLY_PUTTING) != 0</code></li>
+<li><code>f-&gt;_IO_write_base != 0</code></li>
+</ul>
+<p>下面来看<code>_IO_do_write</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// from fileops.c in glibc</span></span><br><span class="line"><span class="keyword">int</span> _IO_new_do_write (_IO_FILE *fp, <span class="keyword">const</span> <span class="keyword">char</span> *data, _IO_size_t to_do)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// 实际调用new_do_write函数</span></span><br><span class="line">  <span class="keyword">return</span> (to_do == <span class="number">0</span></span><br><span class="line">	  || (_IO_size_t) new_do_write (fp, data, to_do) == to_do) ? <span class="number">0</span> : EOF;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_ver (_IO_new_do_write, _IO_do_write)</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> _<span class="function">IO_size_t <span class="title">new_do_write</span> <span class="params">(_IO_FILE *fp, <span class="keyword">const</span> <span class="keyword">char</span> *data, _IO_size_t to_do)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _IO_size_t count;</span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_flags &amp; _IO_IS_APPENDING) <span class="comment">//需要使这个if成立</span></span><br><span class="line">    <span class="comment">/* On a system without a proper O_APPEND implementation,</span></span><br><span class="line"><span class="comment">       you would need to sys_seek(0, SEEK_END) here, but is</span></span><br><span class="line"><span class="comment">       not needed nor desirable for Unix- or Posix-like systems.</span></span><br><span class="line"><span class="comment">       Instead, just indicate that offset (before and after) is</span></span><br><span class="line"><span class="comment">       unpredictable. */</span></span><br><span class="line">    fp-&gt;_offset = _IO_pos_BAD;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (fp-&gt;_IO_read_end != fp-&gt;_IO_write_base)</span><br><span class="line">    &#123; <span class="comment">//fp-&gt;_IO_write_base - fp-&gt;_IO_read_end非常大，如果read被置为0</span></span><br><span class="line">      _IO_off64_t new_pos</span><br><span class="line">	= _IO_SYSSEEK (fp, fp-&gt;_IO_write_base - fp-&gt;_IO_read_end, <span class="number">1</span>);</span><br><span class="line">      <span class="keyword">if</span> (new_pos == _IO_pos_BAD)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      fp-&gt;_offset = new_pos;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">// fp=stdout data=stdout-&gt;_IO_write_base to_do=f-&gt;_IO_write_ptr - f-&gt;_IO_write_base</span></span><br><span class="line">  count = _IO_SYSWRITE (fp, data, to_do);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_cur_column &amp;&amp; count)</span><br><span class="line">    fp-&gt;_cur_column = _IO_adjust_column (fp-&gt;_cur_column - <span class="number">1</span>, data, count) + <span class="number">1</span>;</span><br><span class="line">  </span><br><span class="line">  _IO_setg (fp, fp-&gt;_IO_buf_base, fp-&gt;_IO_buf_base, fp-&gt;_IO_buf_base);</span><br><span class="line">  <span class="comment">// 重置write的指针</span></span><br><span class="line">  fp-&gt;_IO_write_base = fp-&gt;_IO_write_ptr = fp-&gt;_IO_buf_base;</span><br><span class="line">  </span><br><span class="line">  fp-&gt;_IO_write_end = (fp-&gt;_mode &lt;= <span class="number">0</span></span><br><span class="line">		       &amp;&amp; (fp-&gt;_flags &amp; (_IO_LINE_BUF | _IO_UNBUFFERED))</span><br><span class="line">		       ? fp-&gt;_IO_buf_base : fp-&gt;_IO_buf_end);</span><br><span class="line">  <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以需要满足下列四个条件：</p>
+<ul>
+<li><code>f-&gt;_flags &amp; _IO_NO_WRITES == 0</code></li>
+<li><code>(f-&gt;_flags &amp; _IO_CURRENTLY_PUTTING) != 0</code></li>
+<li><code>f-&gt;_IO_write_base != 0</code></li>
+<li><code>fp-&gt;_flags &amp; _IO_IS_APPENDING != 0</code></li>
+</ul>
+<p>进而能够调用<code>_IO_SYSWRITE (fp, data, to_do)</code>即</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_IO_SYSWRITE (<span class="built_in">stdout</span>, <span class="built_in">stdout</span>-&gt;_IO_write_base, f-&gt;_IO_write_ptr - f-&gt;_IO_write_base)</span><br></pre></td></tr></table></figure>
+<p>所以需要将<code>flag</code>设置为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_flags = <span class="number">0xfbad0000</span>  <span class="comment">// Magic number</span></span><br><span class="line">_flags &amp; = ~_IO_NO_WRITES <span class="comment">// _flags = 0xfbad0000</span></span><br><span class="line">_flags | = _IO_CURRENTLY_PUTTING <span class="comment">// _flags = 0xfbad0800</span></span><br><span class="line">_flags | = _IO_IS_APPENDING <span class="comment">// _flags = 0xfbad1800</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考文章：</p>
+<p><a href="https://vigneshsrao.github.io/babytcache/" target="_blank" rel="noopener">https://vigneshsrao.github.io/babytcache/</a></p>
+<p><a href="http://tacxingxing.com/2018/02/09/fsp/" target="_blank" rel="noopener">http://tacxingxing.com/2018/02/09/fsp/</a></p>
+</blockquote>
 
       
     </div>
@@ -203,15 +226,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">libc</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ptmalloc</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">file</a>
         		</li>
       		
 		</ul>
@@ -267,7 +290,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/06/04/ptmalloc-malloc_consolidate/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2018/11/29/leak-from-stdout/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -281,18 +304,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/06/15/suctf18-pwn-noend/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          suCTF 2018 pwn noend writeup
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/04/16/qwb18-pwn-silent2/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">强网杯 2018 pwn silent2 writeup</div>
+    <a href="/2018/11/22/play-with-tcache/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Play With Tcache &amp; LCTF 2018 easy_heap</div>
       <i class="icon-circle-right"></i>
     </a>
   
