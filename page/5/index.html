@@ -151,29 +151,31 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Debug-Linux-Kernel-With-QEMU-KVM" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-hitctf18-pwn100&amp;pwn200" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/13/Debug-Linux-Kernel-With-QEMU-KVM/">Debug Linux Kernel With QEMU/KVM</a>
+      <a class="article-title" href="/2018/04/12/hitctf18-pwn100&pwn200/">hitctf 2018 pwn100&amp;pwn200 writeup</a>
     </h1>
   
 
         
-        <a href="/2018/02/13/Debug-Linux-Kernel-With-QEMU-KVM/" class="archive-article-date">
-  	<time datetime="2018-02-13T08:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
+        <a href="/2018/04/12/hitctf18-pwn100&pwn200/" class="archive-article-date">
+  	<time datetime="2018-04-12T07:23:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。</p>
+        <h4 id="0x00-pwn100"><a href="#0x00-pwn100" class="headerlink" title="0x00 pwn100"></a>0x00 pwn100</h4><p>保护措施：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>pwn100为简单的栈溢出：<br>
         
-          <a class="article-more-a" href="/2018/02/13/Debug-Linux-Kernel-With-QEMU-KVM/#more">more >></a>
+          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn100&pwn200/#more">more >></a>
         
       
     </div>
@@ -185,19 +187,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">kernel</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
         		</li>
       		
 		</ul>
@@ -207,7 +205,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/13/Debug-Linux-Kernel-With-QEMU-KVM/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/04/12/hitctf18-pwn100&pwn200/">展开全文 >></a>
         </p>
       
 
@@ -281,11 +279,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">xctf</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">xctf</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -399,11 +397,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2015</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rctf</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rctf</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2015</a>
         		</li>
       		
 		</ul>
@@ -734,6 +732,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2019</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">eis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2018</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
@@ -746,27 +756,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2019</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2018</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">stack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">bctf</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">eis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -774,7 +764,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hctf</a>
+                <a href="javascript:void(0)" class="js-tag color5">xctf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">stack</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -787,6 +781,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">house</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hctf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -810,15 +808,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">pwnable-tw</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2015</a>
+                <a href="javascript:void(0)" class="js-tag color4">qwb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">tcache</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -826,11 +824,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
+                <a href="javascript:void(0)" class="js-tag color5">2015</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">tcache</a>
+                <a href="javascript:void(0)" class="js-tag color1">suctf</a>
               </li>
             
             <div class="clearfix"></div>

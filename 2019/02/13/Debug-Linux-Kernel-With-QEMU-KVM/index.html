@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="baidu-site-verification" content="RNCre9JfIO" />
   <link rel="dns-prefetch" href="https://sunichi.github.io">
-  <title>Tag: suctf | Sunichi&#39;s Blog</title>
+  <title>Debug Linux Kernel With QEMU/KVM | Sunichi&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/tags/suctf/index.html">
+  <meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
+<meta name="keywords" content="pwn,linux,kernel,debug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
+<meta property="og:url" content="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-15T06:44:33.385Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
+<meta name="twitter:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
   
     <link rel="alternative" href="/atom.xml" title="Sunichi&#39;s Blog" type="application/atom+xml">
   
@@ -149,126 +154,189 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Debug-Linux-Kernel-With-QEMU-KVM" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/07/suctf18-pwn-heap(offbyone)/" class="archive-article-date">
-  	<time datetime="2018-07-07T08:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-07</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/07/suctf18-pwn-heap(offbyone)/">suCTF1 2018 pwn heap(offbyone) writeup</a>
+    <h1 class="article-title" itemprop="name">
+      Debug Linux Kernel With QEMU/KVM
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/" class="archive-article-date">
+  	<time datetime="2019-02-13T08:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。</p>
+<a id="more"></a>
+<p>实验环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">宿主：MacOS Mojave + VMware Fusion 11</span><br><span class="line">虚拟机：CentOS 7.6.1810 64 bit</span><br><span class="line">被调试机：CentOS 6.10 64 bit</span><br></pre></td></tr></table></figure>
+<h4 id="虚拟机配置"><a href="#虚拟机配置" class="headerlink" title="虚拟机配置"></a>虚拟机配置</h4><p>建议分配50G以上的硬盘空间。在设置中需要打开<code>在此虚拟机中启用虚拟化管理程序</code>选项以让虚拟机提供Intel VT-x/EPT支持。使用CentOS的Live版本的iso进行安装，选择”Test Then Start”的选项启动系统避免发生错误。</p>
+<p>能够正常打开系统后，选择安装到硬盘即可。</p>
+<h4 id="QEMU-KVM环境配置"><a href="#QEMU-KVM环境配置" class="headerlink" title="QEMU/KVM环境配置"></a>QEMU/KVM环境配置</h4><p>在虚拟机中安装QEMU/KVM和VIRT环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install qemu-kvm qemu-system virt-manager libvirt libvirt-python libvirt-client virt-install virt-viewer</span><br></pre></td></tr></table></figure>
+<p>启动<code>libvirtd</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service libvirtd start</span><br></pre></td></tr></table></figure>
+<p>在启动<code>virt-manager</code>时，如果遇到权限问题，则修改/etc/libvirt/qemu.conf，添加下述内容并重启服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user = <span class="string">"root"</span> </span><br><span class="line">group = <span class="string">"root"</span></span><br></pre></td></tr></table></figure>
+<p>下载所要调试的内核的载体操作系统，并将iso文件放到libvirt的images目录下。通过<code>virt-manager</code>创建KVM，硬盘空间建议设置为25G以上。在进行到最后一步时勾选启动前进行配置。在设置面板的<code>CPU</code>选项中，将复制CPU参数选中然后再开始进行安装。</p>
+<p>经上述步骤后，KVM启动，使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">virsh list</span><br><span class="line">virsh edit</span><br></pre></td></tr></table></figure>
+<p>来修改配置，将第一行改为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;domain <span class="built_in">type</span>=<span class="string">'kvm'</span> xmlns:qemu=<span class="string">'http://libvirt.org/schemas/domain/qemu/1.0'</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>在<code>&lt;/device&gt;</code>后加入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;qemu:commandline&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'-S'</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'-gdb'</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'tcp::1234'</span>/&gt;</span><br><span class="line"> &lt;/qemu:commandline&gt;</span><br></pre></td></tr></table></figure>
+<p>当KVM被重启后，将会在<code>localhost</code>开启1234端口进行gdb的监听。</p>
+<h4 id="在被调试机中编译和使用其他版本Linux内核"><a href="#在被调试机中编译和使用其他版本Linux内核" class="headerlink" title="在被调试机中编译和使用其他版本Linux内核"></a>在被调试机中编译和使用其他版本Linux内核</h4><p>在QEMU/KVM中安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc ncurses-devel</span><br></pre></td></tr></table></figure>
+<p>从kernel.org上下载3.18.35源码，修改Makefile文件的617行的KBUILD_CFLAGS值为O1，进行编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">make</span><br><span class="line">make modules_install</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>在<code>make install</code>后，会报一些<code>could not find module</code>的错误，忽略之。查看当前已有的内核版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /boot/grub/grub.conf | awk <span class="string">'$1=="title" &#123;print i++ " :" $NF&#125;'</span></span><br></pre></td></tr></table></figure>
+<p>修改当前默认启动的内核版本后，重启即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /boot/grub/grub.conf</span><br><span class="line">default = 0</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<h4 id="调试Linux内核"><a href="#调试Linux内核" class="headerlink" title="调试Linux内核"></a>调试Linux内核</h4><p>由于之前已经设置好了参数，在被调试机启动后将会开启1234端口作为gdb的调试端口，将编译好的<code>vmlinux</code>保存到虚拟机中，启动gdb进行调试。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp root@kvm_ip:/path/to/vmlinux ./</span><br><span class="line">gdb vmlinux</span><br><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><blockquote>
+<p><a href="http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu" target="_blank" rel="noopener">http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu</a></p>
+<p><a href="https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html</a></p>
+</blockquote>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">heap</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">kernel</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">suctf</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/06/15/suctf18-pwn-noend/" class="archive-article-date">
-  	<time datetime="2018-06-15T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/06/19-Feb/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">2019 Feb pwn writeup(last update 2/15)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/15/suctf18-pwn-noend/">suCTF 2018 pwn noend writeup</a>
-    </h1>
+        
+        
+    </div>
+</aside>
+
+
+
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ctf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pwn</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2018</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">suctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -291,9 +359,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
