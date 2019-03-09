@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
+<meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。 实验环境： 123宿主：MacOS Mojave + VMware Fusion 11虚拟机：CentOS 7.6.">
 <meta name="keywords" content="pwn,linux,kernel,debug">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
 <meta property="og:url" content="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
+<meta property="og:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。 实验环境： 123宿主：MacOS Mojave + VMware Fusion 11虚拟机：CentOS 7.6.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-15T06:44:33.385Z">
+<meta property="og:updated_time" content="2019-03-09T04:19:19.157Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
-<meta name="twitter:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。">
+<meta name="twitter:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。 实验环境： 123宿主：MacOS Mojave + VMware Fusion 11虚拟机：CentOS 7.6.">
 
 
 
@@ -301,7 +301,6 @@
 
       
         <p>之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。</p>
-<a id="more"></a>
 <p>实验环境：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">宿主：MacOS Mojave + VMware Fusion 11</span><br><span class="line">虚拟机：CentOS 7.6.1810 64 bit</span><br><span class="line">被调试机：CentOS 6.10 64 bit</span><br></pre></td></tr></table></figure>
 <h4 id="虚拟机配置"><a href="#虚拟机配置" class="headerlink" title="虚拟机配置"></a>虚拟机配置</h4><p>建议分配50G以上的硬盘空间。在设置中需要打开<code>在此虚拟机中启用虚拟化管理程序</code>选项以让虚拟机提供Intel VT-x/EPT支持。使用CentOS的Live版本的iso进行安装，选择”Test Then Start”的选项启动系统避免发生错误。</p>
