@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Learn Large Bin With 0ctf2018 Heapstorm2]]></title>
+    <url>%2F2019%2F03%2F11%2FLearn-LargeBin-With-Heapstorm2%2F</url>
+    <content type="text"><![CDATA[Large Bin基本结构Large Bin的每个Bin中的chunk的大小都属于同一范围，Large Bin的每个chunk位于两个双向链表中。相比较其它chunk，Large Bin中的chunk多出了fd_nextsize和bk_nextsize两个字段，分别指向前一个/后一个与当前chunk大小相邻的不同大小的第一个空闲块（不包括bin头指针）。 Put Unsorted Bin into Large Bin在malloc时，如果Unsorted Bin中的victim的大小无法满足申请所需且属于Large Bin，将会被置入Large Bin中。 123456789101112131415161718192021222324252627victim_index = largebin_index(size); // 计算bin数组下标bck = bin_at(av, victim_index); // 获取binfwd = bck-&gt;fd; // bin中第一个chunkif (fwd != bck) &#123; // 更新大小排序链表 // ... if (size &lt; bck-&gt;bk-&gt;size) &#123; // 如果大小小于bin中最小的chunk大小 fwd = bck; // bin bck = bck-&gt;bk; // 最后一个chunk // 在bin和bck中插入 victim-&gt;fd_nextsize = fwd-&gt;fd; // 写入fd_nextsize victim-&gt;bk_nextsize = fwd-&gt;fd-&gt;bk_nextsize; // 写入bk_nextsize fwd-&gt;fd-&gt;bk_nextsize = victim-&gt;bk_nextsize-&gt;fd_nextsize; // 更新fwd-&gt;fd的bk_nextsize &#125; else &#123; // ... &#125;&#125; else &#123; // ...&#125;mark_bin(av, victim_index);// 更新普通链表victim-&gt;bk = bck;victim-&gt;fd = fwd;fwd-&gt;bk = victim;bck-&gt;fd = victim; 从源码中可以看出，Large Bin在更新链表的时候，没有freed chunk中的链表数据的进行任何的安全检查，利用这一点，可以向指定地址写入堆地址数据。 0x55与0x5664位下，PIE和randomize_va_space对地址的影响： 0表示关闭地址空间随机化 1表示对mmap的基地址、栈地址和vdso地址随机化 2表示在1的基础上对堆地址随机化 当程序开启PIE且系统支持地址随机化时，堆地址的非零最高位会在0x55和0x56之间随机。这两个数字对于calloc()来说，只有0x56能够通过检查。 12assert (!mem || chunk_is_mmapped (mem2chunk (mem)) || av == arena_for_chunk (mem2chunk (mem))); 0ctf2018 heapstorm2明显的off-by-null漏洞。 12345input_string(chunk, size);remainder_space = size + chunk;*(_QWORD *)remainder_space = 'ROTSPAEH';*(_DWORD *)(remainder_space + 8) = 'II_M';*(_BYTE *)(remainder_space + 0xC) = 0; // off by null 利用off-by-null来制造堆块重叠，从而修改已释放的chunk的链表指针数据。通过将Unsorted Bin中的Large Chunk放入Large Bin的操作，向特定地址写入0x56开头的堆地址，使得再次申请chunk时，获得特定地址的chunk，从而改写关键数据以进一步getshell。]]></content>
+      <tags>
+        <tag>ctf</tag>
+        <tag>pwn</tag>
+        <tag>heap</tag>
+        <tag>0ctf</tag>
+        <tag>2018</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Debug Linux Kernel With QEMU/KVM]]></title>
     <url>%2F2019%2F02%2F13%2FDebug-Linux-Kernel-With-QEMU-KVM%2F</url>
-    <content type="text"><![CDATA[之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。 实验环境： 123宿主：MacOS Mojave + VMware Fusion 11虚拟机：CentOS 7.6.1810 64 bit被调试机：CentOS 6.10 64 bit 虚拟机配置建议分配50G以上的硬盘空间。在设置中需要打开在此虚拟机中启用虚拟化管理程序选项以让虚拟机提供Intel VT-x/EPT支持。使用CentOS的Live版本的iso进行安装，选择”Test Then Start”的选项启动系统避免发生错误。 能够正常打开系统后，选择安装到硬盘即可。 QEMU/KVM环境配置在虚拟机中安装QEMU/KVM和VIRT环境： 1yum install qemu-kvm qemu-system virt-manager libvirt libvirt-python libvirt-client virt-install virt-viewer 启动libvirtd 1service libvirtd start 在启动virt-manager时，如果遇到权限问题，则修改/etc/libvirt/qemu.conf，添加下述内容并重启服务。 12user = "root" group = "root" 下载所要调试的内核的载体操作系统，并将iso文件放到libvirt的images目录下。通过virt-manager创建KVM，硬盘空间建议设置为25G以上。在进行到最后一步时勾选启动前进行配置。在设置面板的CPU选项中，将复制CPU参数选中然后再开始进行安装。 经上述步骤后，KVM启动，使用 12virsh listvirsh edit 来修改配置，将第一行改为 1&lt;domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'&gt; 在&lt;/device&gt;后加入 12345&lt;qemu:commandline&gt; &lt;qemu:arg value='-S'/&gt; &lt;qemu:arg value='-gdb'/&gt; &lt;qemu:arg value='tcp::1234'/&gt; &lt;/qemu:commandline&gt; 当KVM被重启后，将会在localhost开启1234端口进行gdb的监听。 在被调试机中编译和使用其他版本Linux内核在QEMU/KVM中安装 1yum install gcc ncurses-devel 从kernel.org上下载3.18.35源码，修改Makefile文件的617行的KBUILD_CFLAGS值为O1，进行编译 1234make menuconfigmakemake modules_installmake install 在make install后，会报一些could not find module的错误，忽略之。查看当前已有的内核版本 1cat /boot/grub/grub.conf | awk '$1=="title" &#123;print i++ " :" $NF&#125;' 修改当前默认启动的内核版本后，重启即可。 123vi /boot/grub/grub.confdefault = 0reboot 调试Linux内核由于之前已经设置好了参数，在被调试机启动后将会开启1234端口作为gdb的调试端口，将编译好的vmlinux保存到虚拟机中，启动gdb进行调试。 123scp root@kvm_ip:/path/to/vmlinux ./gdb vmlinuxtarget remote localhost:1234 参考文章 http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html]]></content>
+    <content type="text"><![CDATA[之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel调试环境。 实验环境： 123宿主：MacOS Mojave + VMware Fusion 11虚拟机：CentOS 7.6.1810 64 bit被调试机：CentOS 6.10 64 bit 虚拟机配置建议分配50G以上的硬盘空间。在设置中需要打开在此虚拟机中启用虚拟化管理程序选项以让虚拟机提供Intel VT-x/EPT支持。使用CentOS的Live版本的iso进行安装，选择”Test Then Start”的选项启动系统避免发生错误。 能够正常打开系统后，选择安装到硬盘即可。 QEMU/KVM环境配置在虚拟机中安装QEMU/KVM和VIRT环境： 1yum install qemu-kvm qemu-system virt-manager libvirt libvirt-python libvirt-client virt-install virt-viewer 启动libvirtd 1service libvirtd start 在启动virt-manager时，如果遇到权限问题，则修改/etc/libvirt/qemu.conf，添加下述内容并重启服务。 12user = "root" group = "root" 下载所要调试的内核的载体操作系统，并将iso文件放到libvirt的images目录下。通过virt-manager创建KVM，硬盘空间建议设置为25G以上。在进行到最后一步时勾选启动前进行配置。在设置面板的CPU选项中，将复制CPU参数选中然后再开始进行安装。 经上述步骤后，KVM启动，使用 12virsh listvirsh edit 来修改配置，将第一行改为 1&lt;domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'&gt; 在&lt;/device&gt;后加入 12345&lt;qemu:commandline&gt; &lt;qemu:arg value='-S'/&gt; &lt;qemu:arg value='-gdb'/&gt; &lt;qemu:arg value='tcp::1234'/&gt; &lt;/qemu:commandline&gt; 当KVM被重启后，将会在localhost开启1234端口进行gdb的监听。 在被调试机中编译和使用其他版本Linux内核在QEMU/KVM中安装 1yum install gcc ncurses-devel 从kernel.org上下载3.18.35源码，修改Makefile文件的617行的KBUILD_CFLAGS值为O1，进行编译 1234make menuconfigmakemake modules_installmake install 在make install后，会报一些could not find module的错误，忽略之。查看当前已有的内核版本 1cat /boot/grub/grub.conf | awk '$1=="title" &#123;print i++ " :" $NF&#125;' 修改当前默认启动的内核版本后，重启即可。 123vi /boot/grub/grub.confdefault = 0reboot 调试Linux内核由于之前已经设置好了参数，在被调试机启动后将会开启1234端口作为gdb的调试端口，将编译好的vmlinux保存到虚拟机中，启动gdb进行调试。 123scp root@kvm_ip:/path/to/vmlinux ./gdb vmlinuxtarget remote localhost:1234 使用QEMU源码调试ARM Linux实验环境： 123宿主：Windows 10 + VMware Workstations 15 Pro 虚拟机：Ubuntu 18.04 64 bit被调试机：ARM Linux 4.0 #### 参考文章和资料 http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html 《奔跑吧，Linux内核 入门篇》]]></content>
       <tags>
         <tag>pwn</tag>
         <tag>linux</tag>
@@ -47,8 +59,8 @@
       <tags>
         <tag>ctf</tag>
         <tag>pwn</tag>
-        <tag>bctf</tag>
         <tag>2018</tag>
+        <tag>bctf</tag>
       </tags>
   </entry>
   <entry>
@@ -94,8 +106,8 @@
         <tag>ctf</tag>
         <tag>pwn</tag>
         <tag>heap</tag>
-        <tag>2018</tag>
         <tag>eis</tag>
+        <tag>2018</tag>
       </tags>
   </entry>
   <entry>
