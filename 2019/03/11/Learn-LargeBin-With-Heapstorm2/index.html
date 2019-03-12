@@ -408,7 +408,7 @@
 <a id="more"></a>
 <h4 id="Put-Unsorted-Bin-into-Large-Bin"><a href="#Put-Unsorted-Bin-into-Large-Bin" class="headerlink" title="Put Unsorted Bin into Large Bin"></a>Put Unsorted Bin into Large Bin</h4><p>在<code>malloc</code>时，如果Unsorted Bin中的victim的大小无法满足申请所需且属于Large Bin，将会被置入Large Bin中。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">victim_index = largebin_index(size); <span class="comment">// 计算bin数组下标</span></span><br><span class="line">bck = bin_at(av, victim_index);      <span class="comment">// 获取bin</span></span><br><span class="line">fwd = bck-&gt;fd;                       <span class="comment">// bin中第一个chunk</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (fwd != bck) &#123;</span><br><span class="line">    <span class="comment">// 更新大小排序链表</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> (size &lt; bck-&gt;bk-&gt;size) &#123;      <span class="comment">// 如果大小小于bin中最小的chunk大小</span></span><br><span class="line">        fwd = bck;                   <span class="comment">// bin</span></span><br><span class="line">        bck = bck-&gt;bk;               <span class="comment">// 最后一个chunk</span></span><br><span class="line">        <span class="comment">// 在bin和bck中插入</span></span><br><span class="line">        victim-&gt;fd_nextsize = fwd-&gt;fd;               <span class="comment">// 写入fd_nextsize</span></span><br><span class="line">        victim-&gt;bk_nextsize = fwd-&gt;fd-&gt;bk_nextsize;  <span class="comment">// 写入bk_nextsize</span></span><br><span class="line">        fwd-&gt;fd-&gt;bk_nextsize = victim-&gt;bk_nextsize-&gt;fd_nextsize; <span class="comment">// 更新fwd-&gt;fd的bk_nextsize</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mark_bin(av, victim_index);</span><br><span class="line"><span class="comment">// 更新普通链表</span></span><br><span class="line">victim-&gt;bk = bck;</span><br><span class="line">victim-&gt;fd = fwd;</span><br><span class="line">fwd-&gt;bk = victim;</span><br><span class="line">bck-&gt;fd = victim;</span><br></pre></td></tr></table></figure>
-<p>从源码中可以看出，Large Bin在更新链表的时候，没有freed chunk中的链表数据的进行任何的安全检查，利用这一点，可以向指定地址写入堆地址数据。</p>
+<p>从源码中可以看出，Large Bin在更新链表的时候，没有freed chunk中的链表数据的进行任何的安全检查，利用这一点，可以向指定地址写入堆地址数据。利用对齐的特性向堆上写入0x56开头的堆地址，则可以在特定位置制造一个空闲的0x56大小的chunk。当申请0x48大小的chunk时（并触发unsorted bin一系列操作后），特定位置的chunk将会被取出。</p>
 <h4 id="0x55与0x56"><a href="#0x55与0x56" class="headerlink" title="0x55与0x56"></a>0x55与0x56</h4><p>64位下，PIE和randomize_va_space对地址的影响：</p>
 <ul>
 <li>0表示关闭地址空间随机化</li>
@@ -473,6 +473,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/12/19-Mar/" rel="prev" title="2019 Mar pwn writeup">
+                2019 Mar pwn writeup <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -545,7 +549,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-count">28</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

