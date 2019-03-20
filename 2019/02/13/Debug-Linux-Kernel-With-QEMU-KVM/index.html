@@ -99,7 +99,7 @@
 
 
   <meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
-<meta name="keywords" content="pwn,linux,kernel,debug">
+<meta name="keywords" content="linux,pwn,kernel,debug">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
 <meta property="og:url" content="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/index.html">
@@ -473,7 +473,7 @@
 <p>创建文件系统，在<code>_install</code>文件夹中执行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -print0 | cpio --null -ov --format=newc | gzip -9 &gt; ../initramfs.img</span><br></pre></td></tr></table></figure>
 <h4 id="QEMU启动Linux-Kernel"><a href="#QEMU启动Linux-Kernel" class="headerlink" title="QEMU启动Linux Kernel"></a>QEMU启动Linux Kernel</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel /path/to/bzImage -initrd /path/to/initramfs.img -m 200M -append <span class="string">"rdinit=/linuxrc"</span></span><br></pre></td></tr></table></figure>
-<h4 id="GDB-Patch"><a href="#GDB-Patch" class="headerlink" title="GDB Patch"></a>GDB Patch</h4><p>使用gdb调试的时候，会出现<code>g pack too long</code>的报错，但是通过网上的方法解决后（修改gdb源码并重新编译），虽然能够正常调试，但貌似导致pwngdb等插件无法正常显示（在调试普通程序时未发生）。【此问题还未解决】</p>
+<h4 id="GDB-Patch"><a href="#GDB-Patch" class="headerlink" title="GDB Patch"></a>GDB Patch</h4><p>使用gdb调试的时候，会出现<code>g pack too long</code>的报错，可通过网上的方法解决（修改gdb源码并重新编译），虽然能够正常调试，但首次attach上无法正常显示pwngdb等插件的界面，退出再重新attach即可（QEMU使用选项-S和-s）。</p>
 <h4 id="编译特定内核版本的驱动"><a href="#编译特定内核版本的驱动" class="headerlink" title="编译特定内核版本的驱动"></a>编译特定内核版本的驱动</h4><p>在Makefile中指定根目录即可</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROOTDIR := /path/to/kernel/source</span><br></pre></td></tr></table></figure>
 <p>在系统中加载驱动后，会被挂载在sys目录下而不是dev目录。</p>
@@ -507,9 +507,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
             <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
           
             <a href="/tags/kernel/" rel="tag"># kernel</a>
           
