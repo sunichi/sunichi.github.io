@@ -22,6 +22,10 @@
 <meta name="theme-color" content="#222"/>
 
 
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
+
 
 
 
@@ -101,7 +105,7 @@
 
 
   <meta name="description" content="buf的空间大小为0x400，read()的读入长度也为0x400。进入echo()函数继续查找。 字符串s2长度为0x10，内容从buf进行拷贝，当遇到\x00时特，停止拷贝。栈布局如下    size data     0x10 s2   0x08 saved ebp   0x08 return address   0x400 buf    构造如下payload：">
-<meta name="keywords" content="pwn,ctf,2015,rctf">
+<meta name="keywords" content="pwn,ctf,rctf,2015">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rctf 2015 welpwn writeup">
 <meta property="og:url" content="https://sunichi.github.io/2018/01/09/rctf15-welpwn/index.html">
@@ -503,14 +507,34 @@
           
             <a href="/tags/ctf/" rel="tag"># ctf</a>
           
-            <a href="/tags/2015/" rel="tag"># 2015</a>
-          
             <a href="/tags/rctf/" rel="tag"># rctf</a>
+          
+            <a href="/tags/2015/" rel="tag"># 2015</a>
           
         </div>
       
 
       
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+              <div id="needsharebutton-postbottom">
+                <span class="btn">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </span>
+              </div>
+            
+          </div>
+        
+        </div>
       
       
 
@@ -1229,6 +1253,26 @@
   
 
   
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "default";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
 
   
 

@@ -22,6 +22,10 @@
 <meta name="theme-color" content="#222"/>
 
 
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
+
 
 
 
@@ -482,14 +486,34 @@
 
       
       
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+              <div id="needsharebutton-postbottom">
+                <span class="btn">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </span>
+              </div>
+            
+          </div>
+        
+        </div>
+      
       
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/12/19-Mar/" rel="next" title="2019 Mar pwn writeup">
-                <i class="fa fa-chevron-left"></i> 2019 Mar pwn writeup
+              <a href="/2019/03/27/TCTF-2019-babyheap/" rel="next" title="TCTF 2019 babyheap">
+                <i class="fa fa-chevron-left"></i> TCTF 2019 babyheap
               </a>
             
           </div>
@@ -498,8 +522,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/27/TCTF-2019-babyheap/" rel="prev" title="TCTF 2019 babyheap">
-                TCTF 2019 babyheap <i class="fa fa-chevron-right"></i>
+              <a href="/2019/04/04/TCTF-2019-vim/" rel="prev" title="TCTF 2019 vim">
+                TCTF 2019 vim <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1199,6 +1223,26 @@
   
 
   
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "default";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
 
   
 
