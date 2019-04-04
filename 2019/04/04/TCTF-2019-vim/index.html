@@ -112,7 +112,7 @@
 <meta property="og:image" content="https://github.com/sunichi/hexo_images/blob/master/blog/TCTF_2019_vim/4.png?raw=true">
 <meta property="og:image" content="https://github.com/sunichi/hexo_images/blob/master/blog/TCTF_2019_vim/5.png?raw=true">
 <meta property="og:image" content="https://github.com/sunichi/hexo_images/blob/master/blog/TCTF_2019_vim/6.png?raw=true">
-<meta property="og:updated_time" content="2019-04-04T10:21:40.533Z">
+<meta property="og:updated_time" content="2019-04-04T10:27:28.459Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCTF 2019 vim">
 <meta name="twitter:description" content="自定义的加解密方法存在漏洞。">
@@ -234,6 +234,23 @@
     
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
 
   </li>
         
@@ -376,7 +393,7 @@
                 
               
 
-              <time title="创建时间：2019-04-04 09:30:00 / 修改时间：18:21:40" itemprop="dateCreated datePublished" datetime="2019-04-04T09:30:00+08:00">2019-04-04</time>
+              <time title="创建时间：2019-04-04 09:30:00 / 修改时间：18:27:28" itemprop="dateCreated datePublished" datetime="2019-04-04T09:30:00+08:00">2019-04-04</time>
             
 
             
@@ -435,7 +452,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Step 2: Inverse of Addition */</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ps-&gt;shift; ++i)</span><br><span class="line">    ps-&gt;buffer[i] = to[i+<span class="number">4</span>];</span><br></pre></td></tr></table></figure>
 <p>达到任意地址写的目的。</p>
 <h4 id="0x01-Debug-it"><a href="#0x01-Debug-it" class="headerlink" title="0x01 Debug it"></a>0x01 Debug it</h4><p>生成脚本：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    magic = <span class="string">b'VimCrypt~04!'</span></span><br><span class="line">    payload = <span class="string">b'aaaa'</span></span><br><span class="line">    payload += <span class="string">b'bbbb'</span></span><br><span class="line">    payload += <span class="string">b'cccc'</span></span><br><span class="line">    payload += <span class="string">b'dddd'</span></span><br><span class="line">    payload += <span class="string">b'eeee'</span></span><br><span class="line">    payload += <span class="string">b'ffff'</span></span><br><span class="line">    payload += <span class="string">b'gggg'</span></span><br><span class="line">    payload += <span class="string">b'hhhh'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'exp'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(magic + payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    payload = <span class="string">'VimCrypt~04!'</span></span><br><span class="line">    payload += <span class="string">'aaaa'</span></span><br><span class="line">    payload += <span class="string">'bbbb'</span></span><br><span class="line">    payload += <span class="string">'cccc'</span></span><br><span class="line">    payload += <span class="string">'dddd'</span></span><br><span class="line">    payload += <span class="string">'eeee'</span></span><br><span class="line">    payload += <span class="string">'ffff'</span></span><br><span class="line">    payload += <span class="string">'gggg'</span></span><br><span class="line">    payload += <span class="string">'hhhh'</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'exp'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 <p>设置参数和断点：</p>
 <p><img src="https://github.com/sunichi/hexo_images/blob/master/blog/TCTF_2019_vim/1.png?raw=true" alt=""></p>
 <p><code>crypt_perm_init()</code>断点：</p>
