@@ -112,7 +112,7 @@
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-16T15:20:49.567Z">
+<meta property="og:updated_time" content="2018-11-16T15:20:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hitctf 2018 pwn250 DragonBall writeup">
 <meta name="twitter:description" content="此题的漏洞主要是在第4个选项，即wish函数中，在里面有栈溢出漏洞，能够利用栈溢出返回到任意地址中。用ida查看程序，需要集齐7龙珠才能许愿。初始有15元，购买1个龙珠5元，出售1个龙珠3元，在购买时进行下述检查： 1234if ( !money )  return puts(&quot;You don&apos;t have enough money.&quot;);money -= 5;++dragon_ball_num;">
@@ -613,6 +613,8 @@
                     
                   
                     
+                    
+                      
                     
                       
                     
