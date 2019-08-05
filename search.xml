@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
+    <title><![CDATA[【工具】将Linux下executable转为lib的探究]]></title>
     <url>%2F2019%2F08%2F05%2Fexe2lib-in-linux%2F</url>
-    <content type="text"><![CDATA[123title: 【工具】将Linux下executable转为lib的探究date: 2019-08-05 21:20:00tags: [&apos;linux&apos;, &apos;tool&apos;, &apos;elf&apos;, &apos;fuzz&apos;, &apos;ctf&apos;] 关于如何将PIE的executable转为lib并通过C加载执行特定函数。 参考文章： https://blahcat.github.io/2018/03/11/fuzzing-arbitrary-functions-in-elf-binaries/ https://lief.quarkslab.com/doc/latest/tutorials/08_elf_bin2lib.html LIEFLIEF提供了将bin转为lib的一种方法，需要bin打开了PIE，没开PIE的bin无法转为lib。 123456789101112131415161718192021import lief, sys# usage: python3 exe2so.py bin addr:export_name ...if len(sys.argv) &lt; 3: print("[-] invalid syntax") exit(1)infile = sys.argv[1]elf = lief.parse(infile)for arg in sys.argv[2:]: addr, name = arg.split(":", 1) addr = int(addr, 16) print("[+] exporting '%s' to %#x" % (name, addr,)) elf.add_exported_function(addr, name)outfile = "%s.so" % infileprint("[+] writing shared object as '%s'" % (outfile,))elf.write(outfile)print("[+] done") 使用C语言调用123456789101112131415161718192021222324252627282930313233343536373839404142#include &lt;dlfcn.h&gt;#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdint.h&gt;#include &lt;alloca.h&gt;#include &lt;string.h&gt;typedef size_t(*func_t)(void);int is_loaded = 0;void* h = NULL;void CloseLibrary() &#123; if(h) &#123; dlclose(h); h = NULL; &#125; return;&#125;int LoadLibrary() &#123; h = dlopen("./bin.so", RTLD_LAZY); atexit(CloseLibrary); return h != NULL;&#125;int main (int argc, char** argv) &#123; if (!is_loaded) &#123; if(!LoadLibrary()) &#123; printf("Load Error\n"); return -1; &#125; is_loaded = 1; printf("Load Success\n"); &#125; func_t func = (func_t)dlsym(h, "export_name"); func(); return 0;&#125;]]></content>
+    <content type="text"><![CDATA[关于如何将PIE的executable转为lib并通过C加载执行特定函数。 参考文章： https://blahcat.github.io/2018/03/11/fuzzing-arbitrary-functions-in-elf-binaries/ https://lief.quarkslab.com/doc/latest/tutorials/08_elf_bin2lib.html LIEFLIEF提供了将bin转为lib的一种方法，需要bin打开了PIE，没开PIE的bin无法转为lib。 123456789101112131415161718192021import lief, sys# usage: python3 exe2so.py bin addr:export_name ...if len(sys.argv) &lt; 3: print("[-] invalid syntax") exit(1)infile = sys.argv[1]elf = lief.parse(infile)for arg in sys.argv[2:]: addr, name = arg.split(":", 1) addr = int(addr, 16) print("[+] exporting '%s' to %#x" % (name, addr,)) elf.add_exported_function(addr, name)outfile = "%s.so" % infileprint("[+] writing shared object as '%s'" % (outfile,))elf.write(outfile)print("[+] done") 使用C语言调用123456789101112131415161718192021222324252627282930313233343536373839404142#include &lt;dlfcn.h&gt;#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdint.h&gt;#include &lt;alloca.h&gt;#include &lt;string.h&gt;typedef size_t(*func_t)(void);int is_loaded = 0;void* h = NULL;void CloseLibrary() &#123; if(h) &#123; dlclose(h); h = NULL; &#125; return;&#125;int LoadLibrary() &#123; h = dlopen("./bin.so", RTLD_LAZY); atexit(CloseLibrary); return h != NULL;&#125;int main (int argc, char** argv) &#123; if (!is_loaded) &#123; if(!LoadLibrary()) &#123; printf("Load Error\n"); return -1; &#125; is_loaded = 1; printf("Load Success\n"); &#125; func_t func = (func_t)dlsym(h, "export_name"); func(); return 0;&#125;]]></content>
+      <tags>
+        <tag>linux</tag>
+        <tag>ctf</tag>
+        <tag>tool</tag>
+        <tag>elf</tag>
+        <tag>fuzz</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[2019全国大学生信息安全竞赛(CISCN)总决赛Pwn WriteUp]]></title>
