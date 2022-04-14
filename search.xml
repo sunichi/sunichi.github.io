@@ -2911,7 +2911,8 @@
 <a id="more"></a>
 
 <blockquote>
-<p>原文链接：<a href="https://duasynt.com/blog/linux-kernel-module-autoloading">Linux kernel module autoloading - Michael S (duasynt.com)</a></p>
+<p>原文链接：</p>
+<p><a href="https://duasynt.com/blog/linux-kernel-module-autoloading">Linux kernel module autoloading - Michael S (duasynt.com)</a></p>
 </blockquote>
 <p>根据发行版系统的配置，一些未使用（或系统启动时未加载）的模块可以被非特权用户加载。从攻击者角度来看，模块自动加载机制显然非常有用，特别是当这些模块被发现漏洞时。</p>
 <p>下面以一个网络模块为例，介绍 Linux 内核的模块自动加载机制。 DCCP 功能在大多数发行版编译时的选项是 <code>m</code>，并可在用户态使用该协议。当 DCCP socket 创建时：</p>
