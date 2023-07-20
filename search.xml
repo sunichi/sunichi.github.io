@@ -2998,6 +2998,23 @@
       <tags>
         <tag>linux</tag>
         <tag>kernel</tag>
+        <tag>cve</tag>
+        <tag>exploit</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CVE-2023-1829 USMA Exploit</title>
+    <url>/2023/07/20/CVE-2023-1829/</url>
+    <content><![CDATA[<p>Todo</p>
+<a id="more"></a>
+
+<p>Todo</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+        <tag>kernel</tag>
+        <tag>cve</tag>
+        <tag>exploit</tag>
       </tags>
   </entry>
 </search>
